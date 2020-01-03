@@ -1,4 +1,4 @@
-package io.chord.ui
+package io.chord.ui.extensions
 
 import android.view.View
 import androidx.fragment.app.FragmentActivity

@@ -153,10 +153,8 @@ open class FullscreenDialogFragment(
 	
 	fun unvalidate()
 	{
-		GlobalScope.launch(Dispatchers.Main) {
-			action.actionView = null
-			setRootViewState(true)
-		}
+		action.actionView = null
+		setRootViewState(true)
 	}
 	
 	fun validate()

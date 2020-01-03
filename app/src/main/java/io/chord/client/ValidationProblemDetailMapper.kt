@@ -15,7 +15,7 @@ class ValidationProblemDetailMapper(
 		return this
 	}
 	
-	fun execute()
+	fun observe()
 	{
 		val errors = this.validationProblemDetails.errors!!
 		

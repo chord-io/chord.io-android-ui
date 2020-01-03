@@ -2,11 +2,9 @@ package io.chord.client
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.chord.client.models.ValidationProblemDetails
-import kotlinx.coroutines.*
 import retrofit2.HttpException
 import java.io.IOException
 import java.net.SocketTimeoutException
-import kotlin.coroutines.CoroutineContext
 
 fun Throwable.toApiThrowable(): ApiThrowable = ApiThrowable(this)
 
@@ -18,7 +16,7 @@ class ApiThrowable(
 	private var onValidationError: ((mapper: ValidationProblemDetailMapper) -> Unit)? = null
 	private var onConnectionTimeout: (() -> Unit)? = null
 	private var onNetworkError: (() -> Unit)? = null
-	private var onPostExecute: (() -> Unit)? = null
+	private var onPostObservation: (() -> Unit)? = null
 	
 	fun doOnError(callback: ((code: Int, message: String) -> Unit)): ApiThrowable
 	{
@@ -44,13 +42,13 @@ class ApiThrowable(
 		return this
 	}
 	
-	fun doOnPostExecute(callback: (() -> Unit)): ApiThrowable
+	fun doOnPostObservation(callback: (() -> Unit)): ApiThrowable
 	{
-		this.onPostExecute = callback
+		this.onPostObservation = callback
 		return this
 	}
 	
-	fun execute()
+	fun observe()
 	{
 		when(this.throwable)
 		{
@@ -66,39 +64,25 @@ class ApiThrowable(
 						ValidationProblemDetails::class.java
 					)
 					
-					runBlocking(Dispatchers.Main) {
-						onValidationError?.invoke(
-							ValidationProblemDetailMapper(validationProblemDetails)
-						)
-					}
+					this.onValidationError?.invoke(
+						ValidationProblemDetailMapper(validationProblemDetails)
+					)
 				}
 				else
 				{
-					runBlocking(Dispatchers.Main)
-					{
-						onError?.invoke(code, message)
-					}
+					this.onError?.invoke(code, message)
 				}
 			}
 			is SocketTimeoutException ->
 			{
-				runBlocking(Dispatchers.Main)
-				{
-					onConnectionTimeout?.invoke()
-				}
+				this.onConnectionTimeout?.invoke()
 			}
 			is IOException ->
 			{
-				runBlocking(Dispatchers.Main)
-				{
-					onNetworkError?.invoke()
-				}
+				this.onNetworkError?.invoke()
 			}
 		}
 		
-		runBlocking(Dispatchers.Main)
-		{
-			onPostExecute?.invoke()
-		}
+		this.onPostObservation?.invoke()
 	}
 }

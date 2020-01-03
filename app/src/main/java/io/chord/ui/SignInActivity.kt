@@ -1,7 +1,6 @@
 package io.chord.ui
 
 import android.os.Bundle
-import android.view.View
 import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputEditText
@@ -12,8 +11,9 @@ import io.chord.client.apis.UsersApi
 import io.chord.client.models.UserDto
 import io.chord.ui.components.Banner
 import io.chord.ui.dialog.FullscreenDialogFragment
-import io.reactivex.SingleObserver
-import io.reactivex.functions.BiConsumer
+import io.chord.ui.extensions.observe
+import io.chord.ui.extensions.toBanerApiThrowable
+import io.reactivex.android.schedulers.AndroidSchedulers
 
 
 class SignInActivity : AppCompatActivity()
@@ -53,6 +53,7 @@ class SignInActivity : AppCompatActivity()
 			)
 			
 			this.client.create(user)
+				.observeOn(AndroidSchedulers.mainThread())
 				.doOnSubscribe {
 					banner.dismiss()
 					usernameLayout.isErrorEnabled = false
@@ -79,14 +80,14 @@ class SignInActivity : AppCompatActivity()
 									passwordLayout.isErrorEnabled = true
 									passwordLayout.error = error
 								}
-								.execute()
+								.observe()
 						}
-						.doOnPostExecute {
+						.doOnPostObservation {
 							dialogFragment.unvalidate()
 						}
-						.execute()
+						.observe()
 				}
-				.subscribe({}, {})
+				.observe()
 		}
 		
 		dialogFragment.show(fragmentManager, "fragment_signup_form")
