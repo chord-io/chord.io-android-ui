@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:paddingStart="24dp"
+    android:paddingTop="8dp"
+    android:paddingEnd="8dp"
+    android:paddingBottom="8dp"
+    >
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <com.mikepenz.iconics.view.IconicsImageView
+            android:id="@+id/createIcon"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            app:iiv_color="@color/colorAccent"
+            app:iiv_icon="faw-plus"
+            app:iiv_size="15dp"/>
+        <com.mikepenz.iconics.view.IconicsImageView
+            android:id="@+id/updateIcon"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            app:iiv_color="@color/colorAccent"
+            app:iiv_icon="faw-pen"
+            app:iiv_size="15dp"/>
+        <com.mikepenz.iconics.view.IconicsImageView
+            android:id="@+id/deleteIcon"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            app:iiv_color="@color/colorAccent"
+            app:iiv_icon="faw-trash"
+            app:iiv_size="15dp"/>
+        <com.mikepenz.iconics.view.IconicsImageView
+            android:id="@+id/cloneIcon"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            app:iiv_color="@color/colorAccent"
+            app:iiv_icon="faw-clone"
+            app:iiv_size="15dp"/>
+    </LinearLayout>
+    <RadioGroup
+        android:id="@+id/group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <RadioButton
+            android:id="@+id/create"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_gravity="start"
+            android:layoutDirection="rtl"
+            android:text="@string/cudc_dialog_create"
+            android:textAlignment="textStart"
+            android:textSize="16sp" />
+
+        <RadioButton
+            android:id="@+id/update"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_gravity="start"
+            android:layoutDirection="rtl"
+            android:text="@string/cudc_dialog_update"
+            android:textAlignment="textStart"
+            android:textSize="16sp" />
+
+        <RadioButton
+            android:id="@+id/delete"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_gravity="start"
+            android:layoutDirection="rtl"
+            android:text="@string/cudc_dialog_delete"
+            android:textAlignment="textStart"
+            android:textSize="16sp" />
+
+        <RadioButton
+            android:id="@+id/clone"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_gravity="start"
+            android:layoutDirection="rtl"
+            android:text="@string/cudc_dialog_clone"
+            android:textAlignment="textStart"
+            android:textSize="16sp" />
+    </RadioGroup>
+</LinearLayout>

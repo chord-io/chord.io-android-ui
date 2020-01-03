@@ -1,0 +1,1912 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "chord.io",
+    "version": "1.0"
+  },
+  "paths": {
+    "/api/arithmetic/interval/look-up-table": {
+      "get": {
+        "tags": [
+          "ArithmeticInterval"
+        ],
+        "operationId": "GetLookUpTable",
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "additionalProperties": {
+                  "$ref": "#/definitions/IntervalQuality"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/arithmetic/interval/from-degree-and-quality": {
+      "post": {
+        "tags": [
+          "ArithmeticInterval"
+        ],
+        "operationId": "FromDegreeAndQuality",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/DegreeAndQualityIntervalDto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/IntervalDto"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ValidationProblemDetails"
+            }
+          }
+        }
+      }
+    },
+    "/api/arithmetic/interval/from-semitones-and-quality": {
+      "post": {
+        "tags": [
+          "ArithmeticInterval"
+        ],
+        "operationId": "FromSemitonesAndQuality",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/SemitonesAndQualityIntervalDto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/IntervalDto"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ValidationProblemDetails"
+            }
+          }
+        }
+      }
+    },
+    "/api/arithmetic/interval/from-degree-and-semitones": {
+      "post": {
+        "tags": [
+          "ArithmeticInterval"
+        ],
+        "operationId": "FromDegreeAndSemitones",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/DegreeAndSemitonesIntervalDto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/IntervalDto"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ValidationProblemDetails"
+            }
+          }
+        }
+      }
+    },
+    "/api/arithmetic/interval/from-notes": {
+      "post": {
+        "tags": [
+          "ArithmeticInterval"
+        ],
+        "operationId": "FromNotes",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/NotePairDto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/IntervalDto"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ValidationProblemDetails"
+            }
+          }
+        }
+      }
+    },
+    "/api/arithmetic/interval/from-string/{interval}": {
+      "post": {
+        "tags": [
+          "ArithmeticInterval"
+        ],
+        "operationId": "FromString",
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "interval",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/IntervalDto"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ValidationProblemDetails"
+            }
+          }
+        }
+      }
+    },
+    "/api/arithmetic/interval/to-string/{format}": {
+      "post": {
+        "tags": [
+          "ArithmeticInterval"
+        ],
+        "operationId": "ToString",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "format",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/IntervalDto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ValidationProblemDetails"
+            }
+          }
+        }
+      }
+    },
+    "/api/arithmetic/interval/from-integral/{index}": {
+      "post": {
+        "tags": [
+          "ArithmeticInterval"
+        ],
+        "operationId": "FromIntegral",
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "index",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/IntervalDto"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ValidationProblemDetails"
+            }
+          }
+        }
+      }
+    },
+    "/api/arithmetic/interval/to-integral": {
+      "post": {
+        "tags": [
+          "ArithmeticInterval"
+        ],
+        "operationId": "ToIntegral",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/IntervalDto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ValidationProblemDetails"
+            }
+          }
+        }
+      }
+    },
+    "/api/arithmetic/interval/invert": {
+      "post": {
+        "tags": [
+          "ArithmeticInterval"
+        ],
+        "operationId": "Invert",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/IntervalDto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/IntervalDto"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ValidationProblemDetails"
+            }
+          }
+        }
+      }
+    },
+    "/api/arithmetic/interval/to-note/{root}": {
+      "post": {
+        "tags": [
+          "ArithmeticInterval"
+        ],
+        "operationId": "ToNote",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "root",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/IntervalDto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/NoteDto"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ValidationProblemDetails"
+            }
+          }
+        }
+      }
+    },
+    "/api/arithmetic/note": {
+      "post": {
+        "tags": [
+          "ArithmeticNote"
+        ],
+        "operationId": "Create",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/NoteDto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/NoteDto"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ValidationProblemDetails"
+            }
+          }
+        }
+      }
+    },
+    "/api/arithmetic/note/from-string/{note}": {
+      "post": {
+        "tags": [
+          "ArithmeticNote"
+        ],
+        "operationId": "FromString",
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "note",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/NoteDto"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ValidationProblemDetails"
+            }
+          }
+        }
+      }
+    },
+    "/api/arithmetic/note/to-string": {
+      "post": {
+        "tags": [
+          "ArithmeticNote"
+        ],
+        "operationId": "ToString",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/NoteDto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ValidationProblemDetails"
+            }
+          }
+        }
+      }
+    },
+    "/api/arithmetic/note/from-midi/{index}": {
+      "post": {
+        "tags": [
+          "ArithmeticNote"
+        ],
+        "operationId": "FromMidi",
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "index",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/NoteDto"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ValidationProblemDetails"
+            }
+          }
+        }
+      }
+    },
+    "/api/arithmetic/note/to-midi": {
+      "post": {
+        "tags": [
+          "ArithmeticNote"
+        ],
+        "operationId": "ToMidi",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/NoteDto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ValidationProblemDetails"
+            }
+          }
+        }
+      }
+    },
+    "/api/arithmetic/note/from-integral/{index}": {
+      "post": {
+        "tags": [
+          "ArithmeticNote"
+        ],
+        "operationId": "FromIntegral",
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "index",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/NoteDto"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ValidationProblemDetails"
+            }
+          }
+        }
+      }
+    },
+    "/api/arithmetic/note/to-integral": {
+      "post": {
+        "tags": [
+          "ArithmeticNote"
+        ],
+        "operationId": "ToIntegral",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/NoteDto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ValidationProblemDetails"
+            }
+          }
+        }
+      }
+    },
+    "/api/arithmetic/note/interval/{degree}": {
+      "post": {
+        "tags": [
+          "ArithmeticNote"
+        ],
+        "operationId": "GetInterval",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "degree",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/NoteDto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/NoteDto"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ValidationProblemDetails"
+            }
+          }
+        }
+      }
+    },
+    "/api/arithmetic/note/shift/to-right/{distance}": {
+      "post": {
+        "tags": [
+          "ArithmeticNote"
+        ],
+        "operationId": "ShiftToRight",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "distance",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/NoteDto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/NoteDto"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ValidationProblemDetails"
+            }
+          }
+        }
+      }
+    },
+    "/api/arithmetic/note/shift/to-left/{distance}": {
+      "post": {
+        "tags": [
+          "ArithmeticNote"
+        ],
+        "operationId": "ShiftToLeft",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "distance",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/NoteDto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/NoteDto"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ValidationProblemDetails"
+            }
+          }
+        }
+      }
+    },
+    "/api/arithmetic/note/alter/upward/{semitones}": {
+      "post": {
+        "tags": [
+          "ArithmeticNote"
+        ],
+        "operationId": "AlterUpward",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "semitones",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/NoteDto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/NoteDto"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ValidationProblemDetails"
+            }
+          }
+        }
+      }
+    },
+    "/api/arithmetic/note/alter/downward/{semitones}": {
+      "post": {
+        "tags": [
+          "ArithmeticNote"
+        ],
+        "operationId": "AlterDownward",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "semitones",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/NoteDto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/NoteDto"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ValidationProblemDetails"
+            }
+          }
+        }
+      }
+    },
+    "/api/arithmetic/note/simplify": {
+      "post": {
+        "tags": [
+          "ArithmeticNote"
+        ],
+        "operationId": "Simplify",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/NoteDto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/NoteDto"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ValidationProblemDetails"
+            }
+          }
+        }
+      }
+    },
+    "/api/projects": {
+      "post": {
+        "tags": [
+          "Projects"
+        ],
+        "operationId": "Create",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/ProjectDto"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Project"
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ValidationProblemDetails"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ]
+      }
+    },
+    "/api/projects/{id}": {
+      "put": {
+        "tags": [
+          "Projects"
+        ],
+        "operationId": "Update",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/ProjectDto"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ValidationProblemDetails"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Projects"
+        ],
+        "operationId": "Delete",
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ]
+      }
+    },
+    "/api/projects/by-id/{id}": {
+      "get": {
+        "tags": [
+          "Projects"
+        ],
+        "operationId": "GetById",
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Project"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ]
+      }
+    },
+    "/api/projects/all/by-author/{authorId}": {
+      "get": {
+        "tags": [
+          "Projects"
+        ],
+        "operationId": "GetAllByAuthor",
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "authorId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Project"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ]
+      }
+    },
+    "/api/users": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "Create",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/UserDto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ValidationProblemDetails"
+            }
+          }
+        }
+      }
+    },
+    "/api/users/{id}": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "Update",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/UserDto"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ValidationProblemDetails"
+            }
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "Delete",
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "IntervalQuality": {
+      "enum": [
+        "Diminished",
+        "Minor",
+        "Perfect",
+        "Major",
+        "Augmented"
+      ],
+      "type": "string"
+    },
+    "DegreeAndQualityIntervalDto": {
+      "required": [
+        "degree",
+        "quality",
+        "semitones"
+      ],
+      "type": "object",
+      "properties": {
+        "semitones": {
+          "format": "int32",
+          "maximum": 4294967295,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "degree": {
+          "format": "int32",
+          "maximum": 4294967295,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "quality": {
+          "$ref": "#/definitions/IntervalQuality"
+        }
+      }
+    },
+    "IntervalDto": {
+      "required": [
+        "degree",
+        "quality",
+        "semitones"
+      ],
+      "type": "object",
+      "properties": {
+        "degree": {
+          "format": "int32",
+          "maximum": 4294967295,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "semitones": {
+          "format": "int32",
+          "maximum": 4294967295,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "quality": {
+          "$ref": "#/definitions/IntervalQuality"
+        }
+      }
+    },
+    "Object": {
+      "type": "object"
+    },
+    "ValidationProblemDetails": {
+      "type": "object",
+      "properties": {
+        "errors": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "readOnly": true
+        },
+        "type": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "status": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "detail": {
+          "type": "string"
+        },
+        "instance": {
+          "type": "string"
+        },
+        "extensions": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/Object"
+          },
+          "readOnly": true
+        }
+      }
+    },
+    "SemitonesAndQualityIntervalDto": {
+      "required": [
+        "degree",
+        "quality",
+        "semitones"
+      ],
+      "type": "object",
+      "properties": {
+        "degree": {
+          "format": "int32",
+          "maximum": 4294967295,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "semitones": {
+          "format": "int32",
+          "maximum": 4294967295,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "quality": {
+          "$ref": "#/definitions/IntervalQuality"
+        }
+      }
+    },
+    "DegreeAndSemitonesIntervalDto": {
+      "required": [
+        "degree",
+        "quality",
+        "semitones"
+      ],
+      "type": "object",
+      "properties": {
+        "quality": {
+          "$ref": "#/definitions/IntervalQuality"
+        },
+        "degree": {
+          "format": "int32",
+          "maximum": 4294967295,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "semitones": {
+          "format": "int32",
+          "maximum": 4294967295,
+          "minimum": 0,
+          "type": "integer"
+        }
+      }
+    },
+    "NoteDto": {
+      "required": [
+        "alteration",
+        "key",
+        "picth"
+      ],
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "picth": {
+          "format": "int32",
+          "maximum": 8,
+          "minimum": -2,
+          "type": "integer"
+        },
+        "alteration": {
+          "format": "int32",
+          "type": "integer"
+        }
+      }
+    },
+    "NotePairDto": {
+      "required": [
+        "a",
+        "b"
+      ],
+      "type": "object",
+      "properties": {
+        "a": {
+          "$ref": "#/definitions/NoteDto"
+        },
+        "b": {
+          "$ref": "#/definitions/NoteDto"
+        }
+      }
+    },
+    "IntervalFormat": {
+      "enum": [
+        "Short",
+        "Medium",
+        "Formula"
+      ],
+      "type": "string"
+    },
+    "Track": {
+      "required": [
+        "channel",
+        "name"
+      ],
+      "type": "object",
+      "properties": {
+        "name": {
+          "maxLength": 30,
+          "minLength": 5,
+          "type": "string"
+        },
+        "channel": {
+          "format": "int32",
+          "maximum": 16,
+          "minimum": 1,
+          "type": "integer"
+        }
+      }
+    },
+    "ChordLength": {
+      "required": [
+        "bar",
+        "end",
+        "start"
+      ],
+      "type": "object",
+      "properties": {
+        "bar": {
+          "format": "int32",
+          "maximum": 4294967295,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "start": {
+          "format": "double",
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        "end": {
+          "format": "double",
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        }
+      }
+    },
+    "FingeringEntry": {
+      "required": [
+        "length",
+        "pitch",
+        "position"
+      ],
+      "type": "object",
+      "properties": {
+        "position": {
+          "format": "double",
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        "length": {
+          "format": "double",
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        "pitch": {
+          "format": "int32",
+          "maximum": 127,
+          "minimum": 0,
+          "type": "integer"
+        }
+      }
+    },
+    "Chord": {
+      "required": [
+        "fingering",
+        "intervals",
+        "length",
+        "root"
+      ],
+      "type": "object",
+      "properties": {
+        "root": {
+          "format": "int32",
+          "maximum": 127,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "intervals": {
+          "maxLength": 25,
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "length": {
+          "$ref": "#/definitions/ChordLength"
+        },
+        "fingering": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FingeringEntry"
+          }
+        }
+      }
+    },
+    "Theme": {
+      "required": [
+        "chords",
+        "name"
+      ],
+      "type": "object",
+      "properties": {
+        "name": {
+          "maxLength": 30,
+          "minLength": 5,
+          "type": "string"
+        },
+        "chords": {
+          "maxLength": 50,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Chord"
+          }
+        }
+      }
+    },
+    "ProjectDto": {
+      "required": [
+        "author_id",
+        "is_private",
+        "name",
+        "tempo",
+        "themes",
+        "tracks"
+      ],
+      "type": "object",
+      "properties": {
+        "name": {
+          "maxLength": 30,
+          "minLength": 5,
+          "type": "string"
+        },
+        "author_id": {
+          "maxLength": 24,
+          "minLength": 24,
+          "type": "string"
+        },
+        "tempo": {
+          "format": "int32",
+          "maximum": 360,
+          "minimum": 30,
+          "type": "integer"
+        },
+        "is_private": {
+          "type": "boolean"
+        },
+        "tracks": {
+          "maxLength": 16,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Track"
+          }
+        },
+        "themes": {
+          "maxLength": 50,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Theme"
+          }
+        }
+      }
+    },
+    "Project": {
+      "required": [
+        "author_id",
+        "id",
+        "is_private",
+        "name",
+        "tempo",
+        "themes",
+        "tracks"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 30,
+          "minLength": 5,
+          "type": "string"
+        },
+        "author_id": {
+          "maxLength": 24,
+          "minLength": 24,
+          "type": "string"
+        },
+        "tempo": {
+          "format": "int32",
+          "maximum": 360,
+          "minimum": 30,
+          "type": "integer"
+        },
+        "is_private": {
+          "type": "boolean"
+        },
+        "tracks": {
+          "maxLength": 16,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Track"
+          }
+        },
+        "themes": {
+          "maxLength": 50,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Theme"
+          }
+        }
+      }
+    },
+    "UserDto": {
+      "required": [
+        "email",
+        "password",
+        "username"
+      ],
+      "type": "object",
+      "properties": {
+        "username": {
+          "minLength": 5,
+          "type": "string"
+        },
+        "email": {
+          "format": "email",
+          "type": "string"
+        },
+        "password": {
+          "minLength": 8,
+          "type": "string"
+        }
+      }
+    },
+    "User": {
+      "required": [
+        "email",
+        "id",
+        "username"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "username": {
+          "minLength": 5,
+          "type": "string"
+        },
+        "email": {
+          "format": "email",
+          "type": "string"
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "oauth2": {
+      "type": "oauth2",
+      "flow": "password",
+      "authorizationUrl": "http://192.168.46.101:8080/auth/realms/master/protocol/openid-connect/auth",
+      "tokenUrl": "http://192.168.46.101:8080/auth/realms/master/protocol/openid-connect/token"
+    }
+  }
+}

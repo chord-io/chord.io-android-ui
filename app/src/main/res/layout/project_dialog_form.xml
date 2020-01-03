@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="16dp"
+    android:paddingTop="8dp"
+    android:paddingEnd="8dp"
+    android:paddingBottom="8dp">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        style="@style/TextInputLayout"
+        android:theme="@style/TextInputLayout"
+        android:hint="@string/project_dialog_form_name">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        style="@style/TextInputLayout"
+        android:theme="@style/TextInputLayout"
+        android:hint="@string/project_dialog_form_author">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/author"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:textSize="16sp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".20"
+            android:gravity="center_vertical"
+            android:text="@string/project_dialog_form_tempo"
+            android:textSize="16sp" />
+
+        <com.warkiz.widget.IndicatorSeekBar
+            android:id="@+id/tempo"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="fill_horizontal|center_vertical"
+            android:layout_weight=".80"
+            android:padding="0dp"
+            app:isb_clear_default_padding="true"
+            app:isb_indicator_color="@color/colorAccent"
+            app:isb_indicator_text_color="@color/backgroundPrimary"
+            app:isb_max="360"
+            app:isb_min="30"
+            app:isb_progress="120"
+            app:isb_seek_smoothly="true"
+            app:isb_show_indicator="rounded_rectangle"
+            app:isb_thumb_color="@color/colorAccent"
+            app:isb_track_progress_color="@color/colorAccent" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".20"
+            android:gravity="center_vertical"
+            android:text="@string/project_dialog_form_private"
+            android:textSize="16sp" />
+
+        <Switch
+            android:id="@+id/isPrivate"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:layout_weight=".80" />
+    </LinearLayout>
+
+</LinearLayout>

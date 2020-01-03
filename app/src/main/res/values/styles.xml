@@ -1,0 +1,102 @@
+<resources>
+    <style name="AppTheme" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="android:textColor">@color/textColor</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@color/backgroundPrimary</item>
+        <item name="recyclerViewStyle">@style/RecyclerView</item>
+        <item name="toolbarStyle">@style/ToolBar</item>
+        <item name="floatingActionButtonStyle">@style/FloatingActionButton</item>
+    </style>
+
+    <style name="Button" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/colorAccent</item>
+    </style>
+
+    <style name="TextButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme.Slide">
+        <item name="android:windowEnterAnimation">@anim/slide_up</item>
+        <item name="android:windowExitAnimation">@anim/slide_down</item>
+    </style>
+
+    <style name="RecyclerView">
+        <item name="android:background">@drawable/layout_background_secondary</item>
+        <item name="android:elevation">2dp</item>
+    </style>
+
+    <style name="ToolBar" parent="Widget.MaterialComponents.Toolbar">
+        <item name="android:background">@color/colorAccent</item>
+        <item name="android:minHeight">?attr/actionBarSize</item>
+        <item name="titleTextColor">@color/backgroundPrimary</item>
+        <item name="subtitleTextColor">@color/backgroundPrimary</item>
+    </style>
+
+    <style name="FloatingActionButton" parent="Widget.MaterialComponents.FloatingActionButton">
+        <item name="android:backgroundTint">@color/colorAccent</item>
+    </style>
+
+    <style name="TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
+        <!-- Style attributes -->
+        <item name="boxCornerRadiusBottomStart">0dp</item>
+        <item name="boxCornerRadiusTopStart">0dp</item>
+        <item name="boxCornerRadiusTopEnd">0dp</item>
+        <item name="boxCornerRadiusBottomEnd">0dp</item>
+        <item name="boxBackgroundMode">filled</item>
+        <item name="boxBackgroundColor">@color/text_input_background</item>
+        <item name="boxStrokeColor">@color/text_input_box_stroke</item>
+
+        <item name="hintTextAppearance">@style/HintText</item>
+        <item name="errorTextAppearance">@style/ErrorText</item>
+        <item name="counterTextAppearance">@style/HintText</item>
+
+        <!-- Theme attributes -->
+        <item name="hintTextColor">@color/colorAccent</item>
+        <item name="android:textColorHint">@color/border</item>
+        <item name="errorIconTint">@color/textErrorColor</item>
+        <item name="errorTextColor">@color/textErrorColor</item>
+
+        <item name="colorControlNormal">@color/backgroundSecondary</item>
+        <item name="colorControlActivated">@color/colorAccent</item>
+        <item name="color">@color/colorAccent</item>
+    </style>
+
+    <style name="ErrorText" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/textErrorColor</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="HintText" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="Dialog" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.5</item>
+    </style>
+
+    <style name="NegativeButtonStyle" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
+    <style name="PositiveButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="android:backgroundTint">@color/colorAccent</item>
+    </style>
+
+    <style name="FullScreenDialog" parent="Theme.MaterialComponents.Dialog">
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="toolbarStyle">@style/ToolBar</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowBackground">@color/backgroundPrimary</item>
+        <item name="actionMenuTextColor">@color/colorAccent</item>
+        <item name="android:toolbarStyle">@style/ToolBar</item>
+    </style>
+</resources>
