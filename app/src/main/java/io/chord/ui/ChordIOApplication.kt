@@ -1,9 +1,6 @@
 package io.chord.ui
 
 import android.app.Application
-import android.content.res.Resources
-import io.chord.client.models.Chord
-import io.chord.services.depencyinjection.keycloakClient
 import io.chord.services.depencyinjection.sharedPreferencesAuthenticationStorage
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -19,7 +16,7 @@ class ChordIOApplication : Application()
 		super.onCreate()
 		startKoin {
 			androidContext(this@ChordIOApplication)
-			modules(sharedPreferencesAuthenticationStorage + keycloakClient)
+			modules(sharedPreferencesAuthenticationStorage)
 		}
 		
 		instance = this

@@ -3,7 +3,7 @@ package io.chord.services.authentication.storage
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import io.chord.R
-import io.chord.services.authentication.models.AuthenticationRepresentation
+import io.chord.client.models.Authentication
 import java.util.*
 
 open class SharedPreferencesAuthenticationStorage(
@@ -11,7 +11,7 @@ open class SharedPreferencesAuthenticationStorage(
 	private val gson: Gson
 ) : AuthenticationStorage
 {
-	override fun store(authentication: AuthenticationRepresentation)
+	override fun store(authentication: Authentication)
 	{
 		this.preferences
 			.edit()
@@ -19,7 +19,7 @@ open class SharedPreferencesAuthenticationStorage(
 			.apply()
 	}
 	
-	override fun retrieve(): AuthenticationRepresentation?
+	override fun retrieve(): Authentication?
 	{
 		val authentication = this.preferences.getString(
 			R.string.auth_storage_key.toString(),
@@ -31,7 +31,7 @@ open class SharedPreferencesAuthenticationStorage(
 		}
 		else
 		{
-			gson.fromJson(authentication, AuthenticationRepresentation::class.java)
+			this.gson.fromJson(authentication, Authentication::class.java)
 		}
 	}
 	

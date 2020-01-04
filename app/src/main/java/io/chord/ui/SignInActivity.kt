@@ -1,14 +1,18 @@
 package io.chord.ui
 
 import android.os.Bundle
+import android.widget.Button
 import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import io.chord.R
 import io.chord.client.ClientApi
+import io.chord.client.apis.AuthenticationApi
 import io.chord.client.apis.UsersApi
+import io.chord.client.models.SignInDto
 import io.chord.client.models.UserDto
+import io.chord.client.toApiThrowable
 import io.chord.ui.components.Banner
 import io.chord.ui.dialog.FullscreenDialogFragment
 import io.chord.ui.extensions.observe
@@ -18,7 +22,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 
 class SignInActivity : AppCompatActivity()
 {
-	private val client: UsersApi = ClientApi.getUserApi()
+	private val client: AuthenticationApi = ClientApi.getAuthenticationApi()
 	
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
@@ -27,6 +31,53 @@ class SignInActivity : AppCompatActivity()
 		
 		this.findViewById<RelativeLayout>(R.id.signup)
 			.setOnClickListener {this.showSignUpDialog()}
+		
+		this.findViewById<Button>(R.id.signin)
+			.setOnClickListener { this.signIn() }
+	}
+	
+	private fun signIn()
+	{
+		val button = this.findViewById<Button>(R.id.signin)
+		val usernameLayout = this.findViewById<TextInputLayout>(R.id.usernameLayout)
+		val passwordLayout = this.findViewById<TextInputLayout>(R.id.passwordLayout)
+		val username = this.findViewById<TextInputEditText>(R.id.username)
+		val password = this.findViewById<TextInputEditText>(R.id.password)
+		
+		val dto = SignInDto(
+			username.text.toString(),
+			password.text.toString()
+		)
+		
+		this.client.signIn(dto)
+			.observeOn(AndroidSchedulers.mainThread())
+			.doOnSubscribe {
+				usernameLayout.isErrorEnabled = false
+				passwordLayout.isErrorEnabled = false
+			}
+			.doOnSuccess {
+				// TODO: save auth
+			}
+			.doOnError {throwable ->
+				throwable
+					.toApiThrowable()
+					.doOnValidationError { mapper ->
+						mapper
+							.map("Username") { error ->
+								usernameLayout.isErrorEnabled = true
+								usernameLayout.error = error
+							}
+							.map("Password") { error ->
+								passwordLayout.isErrorEnabled = true
+								passwordLayout.error = error
+							}
+							.observe()
+					}
+					.doOnPostObservation {
+					}
+					.observe()
+			}
+			.observe()
 	}
 	
 	private fun showSignUpDialog()
@@ -52,7 +103,7 @@ class SignInActivity : AppCompatActivity()
 				password.text.toString()
 			)
 			
-			this.client.create(user)
+			this.client.signUp(user)
 				.observeOn(AndroidSchedulers.mainThread())
 				.doOnSubscribe {
 					banner.dismiss()
@@ -62,6 +113,7 @@ class SignInActivity : AppCompatActivity()
 				}
 				.doOnSuccess {
 					dialogFragment.validate()
+					// TODO save user id
 				}
 				.doOnError { throwable ->
 					throwable

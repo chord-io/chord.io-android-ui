@@ -4,7 +4,8 @@ import android.content.Context
 import androidx.work.*
 import java.util.concurrent.TimeUnit
 import androidx.work.ExistingPeriodicWorkPolicy.REPLACE
-import io.chord.services.authentication.api.KeycloakClient
+import io.chord.client.ClientApi
+import io.chord.client.apis.AuthenticationApi
 import io.chord.services.authentication.storage.SharedPreferencesAuthenticationStorage
 import kotlinx.coroutines.runBlocking
 import org.koin.core.KoinComponent
@@ -46,7 +47,7 @@ class RefreshTokenWorker(
 	}
 	
 	private val storage: SharedPreferencesAuthenticationStorage by inject()
-	private val api: KeycloakClient by inject()
+	private val api: AuthenticationApi = ClientApi.getAuthenticationApi()
 	
 	override fun doWork(): Result
 	{
@@ -57,14 +58,14 @@ class RefreshTokenWorker(
 		
 		val authentication = this.storage.retrieve()
 		
-		if(authentication == null || authentication.refreshToken.isEmpty())
+		if(authentication == null || authentication.refreshToken !!.isEmpty())
 		{
 			return Result.failure()
 		}
 		
 		return try
 		{
-			runBlocking { api.refresh() }
+			runBlocking { api.refresh(authentication.refreshToken) }
 			Result.success()
 		}
 		catch(exception: Exception)

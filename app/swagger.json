@@ -1015,6 +1015,155 @@
         }
       }
     },
+    "/api/authentication/sign-in": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "operationId": "SignIn",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/SignInDto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Authentication"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ValidationProblemDetails"
+            }
+          }
+        }
+      }
+    },
+    "/api/authentication/sign-up": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "operationId": "SignUp",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/UserDto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ValidationProblemDetails"
+            }
+          }
+        }
+      }
+    },
+    "/api/authentication/sign-out": {
+      "get": {
+        "tags": [
+          "Authentication"
+        ],
+        "operationId": "SignOut",
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "refresh_token",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ValidationProblemDetails"
+            }
+          }
+        }
+      }
+    },
+    "/api/authentication/refresh": {
+      "get": {
+        "tags": [
+          "Authentication"
+        ],
+        "operationId": "Refresh",
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "refresh_token",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Authentication"
+            }
+          }
+        }
+      }
+    },
     "/api/projects": {
       "post": {
         "tags": [
@@ -1279,54 +1428,6 @@
             "oauth2": [ ]
           }
         ]
-      }
-    },
-    "/api/users": {
-      "post": {
-        "tags": [
-          "Users"
-        ],
-        "operationId": "Create",
-        "consumes": [
-          "application/json-patch+json",
-          "application/json",
-          "text/json",
-          "application/*+json"
-        ],
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "schema": {
-              "$ref": "#/definitions/UserDto"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "schema": {
-              "$ref": "#/definitions/User"
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "schema": {
-              "type": "string"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/ValidationProblemDetails"
-            }
-          }
-        }
       }
     },
     "/api/users/{id}": {
@@ -1631,6 +1732,91 @@
       ],
       "type": "string"
     },
+    "SignInDto": {
+      "required": [
+        "password",
+        "username"
+      ],
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "Authentication": {
+      "type": "object",
+      "properties": {
+        "access_token": {
+          "type": "string"
+        },
+        "refresh_token": {
+          "type": "string"
+        },
+        "expires_in": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "refresh_expires_in": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "expiration_date": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "refresh_expiration_date": {
+          "format": "date-time",
+          "type": "string"
+        }
+      }
+    },
+    "UserDto": {
+      "required": [
+        "email",
+        "password",
+        "username"
+      ],
+      "type": "object",
+      "properties": {
+        "username": {
+          "minLength": 5,
+          "type": "string"
+        },
+        "email": {
+          "format": "email",
+          "type": "string"
+        },
+        "password": {
+          "minLength": 8,
+          "type": "string"
+        }
+      }
+    },
+    "User": {
+      "required": [
+        "email",
+        "id",
+        "username"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "username": {
+          "minLength": 5,
+          "type": "string"
+        },
+        "email": {
+          "format": "email",
+          "type": "string"
+        }
+      }
+    },
     "Track": {
       "required": [
         "channel",
@@ -1854,49 +2040,6 @@
           "items": {
             "$ref": "#/definitions/Theme"
           }
-        }
-      }
-    },
-    "UserDto": {
-      "required": [
-        "email",
-        "password",
-        "username"
-      ],
-      "type": "object",
-      "properties": {
-        "username": {
-          "minLength": 5,
-          "type": "string"
-        },
-        "email": {
-          "format": "email",
-          "type": "string"
-        },
-        "password": {
-          "minLength": 8,
-          "type": "string"
-        }
-      }
-    },
-    "User": {
-      "required": [
-        "email",
-        "id",
-        "username"
-      ],
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "username": {
-          "minLength": 5,
-          "type": "string"
-        },
-        "email": {
-          "format": "email",
-          "type": "string"
         }
       }
     }

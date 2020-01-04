@@ -3,7 +3,6 @@ package io.chord.services.depencyinjection
 import android.content.Context
 import com.google.gson.GsonBuilder
 import io.chord.R
-import io.chord.services.authentication.api.KeycloakClient
 import io.chord.services.authentication.storage.SharedPreferencesAuthenticationStorage
 import org.koin.dsl.module
 
@@ -20,8 +19,4 @@ val sharedPreferencesAuthenticationStorage = module {
 			get()
 		)
 	}
-}
-
-val keycloakClient = module {
-	single { KeycloakClient() }
 }

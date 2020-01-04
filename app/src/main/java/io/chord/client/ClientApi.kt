@@ -2,10 +2,7 @@ package io.chord.client
 
 import com.google.gson.GsonBuilder
 import io.chord.R
-import io.chord.client.apis.ArithmeticIntervalApi
-import io.chord.client.apis.ArithmeticNoteApi
-import io.chord.client.apis.ProjectsApi
-import io.chord.client.apis.UsersApi
+import io.chord.client.apis.*
 import io.chord.client.tools.GeneratedCodeConverters
 import io.chord.ui.ChordIOApplication
 import io.reactivex.schedulers.Schedulers
@@ -60,7 +57,9 @@ class ClientApi {
 
         fun getProjectsApi(): ProjectsApi = this.getRetroFit(this.getAuthorizedClient()).create(ProjectsApi::class.java)
     
-        fun getUserApi(): UsersApi = this.getRetroFit().create(UsersApi::class.java)
+        fun getUserApi(): UsersApi = this.getRetroFit(this.getAuthorizedClient()).create(UsersApi::class.java)
+    
+        fun getAuthenticationApi(): AuthenticationApi = this.getRetroFit().create(AuthenticationApi::class.java)
     }
 
 }

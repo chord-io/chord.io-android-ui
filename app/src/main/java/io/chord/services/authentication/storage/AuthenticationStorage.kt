@@ -1,12 +1,12 @@
 package io.chord.services.authentication.storage
 
-import io.chord.services.authentication.models.AuthenticationRepresentation
+import io.chord.client.models.Authentication
 
 interface AuthenticationStorage
 {
-	fun store(authentication: AuthenticationRepresentation)
+	fun store(authentication: Authentication)
 	
-	fun retrieve(): AuthenticationRepresentation?
+	fun retrieve(): Authentication?
 	
 	fun contains(): Boolean
 	

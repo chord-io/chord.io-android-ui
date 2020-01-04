@@ -8,31 +8,15 @@ package io.chord.client.apis
 
 import okhttp3.RequestBody
 
-import io.chord.client.models.User
 import io.chord.client.models.UserDto
 import io.chord.client.models.ValidationProblemDetails
 import io.reactivex.Completable
-import io.reactivex.Single
 import retrofit2.http.DELETE
 import retrofit2.http.Headers
-import retrofit2.http.POST
 import retrofit2.http.PUT
 
 @JvmSuppressWildcards
 interface UsersApi {
-  /**
-   * The endpoint is owned by chord.io.api service owner
-   * @param body  (optional)
-   */
-  @Headers(
-    "X-Operation-Id: Create",
-    "Content-Type: application/json-patch+json"
-  )
-  @POST("/api/users")
-  fun create(
-    @retrofit2.http.Body  body: UserDto
-  ): Single<User>
-
   /**
    * The endpoint is owned by chord.io.api service owner
    * @param id  (required)
