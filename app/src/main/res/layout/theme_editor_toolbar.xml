@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <include layout="@layout/sequencer_toolbar"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:paddingStart="@dimen/app_bar_padding_left"
+        android:paddingEnd="@dimen/app_bar_padding_right"
+        android:background="@color/backgroundSecondary">
+
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:singleSelection="true">
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/mute"
+                android:layout_width="@dimen/mini_button_width"
+                android:layout_height="@dimen/mini_button_height"
+                android:backgroundTint="@color/mini_button_mute_background"
+                android:textColor="@color/mini_button_text"
+                android:text="@string/mini_button_mute" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/solo"
+                android:layout_width="@dimen/mini_button_width"
+                android:layout_height="@dimen/mini_button_height"
+                android:backgroundTint="@color/mini_button_solo_background"
+                android:textColor="@color/mini_button_text"
+                android:text="@string/mini_button_solo" />
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <io.chord.ui.components.QuantizeDropDown
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="@dimen/app_bar_space_between_component"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/library"
+            app:cio_dd_label="Q"
+            app:cio_dd_textColor="@color/textColorSecondary" />
+
+        <com.mikepenz.iconics.view.IconicsImageView
+            android:id="@+id/library"
+            android:layout_width="@dimen/app_bar_icon_size"
+            android:layout_height="@dimen/app_bar_icon_size"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:iiv_icon="faw_book"
+            app:iiv_color="@color/textColor"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

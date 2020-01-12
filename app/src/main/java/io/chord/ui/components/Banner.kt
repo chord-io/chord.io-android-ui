@@ -1,5 +1,6 @@
 package io.chord.ui.components
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
@@ -10,7 +11,8 @@ import android.widget.LinearLayout
 import com.mikepenz.iconics.IconicsColor
 import com.mikepenz.iconics.IconicsDrawable
 import io.chord.R
-import kotlinx.android.synthetic.main.banner.view.*
+import io.chord.ui.utils.RippleDrawableUtils
+import kotlinx.android.synthetic.main.component_banner.view.*
 
 class Banner : LinearLayout
 {
@@ -18,6 +20,8 @@ class Banner : LinearLayout
 	private var _icon: String? = null
 	private var _backgroundColor: Int? = null
 	private var _color: Int? = null
+	private var _leftButtonText: String? = null
+	private var _rightButtonText: String? = null
 	
 	var message: String?
 		get() = this._message
@@ -64,6 +68,42 @@ class Banner : LinearLayout
 			this.updateColor()
 		}
 	
+	var leftButtonText: String?
+		get() = this._leftButtonText
+		set(value) {
+			this._leftButtonText = value
+			this.leftButton.text = value
+			
+			if(value == null)
+			{
+				this.leftButton.visibility = View.GONE
+			}
+			else
+			{
+				this.leftButton.visibility = View.VISIBLE
+			}
+			
+			this.updateButtons()
+		}
+	
+	var rightButtonText: String?
+		get() = this._rightButtonText
+		set(value) {
+			this._rightButtonText = value
+			this.rightButton.text = value
+			
+			if(value == null)
+			{
+				this.rightButton.visibility = View.GONE
+			}
+			else
+			{
+				this.rightButton.visibility = View.VISIBLE
+			}
+			
+			this.updateButtons()
+		}
+	
 	constructor(context: Context?) : super(context)
 	{
 		this.init(null, 0)
@@ -97,32 +137,40 @@ class Banner : LinearLayout
 	}
 	
 	private fun init(attrs: AttributeSet?, defStyle: Int) {
-		// Load attributes
-		View.inflate(context, R.layout.banner, this)
+		View.inflate(context, R.layout.component_banner, this)
 		
 		val typedArray = context.obtainStyledAttributes(
 			attrs, R.styleable.Banner, defStyle, 0
 		)
 		
 		this.message = typedArray.getString(
-			R.styleable.Banner_cio_message
+			R.styleable.Banner_cio_bn_message
 		)
 		
 		this.icon = typedArray.getString(
-			R.styleable.Banner_cio_icon
+			R.styleable.Banner_cio_bn_icon
 		)
 		
 		this.backgroundColor = typedArray.getColor(
-			R.styleable.Banner_cio_backgroundColor,
+			R.styleable.Banner_cio_bn_backgroundColor,
 			R.color.backgroundSecondary.toInt()
 		)
 		
 		this.color = typedArray.getColor(
-			R.styleable.Banner_cio_color,
+			R.styleable.Banner_cio_bn_color,
 			R.color.colorAccent.toInt()
 		)
 		
+		this.leftButtonText = typedArray.getString(
+			R.styleable.Banner_cio_bn_left_button_text
+		)
+		
+		this.rightButtonText = typedArray.getString(
+			R.styleable.Banner_cio_bn_right_button_text
+		)
+		
 		this.updateColor()
+		this.updateButtons()
 		
 		typedArray.recycle()
 	}
@@ -130,21 +178,57 @@ class Banner : LinearLayout
 	fun dismiss() = this.collapse()
 	fun show() = this.expand()
 	
+	fun setLeftButtonOnClickListener(listener: ((view: View) -> Unit))
+	{
+		this.leftButton.setOnClickListener(listener)
+	}
+	
+	fun setRightButtonOnClickListener(listener: ((view: View) -> Unit))
+	{
+		this.rightButton.setOnClickListener(listener)
+	}
+	
+	@SuppressLint("ResourceAsColor")
 	private fun updateColor()
 	{
-		if(this._backgroundColor != null)
-		{
-			this.setBackgroundColor(this._backgroundColor!!)
+		val backgroundColor = if(this._backgroundColor != null) this._backgroundColor!! else R.color.backgroundSecondary
+		val color = if(this._color != null) this._color!! else R.color.colorAccent
+		
+		this.setBackgroundColor(backgroundColor)
+		
+		this.lineView.setBackgroundColor(color)
+		
+		this.leftButton.apply {
+			this.setTextColor(color)
+			this.rippleColor = RippleDrawableUtils.getColorStateList(
+				backgroundColor,
+				color
+			)
 		}
 		
-		if(this._color != null)
-		{
-			this.lineView.setBackgroundColor(this._color!!)
+		this.rightButton.apply {
+			this.setTextColor(color)
+			this.rippleColor = RippleDrawableUtils.getColorStateList(
+				backgroundColor,
+				color
+			)
 		}
 		
-		if(this._icon != null && this._color != null)
+		if(this._icon != null)
 		{
-			this.iconView.icon!!.color(IconicsColor.colorInt(this._color!!))
+			this.iconView.icon!!.color(IconicsColor.colorInt(color))
+		}
+	}
+	
+	private fun updateButtons()
+	{
+		if(this._leftButtonText == null && this._rightButtonText == null)
+		{
+			this.buttonLayout.visibility = View.GONE
+		}
+		else
+		{
+			this.buttonLayout.visibility = View.VISIBLE
 		}
 	}
 	

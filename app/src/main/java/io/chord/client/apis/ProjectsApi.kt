@@ -48,15 +48,13 @@ interface ProjectsApi {
 
   /**
    * The endpoint is owned by chord.io.api service owner
-   * @param authorId  (required)
    */
   @Headers(
     "X-Operation-Id: GetAllByAuthor"
   )
-  @GET("/api/projects/all/by-author/{authorId}")
-  fun getAllByAuthor(
-    @retrofit2.http.Path("authorId") authorId: String
-  ): Single<List<Project>>
+  @GET("/api/projects/all/by-author")
+  fun getAllByAuthor()
+    : Single<List<Project>>
 
   /**
    * The endpoint is owned by chord.io.api service owner

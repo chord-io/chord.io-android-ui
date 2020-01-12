@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="refresh_token_worker_interval" type="integer">900</item>
+    <item name="refresh_token_worker_interval" type="integer">90000</item>
 </resources>

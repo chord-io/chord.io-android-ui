@@ -1,17 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:background="@drawable/ripple_effect"
-    android:orientation="horizontal"
-    android:paddingStart="24dp"
-    android:paddingEnd="8dp">
+<layout>
+    <data>
+        <variable
+            name="project"
+            type="io.chord.ui.models.ProjectListItemViewModel" />
+    </data>
 
-    <TextView
-        android:id="@+id/name"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="fill_vertical"
-        android:text="item"
-        android:textSize="16sp" />
-</LinearLayout>
+        android:layout_height="@dimen/list_item_height"
+        android:background="@drawable/ripple_effect"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/list_item_padding_left"
+        android:paddingEnd="@dimen/list_item_padding_right">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <com.mikepenz.iconics.view.IconicsImageView
+                android:id="@+id/icon"
+                android:layout_width="@dimen/list_item_icon_size"
+                android:layout_height="@dimen/list_item_icon_size"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/list_item_margin_left"/>
+
+            <LinearLayout
+                android:id="@+id/texts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
+                android:orientation="vertical"
+                android:layout_toStartOf="@id/loader"
+                android:layout_toEndOf="@id/icon">
+
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/information"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:textColor="@color/textColorSecondary"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/loader"
+                android:layout_width="@dimen/list_item_icon_size"
+                android:layout_height="@dimen/list_item_icon_size"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/list_item_margin_right"
+                android:indeterminate="true"
+                android:visibility="gone"/>
+        </RelativeLayout>
+    </LinearLayout>
+</layout>

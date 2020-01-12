@@ -28,7 +28,7 @@ class RefreshTokenWorker(
 			val request = PeriodicWorkRequest.Builder(
 				RefreshTokenWorker::class.java,
 				repeatInterval,
-				TimeUnit.MINUTES
+				TimeUnit.SECONDS
 			)
 				.setConstraints(workConstraints)
 				.build()

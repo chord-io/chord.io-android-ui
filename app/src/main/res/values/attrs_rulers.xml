@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="Ruler">
+        <attr name="cio_rl_backgroundColor" format="color"/>
+        <attr name="cio_rl_defaultWidth" format="dimension"/>
+        <attr name="cio_rl_tickThickness" format="dimension"/>
+    </declare-styleable>
+</resources>

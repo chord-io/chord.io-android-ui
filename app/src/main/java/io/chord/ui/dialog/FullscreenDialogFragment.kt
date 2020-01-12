@@ -6,32 +6,37 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
-import androidx.core.view.get
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModelProviders
 import com.mikepenz.iconics.IconicsDrawable
 import com.mikepenz.iconics.typeface.library.fontawesome.FontAwesome
 import com.mikepenz.iconics.utils.colorRes
 import com.mikepenz.iconics.utils.sizeRes
 import io.chord.R
+import io.chord.ui.components.Banner
+import io.chord.ui.utils.ViewUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import javax.xml.bind.JAXBElement
 
 
-open class FullscreenDialogFragment(
+open class FullscreenDialogFragment<TBinding: ViewDataBinding>(
 	private val layoutId: Int,
-	protected var title: String? = null,
-	private val loaderOnAccept: Boolean = false
+	protected var title: String? = null
 ) : DialogFragment()
 {
+	private lateinit var dataBinding: TBinding
 	private lateinit var toolbar: Toolbar
 	private lateinit var rootView: View
 	private lateinit var action: MenuItem
+	lateinit var banner: Banner
 	
-	var onLayoutCreatedListener: ((view: View?) -> Unit)? = null
-	var onLayoutUpdatedListener: ((view: View?) -> Unit)? = null
+	var onLayoutCreatedListener: ((dataBinding: TBinding) -> Unit)? = null
+	var onLayoutUpdatedListener: ((dataBinding: TBinding) -> Unit)? = null
+	var onViewModelBinding: ((dataBinding: TBinding) -> Unit)? = null
 	
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
@@ -63,11 +68,25 @@ open class FullscreenDialogFragment(
 	{
 		super.onCreateView(inflater, container, savedInstanceState)
 		
-		val view = inflater.inflate(R.layout.dialog_fullscreen, null)
+		val view = inflater.inflate(R.layout.dialog_fullscreen, container)
 		this.toolbar = view.findViewById(R.id.toolbar)
+		this.banner = view.findViewById(R.id.banner)
 		
-		val layout = view.findViewById<ViewGroup>(R.id.layout)
-		this.rootView = layoutInflater.inflate(this.layoutId, layout)
+		val layout = view.findViewById<ViewGroup>(R.id.frameLayout)
+//		this.rootView = inflater.inflate(this.layoutId, layout)
+//		val children = ViewUtils.getDirectChildren(this.rootView)!!.first()
+//		this.dataBinding = DataBindingUtil.bind(children)!!
+//
+//		this.onViewModelBinding?.invoke(this.dataBinding)
+		
+		this.dataBinding = DataBindingUtil.inflate(
+			inflater,
+			this.layoutId,
+			layout,
+			true
+		)
+		this.onViewModelBinding?.invoke(this.dataBinding)
+		this.rootView = this.dataBinding.root
 		
 		return view
 	}
@@ -79,7 +98,7 @@ open class FullscreenDialogFragment(
 	{
 		super.onViewCreated(view, savedInstanceState)
 		
-		this.onLayoutCreatedListener?.invoke(this.rootView)
+		this.onLayoutCreatedListener?.invoke(this.dataBinding)
 		
 		val activity = this.activity!!
 		
@@ -100,61 +119,18 @@ open class FullscreenDialogFragment(
 		toolbar.title = this.title
 		toolbar.setOnMenuItemClickListener {
 			this.action.setActionView(R.layout.dialog_form_loader)
-			setRootViewState(false)
+			ViewUtils.setViewState(this.rootView as ViewGroup, false)
 			GlobalScope.launch(Dispatchers.IO) {
-				onLayoutUpdatedListener?.invoke(rootView)
+				onLayoutUpdatedListener?.invoke(dataBinding)
 			}
 			true
 		}
 	}
 	
-	private fun setRootViewState(state: Boolean)
-	{
-		var depth = 0
-		val views: MutableMap<Int, MutableList<ViewGroup>> = mutableMapOf()
-		views[depth] = mutableListOf(this.rootView as ViewGroup)
-		
-		while(true)
-		{
-			val viewGroups = views[depth]
-			val currentViewGroup = mutableListOf<ViewGroup>()
-			
-			for(i in 0 until viewGroups!!.size)
-			{
-				val viewGroup = viewGroups[i]
-				
-				for(j in 0 until viewGroup.childCount)
-				{
-					val children = viewGroup[j]
-					
-					if(children is ViewGroup)
-					{
-						currentViewGroup.add(children)
-					}
-				}
-			}
-			
-			if(currentViewGroup.size == 0)
-			{
-				break
-			}
-			
-			depth++
-			
-			views[depth] = currentViewGroup
-		}
-		
-		views.flatMap {
-			it.value
-		}.forEach {
-			it.isEnabled = state
-		}
-	}
-	
 	fun unvalidate()
 	{
-		action.actionView = null
-		setRootViewState(true)
+		this.action.actionView = null
+		ViewUtils.setViewState(this.rootView as ViewGroup, true)
 	}
 	
 	fun validate()

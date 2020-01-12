@@ -1,6 +1,7 @@
 package io.chord.services.authentication.storage
 
 import android.content.SharedPreferences
+import com.auth0.android.jwt.JWT
 import com.google.gson.Gson
 import io.chord.R
 import io.chord.client.models.Authentication
@@ -31,7 +32,7 @@ open class SharedPreferencesAuthenticationStorage(
 		}
 		else
 		{
-			this.gson.fromJson(authentication, Authentication::class.java)
+			return this.gson.fromJson(authentication, Authentication::class.java)
 		}
 	}
 	
@@ -66,5 +67,27 @@ open class SharedPreferencesAuthenticationStorage(
 		}
 		
 		return !this.isExpired()
+	}
+	
+	override fun getUserId(): String?
+	{
+		if(!this.contains())
+		{
+			return null
+		}
+		
+		val token = JWT(this.retrieve()!!.accessToken!!)
+		return token.subject
+	}
+	
+	override fun getUsername(): String?
+	{
+		if(!this.contains())
+		{
+			return null
+		}
+		
+		val token = JWT(this.retrieve()!!.accessToken!!)
+		return token.claims["preferred_username"]?.asString()
 	}
 }

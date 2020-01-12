@@ -1,128 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.SignInActivity">
+<layout>
+    <data>
+        <variable
+            name="user"
+            type="io.chord.ui.models.SignInFormViewModel" />
+    </data>
 
-    <LinearLayout
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:orientation="vertical"
-        android:background="@drawable/layout_background_secondary"
-        android:padding="16dp">
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/usernameLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/signin_username"
-            style="@style/TextInputLayout"
-            android:theme="@style/TextInputLayout">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/username"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/backgroundSecondary"
-                android:inputType="text"
-                android:maxLines="1"
-                android:textSize="16sp" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/passwordLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:hint="@string/signin_password"
-            style="@style/TextInputLayout"
-            android:theme="@style/TextInputLayout">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/backgroundSecondary"
-                android:inputType="textPassword"
-                android:maxLines="1"
-                android:textSize="16sp" />
-        </com.google.android.material.textfield.TextInputLayout>
+        android:layout_height="match_parent"
+        tools:context=".ui.SignInActivity">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal">
-
-            <CheckBox
-                android:id="@+id/rememberMe"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight=".5"
-                android:text="@string/signin_remember_me" />
-
-            <TextView
-                android:id="@+id/forgotPassword"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight=".5"
-                android:gravity="center_vertical"
-                android:text="@string/signin_forgot_password"
-                android:textAlignment="textEnd"
-                android:textColor="@color/colorAccent"
-                android:background="@drawable/ripple_effect"
-                tools:ignore="RtlCompat"
-                android:clickable="true"
-                android:focusable="true"/>
-        </LinearLayout>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/signin"
-            style="@style/Button"
+            android:id="@+id/layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/signin_signin" />
+            android:layout_centerInParent="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:orientation="vertical"
+            android:background="@drawable/layout_background_secondary"
+            android:padding="16dp">
 
-        <RelativeLayout
-            android:id="@+id/signup"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/ripple_effect"
-            android:clickable="true"
-            android:focusable="true"
-            android:orientation="horizontal"
-            android:padding="10dp">
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/usernameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/signin_username"
+                style="@style/TextInputLayout.Invert"
+                android:theme="@style/TextInputLayout.Invert">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/username"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/backgroundSecondary"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:textSize="@dimen/text_input_edit_text_size"
+                    android:text="@={user.username}"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/passwordLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:hint="@string/signin_password"
+                style="@style/TextInputLayout.Invert"
+                android:theme="@style/TextInputLayout.Invert">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/backgroundSecondary"
+                    android:inputType="textPassword"
+                    android:maxLines="1"
+                    android:textSize="@dimen/text_input_edit_text_size"
+                    android:text="@={user.password}"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/rememberMe"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".5"
+                    android:text="@string/signin_remember_me" />
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
-                    android:text="@string/signin_not_a_member"
-                    android:textAlignment="textEnd" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/forgotPassword"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".5"
+                    android:gravity="center_vertical"
+                    android:text="@string/signin_forgot_password"
+                    android:textAlignment="textEnd"
+                    android:textColor="@color/colorAccent"
+                    android:background="@drawable/ripple_effect"
+                    tools:ignore="RtlCompat"
                     android:clickable="true"
-                    android:focusable="true"
-                    android:text="@string/signin_signup"
-                    android:textColor="@color/colorAccent" />
+                    android:focusable="true"/>
             </LinearLayout>
-        </RelativeLayout>
-    </LinearLayout>
 
-</RelativeLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/signin"
+                style="@style/Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/signin_signin" />
+
+            <RelativeLayout
+                android:id="@+id/signup"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/ripple_effect"
+                android:clickable="true"
+                android:focusable="true"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        android:text="@string/signin_not_a_member_yet"
+                        android:textAlignment="textEnd" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/signin_signup"
+                        android:textColor="@color/colorAccent" />
+                </LinearLayout>
+            </RelativeLayout>
+        </LinearLayout>
+
+    </RelativeLayout>
+</layout>

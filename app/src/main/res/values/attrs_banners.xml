@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 <declare-styleable name="Banner">
-    <attr name="cio_message" format="string|reference"/>
-    <attr name="cio_icon" format="string|reference"/>
-    <attr name="cio_backgroundColor" format="color"/>
-    <attr name="cio_color" format="color"/>
+    <attr name="cio_bn_message" format="string|reference"/>
+    <attr name="cio_bn_icon" format="string|reference"/>
+    <attr name="cio_bn_backgroundColor" format="color"/>
+    <attr name="cio_bn_color" format="color"/>
+    <attr name="cio_bn_left_button_text" format="string|reference"/>
+    <attr name="cio_bn_right_button_text" format="string|reference"/>
 </declare-styleable>
 </resources>

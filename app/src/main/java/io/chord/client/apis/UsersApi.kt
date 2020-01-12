@@ -11,6 +11,7 @@ import okhttp3.RequestBody
 import io.chord.client.models.UserDto
 import io.chord.client.models.ValidationProblemDetails
 import io.reactivex.Completable
+import java.util.UUID
 import retrofit2.http.DELETE
 import retrofit2.http.Headers
 import retrofit2.http.PUT
@@ -26,7 +27,7 @@ interface UsersApi {
   )
   @DELETE("/api/users/{id}")
   fun delete(
-    @retrofit2.http.Path("id") id: String
+    @retrofit2.http.Path("id") id: UUID
   ): Completable
 
   /**
@@ -40,7 +41,7 @@ interface UsersApi {
   )
   @PUT("/api/users/{id}")
   fun update(
-    @retrofit2.http.Path("id") id: String,
+    @retrofit2.http.Path("id") id: UUID,
     @retrofit2.http.Body  body: UserDto
   ): Completable
 

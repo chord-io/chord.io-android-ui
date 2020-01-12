@@ -12,6 +12,7 @@
     <string name="api_base_url">http://192.168.46.101:5000</string>
     <string name="api_connection_timeout">Network connection has timed out, contact an administrator</string>
     <string name="api_network_error">Network connection cannot be established, contact an administrator</string>
+    <string name="api_server_error">Internal server error, contact an administrator</string>
 
     <string name="preference_file_key">shared_preferences</string>
 
@@ -31,16 +32,20 @@
 
     <string name="project_entity_name">Project</string>
     <string name="project_list_header">Projects</string>
+    <string name="project_list_item_information">%1$s BPM, %2$s tracks</string>
     <string name="project_dialog_form_name">Name</string>
     <string name="project_dialog_form_author">Author</string>
     <string name="project_dialog_form_tempo">Tempo</string>
     <string name="project_dialog_form_private">Private</string>
 
+    <string name="track_list_header">Tracks</string>
+    <string name="track_list_item_information">channel %1$s</string>
+
     <string name="signin_username">Username</string>
     <string name="signin_password">Password</string>
     <string name="signin_remember_me">Remember me</string>
     <string name="signin_forgot_password">Forgot password ?</string>
-    <string name="signin_not_a_member">Not a member ?</string>
+    <string name="signin_not_a_member_yet">Not a member yet ?</string>
     <string name="signin_signup">Sign up</string>
     <string name="signin_signin">SIGN IN</string>
 
@@ -49,5 +54,14 @@
     <string name="signup_email_address">Email address</string>
     <string name="signup_password">Password</string>
 
-    <string name="load_failed">Failed to load, tap to try again.</string>
+    <string name="section_load_failed">Failed to load, tap to try again.</string>
+    <string name="section_empty">Section is empty</string>
+
+    <string name="quanize_mode_ternary">Triplet</string>
+    <string name="quanize_mode_ternary_short">T</string>
+    <string name="quanize_mode_dotted">Dotted</string>
+    <string name="quanize_mode_dotted_short">D</string>
+
+    <string name="mini_button_mute">M</string>
+    <string name="mini_button_solo">S</string>
 </resources>

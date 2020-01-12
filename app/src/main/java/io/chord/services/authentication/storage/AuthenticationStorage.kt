@@ -17,4 +17,8 @@ interface AuthenticationStorage
 	fun isRefreshExpired(): Boolean
 	
 	fun isAuthenticated(): Boolean
+	
+	fun getUserId(): String?
+	
+	fun getUsername(): String?
 }

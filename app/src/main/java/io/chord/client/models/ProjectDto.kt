@@ -11,18 +11,14 @@ import com.squareup.moshi.Json
 /**
  * 
  * @property name 
- * @property authorId 
  * @property tempo 
  * @property isPrivate 
  * @property tracks 
- * @property themes 
  */
 data class ProjectDto (
         @Json(name = "name") @field:Json(name = "name") var name: String,
-        @Json(name = "author_id") @field:Json(name = "author_id") var authorId: String,
         @Json(name = "tempo") @field:Json(name = "tempo") var tempo: Int,
         @Json(name = "is_private") @field:Json(name = "is_private") var isPrivate: Boolean,
-        @Json(name = "tracks") @field:Json(name = "tracks") var tracks: List<Track>,
-        @Json(name = "themes") @field:Json(name = "themes") var themes: List<Theme>
+        @Json(name = "tracks") @field:Json(name = "tracks") var tracks: List<Track>
 )
 

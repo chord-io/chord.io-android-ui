@@ -2,12 +2,13 @@ package io.chord.ui.dialog.cudc
 
 import android.os.Bundle
 import android.view.View
+import androidx.databinding.ViewDataBinding
 import io.chord.ui.dialog.FullscreenDialogFragment
 
-class CudcFormOperationDialogFragment(
+class CudcFormOperationDialogFragment<TBinding: ViewDataBinding>(
 	private val information: CudcOperationInformation,
 	layoutId: Int
-) : FullscreenDialogFragment(layoutId, loaderOnAccept = true)
+) : FullscreenDialogFragment<TBinding>(layoutId)
 {
 	override fun onViewCreated(
 		view: View,

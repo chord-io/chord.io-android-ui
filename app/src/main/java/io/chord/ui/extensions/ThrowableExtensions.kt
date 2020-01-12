@@ -32,8 +32,16 @@ fun Throwable.toBanerApiThrowable(banner: Banner): ApiThrowable {
 	val throwable = this.toApiThrowable()
 	
 	throwable
-		.doOnError { _, message ->
-			banner.message = message
+		.doOnError { code, message ->
+			if(code in 500..599)
+			{
+				banner.message = banner.resources.getString(R.string.api_server_error)
+			}
+			else
+			{
+				banner.message = message
+			}
+			
 			banner.show()
 		}
 		.doOnConnectionTimeout {

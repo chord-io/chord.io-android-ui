@@ -1,4 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="app_bar_icon_size">24dp</dimen>
+    <dimen name="app_bar_space_between_component">16dp</dimen>
+    <dimen name="app_bar_padding_left">16dp</dimen>
+    <dimen name="app_bar_padding_right">8dp</dimen>
+
+    <dimen name="floating_action_button_margin_right">16dp</dimen>
+    <dimen name="floating_action_button_margin_bottom">16dp</dimen>
+
+    <dimen name="text_input_edit_text_size">16sp</dimen>
+
+    <dimen name="list_item_height">64dp</dimen>
+    <dimen name="list_header_height">40dp</dimen>
+    <dimen name="list_item_padding_left">16dp</dimen>
+    <dimen name="list_item_padding_right">16dp</dimen>
+    <dimen name="list_item_icon_size">40dp</dimen>
+    <dimen name="list_item_margin_left">16dp</dimen>
+    <dimen name="list_item_margin_right">16dp</dimen>
+
+    <dimen name="section_state_height">100dp</dimen>
+
+    <dimen name="fullscreen_dialog_padding_left">16dp</dimen>
+    <dimen name="fullscreen_dialog_padding_right">8dp</dimen>
+    <dimen name="fullscreen_dialog_padding_top">8dp</dimen>
+    <dimen name="fullscreen_dialog_padding_bottom">8dp</dimen>
+    <dimen name="fullscreen_dialog_app_bar_padding_left">6dp</dimen>
+    <dimen name="fullscreen_dialog_app_bar_padding_right">8dp</dimen>
+
+    <dimen name="dialog_title_height">64dp</dimen>
+    <dimen name="dialog_title_text_size">20sp</dimen>
+    <dimen name="dialog_padding_left">24dp</dimen>
+    <dimen name="dialog_padding_right">8dp</dimen>
+    <dimen name="dialog_padding_top">8dp</dimen>
+    <dimen name="dialog_padding_bottom">8dp</dimen>
+
+    <dimen name="cudc_select_operation_text_size">18sp</dimen>
+    <dimen name="cudc_select_operation_icon_size">16dp</dimen>
+    <dimen name="cudc_select_operation_layout_size">30dp</dimen>
+    <dimen name="cudc_select_operation_margin_top">10dp</dimen>
+
+    <dimen name="banner_padding_left">16dp</dimen>
+    <dimen name="banner_padding_right">8dp</dimen>
+    <dimen name="banner_padding_top">24dp</dimen>
+    <dimen name="banner_padding_bottom">8dp</dimen>
+    <dimen name="banner_icon_size">40dp</dimen>
+    <dimen name="banner_icon_margin_left">16dp</dimen>
+    <dimen name="banner_text_size">14sp</dimen>
+    <dimen name="banner_text_layout_margin_bottom">12dp</dimen>
+    <dimen name="banner_button_margin_left">8dp</dimen>
+
+    <dimen name="scrollbar_default_thickness">32dp</dimen>
+    <dimen name="scrollbar_track_thickness">4dp</dimen>
+    <dimen name="scrollbar_thumb_thickness">12dp</dimen>
+    <dimen name="scrollbar_thumb_roundness">999dp</dimen>
+
+    <dimen name="ruler_default_width">100dp</dimen>
+    <dimen name="ruler_tick_thickness">1dp</dimen>
+
+    <dimen name="dropdown_icon_size">12dp</dimen>
+    <dimen name="dropdown_text_size">8sp</dimen>
+
+    <dimen name="mini_button_width">48dp</dimen>
+    <dimen name="mini_button_height">40dp</dimen>
 </resources>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ScrollBar">
+        <attr name="cio_sb_attachScrollView" format="reference"/>
+        <attr name="cio_sb_orientation" format="string"/>
+        <attr name="cio_sb_backgroundColor" format="color"/>
+        <attr name="cio_sb_trackColor" format="color"/>
+        <attr name="cio_sb_color" format="color"/>
+        <attr name="cio_sb_trackThickness" format="dimension"/>
+        <attr name="cio_sb_thumbThickness" format="dimension"/>
+        <attr name="cio_sb_thumbRoundness" format="dimension"/>
+    </declare-styleable>
+</resources>

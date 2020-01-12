@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="@dimen/banner_padding_left"
+        android:paddingEnd="@dimen/banner_padding_right"
+        android:paddingTop="@dimen/banner_padding_top"
+        android:paddingBottom="@dimen/banner_padding_bottom">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/banner_text_layout_margin_bottom">
+
+            <com.mikepenz.iconics.view.IconicsImageView
+                android:id="@+id/iconView"
+                android:layout_width="@dimen/banner_icon_size"
+                android:layout_height="@dimen/banner_icon_size"
+                android:layout_marginEnd="@dimen/banner_icon_margin_left" />
+
+            <TextView
+                android:id="@+id/messageView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/banner_text_size" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/buttonLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layoutDirection="rtl"
+            android:visibility="gone">
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/rightButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TextButton"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/leftButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TextButton"
+                android:layout_marginStart="@dimen/banner_button_margin_left" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/lineView"
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
+</LinearLayout>
+

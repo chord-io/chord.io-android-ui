@@ -1,5 +1,6 @@
 <resources>
     <style name="AppTheme" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="android:windowLightStatusBar">true</item>
         <item name="android:textColor">@color/textColor</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -55,17 +56,21 @@
 
         <!-- Theme attributes -->
         <item name="hintTextColor">@color/colorAccent</item>
-        <item name="android:textColorHint">@color/border</item>
-        <item name="errorIconTint">@color/textErrorColor</item>
-        <item name="errorTextColor">@color/textErrorColor</item>
+        <item name="android:textColorHint">@color/borderColor</item>
+        <item name="errorIconTint">@color/errorColor</item>
+        <item name="errorTextColor">@color/errorColor</item>
 
         <item name="colorControlNormal">@color/backgroundSecondary</item>
         <item name="colorControlActivated">@color/colorAccent</item>
         <item name="color">@color/colorAccent</item>
     </style>
 
+    <style name="TextInputLayout.Invert" parent="TextInputLayout">
+        <item name="boxStrokeColor">@color/text_input_box_stroke_invert</item>
+    </style>
+
     <style name="ErrorText" parent="TextAppearance.AppCompat">
-        <item name="android:textColor">@color/textErrorColor</item>
+        <item name="android:textColor">@color/errorColor</item>
         <item name="android:textSize">14sp</item>
     </style>
 
