@@ -13,7 +13,89 @@
         android:background="@color/backgroundSecondary"
         android:orientation="horizontal"
         android:columnCount="2"
-        android:rowCount="2">
+        android:rowCount="3">
+        <io.chord.ui.components.TwoDimensionalScrollView
+            android:id="@+id/scrollview2"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:background="@color/backgroundPrimary"
+            android:layout_columnWeight="1"
+            android:layout_rowWeight="0"
+            android:layout_column="0"
+            android:layout_row="0">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Button" />
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Button" />
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Button" />
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Button" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Button" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Button" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Button" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Button" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Button" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Button" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="BITE!!!!!!" />
+            </LinearLayout>
+        </io.chord.ui.components.TwoDimensionalScrollView>
+
         <io.chord.ui.components.TwoDimensionalScrollView
             android:id="@+id/scrollview"
             android:layout_width="0dp"
@@ -22,7 +104,7 @@
             android:layout_columnWeight="1"
             android:layout_rowWeight="1"
             android:layout_column="0"
-            android:layout_row="0">
+            android:layout_row="1">
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -190,15 +272,16 @@
             android:layout_rowWeight="1"
             android:layout_column="1"
             android:layout_row="0"
+            android:layout_rowSpan="2"
             android:orientation="vertical">
             <io.chord.ui.components.ScrollBar
+                android:id="@+id/verticalScrollBar"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:paddingTop="12dp"
                 android:paddingBottom="12dp"
-                app:cio_sb_orientation="vertical"
-                app:cio_sb_attachScrollView="@id/scrollview"/>
+                app:cio_sb_orientation="vertical" />
             <SeekBar
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -211,15 +294,15 @@
             android:layout_columnWeight="1"
             android:layout_rowWeight="0"
             android:layout_column="0"
-            android:layout_row="1">
+            android:layout_row="2">
             <io.chord.ui.components.ScrollBar
+                android:id="@+id/horizontalScrollBar"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
-                app:cio_sb_orientation="horizontal"
-                app:cio_sb_attachScrollView="@id/scrollview"/>
+                app:cio_sb_orientation="horizontal" />
             <SeekBar
                 android:layout_width="0dp"
                 android:layout_height="match_parent"

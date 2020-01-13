@@ -7,18 +7,20 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.HorizontalScrollView
+import android.widget.ScrollView
 import io.chord.R
 import io.chord.ui.utils.MathUtils
 import io.chord.ui.utils.ViewUtils
+import kotlin.IllegalStateException
 import kotlin.math.max
 import kotlin.math.min
 
 class ScrollBar : View
 {
 	private val painter: Paint = Paint()
-	private lateinit var _scrollView: FrameLayout
+	private val _scrollBarControllers: MutableMap<Int, ScrollBarController> = mutableMapOf()
 	
-	private var _scrollviewId: Int? = null
 	private var _orientation: ScrollBarOrientation = ScrollBarOrientation.Horizontal
 	private var _backgroundColor: Int? = null
 	private var _trackColor: Int? = null
@@ -26,12 +28,6 @@ class ScrollBar : View
 	private var _trackThickness: Float? = null
 	private var _thumbThickness: Float? = null
 	private var _thumbRoundness: Float? = null
-	
-	var scrollviewId: Int?
-		get() = this._scrollviewId
-		set(value) {
-			this._scrollviewId = value
-		}
 	
 	var orientation: ScrollBarOrientation
 		get() = this._orientation
@@ -113,10 +109,7 @@ class ScrollBar : View
 			attrs, R.styleable.ScrollBar, defStyle, 0
 		)
 		
-		this.scrollviewId = typedArray.getResourceId(
-			R.styleable.ScrollBar_cio_sb_attachScrollView,
-			0
-		)
+		val theme = this.context.theme
 		
 		typedArray.getString(
 			R.styleable.ScrollBar_cio_sb_orientation
@@ -130,7 +123,6 @@ class ScrollBar : View
 			}
 		}
 		
-		val theme = this.context.theme
 		
 		this.backgroundColor = typedArray.getColor(
 			R.styleable.ScrollBar_cio_sb_backgroundColor,
@@ -165,66 +157,30 @@ class ScrollBar : View
 		typedArray.recycle()
 	}
 	
-	override fun onAttachedToWindow()
+	fun attachScrollView(id: Int)
 	{
-		super.onAttachedToWindow()
-		
-		val rootView = ViewUtils.getParentRootView(this)
-		this._scrollviewId?.apply {
-			val twoDimensionalScrollView = rootView
-				.findViewById<TwoDimensionalScrollView>(this)
-			_scrollView = if(_orientation == ScrollBarOrientation.Vertical)
-			{
-				twoDimensionalScrollView.verticalScrollView
-			}
-			else
-			{
-				twoDimensionalScrollView.horizontalScrollView
-			}
-		}
+		this._scrollBarControllers[id] = ScrollBarController(id, this)
+	}
+	
+	fun detachScrollView(id: Int)
+	{
+		this._scrollBarControllers.remove(id)
 	}
 	
 	private fun getScrollViewContentSize(): Int
 	{
-		if(this._scrollView.childCount > 0)
-		{
-			val child = this._scrollView.getChildAt(0)
-			
-			return if(this.orientation == ScrollBarOrientation.Vertical)
-			{
-				child.height
-			}
-			else
-			{
-				child.width
-			}
-		}
-		
-		return this.getScrollViewSize()
+		return this._scrollBarControllers.values.first().getContentSize()
 	}
 	
 	private fun getScrollViewSize(): Int
 	{
-		return if(this.orientation == ScrollBarOrientation.Vertical)
-		{
-			this._scrollView.height - this._scrollView.paddingBottom - this._scrollView.paddingTop
-		}
-		else
-		{
-			this._scrollView.width - this._scrollView.paddingStart - this._scrollView.paddingEnd
-		}
+		return this._scrollBarControllers.values.first().getSize()
 	}
 	
 	private fun getScrollViewPosition(): Int
 	{
-		return if(this.orientation == ScrollBarOrientation.Vertical)
-		{
-			this._scrollView.scrollY
-		}
-		else
-		{
-			this._scrollView.scrollX
-		}
+		return this._scrollBarControllers.values.first().getPosition()
+		
 	}
 	
 	private fun getSizeWithoutPaddings(): Int
@@ -283,13 +239,8 @@ class ScrollBar : View
 	
 	private fun setPosition(position: Int)
 	{
-		if(this.orientation == ScrollBarOrientation.Vertical)
-		{
-			this._scrollView.scrollY = position
-		}
-		else
-		{
-			this._scrollView.scrollX = position
+		this._scrollBarControllers.forEach {
+			it.value.setPosition(position)
 		}
 	}
 	
