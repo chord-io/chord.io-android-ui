@@ -4,24 +4,41 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import io.chord.R
 import io.chord.ui.utils.MathUtils
-import kotlin.math.max
-import kotlin.math.min
+import io.chord.ui.utils.ViewUtils
 
-class ScrollBar : View
+class ZoomBar : View
 {
 	private val painter: Paint = Paint()
-	private val _scrollBarControllers: MutableMap<Int, ScrollBarController> = mutableMapOf()
+	private var position: Float = 0f
+	private var factor: Float = -1f
+	
+	private val factors: List<Float> = listOf(
+		0.30f,
+		0.50f,
+		0.67f,
+		0.80f,
+		0.90f,
+		1.00f,
+		1.10f,
+		1.20f,
+		1.33f,
+		1.50f,
+		1.70f,
+		2.00f,
+		2.40f,
+		3.00f
+	)
 	
 	private var _orientation: ViewOrientation = ViewOrientation.Horizontal
 	private var _trackColor: Int = -1
 	private var _color: Int = -1
 	private var _trackThickness: Float = -1f
 	private var _thumbThickness: Float = -1f
-	private var _thumbRoundness: Float = -1f
 	
 	var orientation: ViewOrientation
 		get() = this._orientation
@@ -55,13 +72,6 @@ class ScrollBar : View
 		get() = this._thumbThickness
 		set(value) {
 			this._thumbThickness = value
-			this.invalidate()
-		}
-	
-	var thumbRoundness: Float
-		get() = this._thumbRoundness
-		set(value) {
-			this._thumbRoundness = value
 			this.invalidate()
 		}
 	
@@ -100,7 +110,7 @@ class ScrollBar : View
 	private fun init(attrs: AttributeSet?, defStyle: Int)
 	{
 		val typedArray = this.context.obtainStyledAttributes(
-			attrs, R.styleable.ScrollBar, defStyle, 0
+			attrs, R.styleable.ZoomBar, defStyle, 0
 		)
 		
 		val theme = this.context.theme
@@ -129,66 +139,15 @@ class ScrollBar : View
 		
 		this.trackThickness = typedArray.getDimension(
 			R.styleable.ScrollBar_cio_sb_trackThickness,
-			this.resources.getDimension(R.dimen.scrollbar_track_thickness)
+			this.resources.getDimension(R.dimen.zoombar_track_thickness)
 		)
 		
 		this.thumbThickness = typedArray.getDimension(
 			R.styleable.ScrollBar_cio_sb_thumbThickness,
-			this.resources.getDimension(R.dimen.scrollbar_thumb_thickness)
-		)
-		
-		this.thumbRoundness = typedArray.getDimension(
-			R.styleable.ScrollBar_cio_sb_thumbRoundness,
-			this.resources.getDimension(R.dimen.scrollbar_thumb_roundness)
+			this.resources.getDimension(R.dimen.zoombar_thumb_thickness)
 		)
 		
 		typedArray.recycle()
-	}
-	
-	fun attachScrollView(id: Int)
-	{
-		this._scrollBarControllers[id] = ScrollBarController(id, this)
-	}
-	
-	fun detachScrollView(id: Int)
-	{
-		this._scrollBarControllers.remove(id)
-	}
-	
-	private fun checkScrollBarControllerAreEquals()
-	{
-		if(this._scrollBarControllers.isEmpty() || this._scrollBarControllers.size == 1)
-		{
-			return
-		}
-		
-		val result = this._scrollBarControllers
-			.values
-			.stream()
-			.distinct()
-		
-		if(result.count() > 1)
-		{
-			throw java.lang.IllegalStateException("all scrollviews must have the same dimension, including content and padding")
-		}
-	}
-	
-	private fun getScrollViewContentSize(): Int
-	{
-		this.checkScrollBarControllerAreEquals()
-		return this._scrollBarControllers.values.first().getContentSize()
-	}
-	
-	private fun getScrollViewSize(): Int
-	{
-		this.checkScrollBarControllerAreEquals()
-		return this._scrollBarControllers.values.first().getSize()
-	}
-	
-	private fun getScrollViewPosition(): Int
-	{
-		this.checkScrollBarControllerAreEquals()
-		return this._scrollBarControllers.values.first().getPosition()
 	}
 	
 	private fun getSizeWithoutPaddings(): Int
@@ -208,86 +167,113 @@ class ScrollBar : View
 		return this.getSizeWithoutPaddings() - this.getPadding()
 	}
 	
-	private fun getPadding(): Int
+	private fun _getPaddingLeft(): Int
 	{
 		return if(this.orientation == ViewOrientation.Vertical)
 		{
-			this.paddingTop + this.paddingBottom
+			this.paddingTop
 		}
 		else
 		{
-			this.paddingStart + this.paddingEnd
+			this.paddingStart
 		}
 	}
 	
-	private fun getSizeFromContent(): Float
+	private fun _getPaddingRight(): Int
 	{
-		val contentSize = this.getScrollViewContentSize().toFloat()
-		val scrollViewSize = this.getScrollViewSize().toFloat()
-		val scrollBarSize = this.getSizeWithoutPaddings()
-		val maxSize = max(scrollViewSize, contentSize)
-		val minSize= min(scrollViewSize, contentSize)
-		val ratio = minSize / maxSize
-		return ratio * scrollBarSize
-	}
-	
-	private fun getPosition(): Float
-	{
-		val contentSize = this.getScrollViewContentSize().toFloat()
-		val scrollBarSize = this.getSizeWithoutPaddings().toFloat()
-		val position = this.getScrollViewPosition().toFloat()
-		return MathUtils.map(
-			position,
-			0f,
-			contentSize,
-			0f,
-			scrollBarSize
-		)
-	}
-	
-	private fun setPosition(position: Int)
-	{
-		this.checkScrollBarControllerAreEquals()
-		this._scrollBarControllers.forEach {
-			it.value.setPosition(position)
+		return if(this.orientation == ViewOrientation.Vertical)
+		{
+			this.paddingBottom
 		}
+		else
+		{
+			this.paddingEnd
+		}
+	}
+	
+	private fun getLimit(): Float
+	{
+		return this.getSizeWithoutPaddings() - this._getPaddingRight() - this._thumbThickness
+	}
+	
+	private fun getPadding(): Int
+	{
+		return this._getPaddingLeft() + this._getPaddingRight()
+	}
+	
+	private fun getSteps(): List<Float>
+	{
+		val steps = mutableListOf<Float>()
+		val stepSize = this.getSize() / this.factors.size.toFloat()
+		val limit = this.getLimit()
+		
+		this.factors.forEachIndexed { index, _ ->
+			val step = index * stepSize
+			steps.add(index, step)
+		}
+		
+		if(steps.last() != limit)
+		{
+			steps[steps.size - 1] = limit
+		}
+		
+		return steps
+	}
+	
+	private fun setFactor(factor: Float)
+	{
+		val steps = this.getSteps()
+		val index = this.factors.indexOf(factor)
+		this.factor = factor
+		this.position = steps[index]
+		this.invalidate()
+	}
+	
+	private fun setPosition(position: Float)
+	{
+		val steps = this.getSteps()
+		val step = MathUtils.step(position, steps)
+		val index = steps.indexOf(step)
+		this.factor = this.factors[index]
+		this.position = step
+		this.invalidate()
 	}
 	
 	override fun onTouchEvent(event: MotionEvent): Boolean
 	{
-		val position = if(this.orientation == ViewOrientation.Vertical)
+		var position = if(this.orientation == ViewOrientation.Vertical)
 		{
-			event.y
+			event.y - this.thumbThickness / 2f
 		}
 		else
 		{
-			event.x
+			event.x - this.thumbThickness / 2f
 		}
 		
-		val scrollBarSize = this.getSizeWithoutPaddings().toFloat()
-		val scrollContentSize = this.getScrollViewContentSize().toFloat()
-		val scrollViewSize = this.getScrollViewSize().toFloat()
-		val scaledPosition = MathUtils.map(
-			position,
-			0f,
-			scrollBarSize,
-			0f,
-			scrollContentSize - scrollViewSize
-		)
+		val limit = this.getLimit()
 		
-		this.setPosition(scaledPosition.toInt())
+		position = when
+		{
+			position < this._getPaddingLeft() -> this._getPaddingLeft().toFloat()
+			position > limit -> limit
+			else -> position
+		}
+		
+		this.setPosition(position)
 		
 		return true
 	}
 	
 	override fun onDraw(canvas: Canvas?)
 	{
+		if(this.factor == -1f)
+		{
+			this.setFactor(this.factors[5])
+		}
+		
 		this.drawTrack(canvas)
 		
-		if(this._scrollBarControllers.isNotEmpty())
-		{
-			this.drawThumb(canvas)
-		}
+		this.drawThumb(canvas)
 		
 		this.invalidate()
 	}
@@ -337,17 +323,19 @@ class ScrollBar : View
 		this.color.let {
 			this.painter.color = it
 		}
-		
+
 		val thickness = this.thumbThickness
-		val roundness = this.thumbRoundness
-		val position = this.getPosition()
-		val size = this.getSizeFromContent()
-		
+		val position = this.position
+		val roundness = ViewUtils.dipToPixel(
+			this,
+			this.resources.getDimension(R.dimen.zoombar_thumb_roundness)
+		)
+
 		if(this.orientation == ViewOrientation.Horizontal)
 		{
 			val centerVertical = (this.height / 2f) - (thickness / 2f)
 			val left = position + this.paddingStart
-			val right = position + size - this.paddingEnd
+			val right = position + thickness - this.paddingEnd
 			canvas?.drawRoundRect(
 				left,
 				centerVertical,
@@ -362,12 +350,12 @@ class ScrollBar : View
 		{
 			val centerHorizontal = (this.width / 2f) - (thickness / 2f)
 			val top = position + this.paddingTop
-			val bottom = position + size - this.paddingBottom
+			val bottom = position + thickness - this.paddingBottom
 			canvas?.drawRoundRect(
 				centerHorizontal,
 				top,
 				centerHorizontal + thickness,
-				bottom ,
+				bottom,
 				roundness,
 				roundness,
 				this.painter

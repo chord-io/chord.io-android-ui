@@ -193,74 +193,74 @@
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="100dp"
-                    android:layout_height="1000dp"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical">
 
                     <Button
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="0"
                         android:text="Button" />
 
                     <Button
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="0"
                         android:text="Button" />
 
                     <Button
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="0"
                         android:text="Button" />
 
                     <Button
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="0"
                         android:text="Button" />
 
                     <Button
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="0"
                         android:text="Button" />
 
                     <Button
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="0"
                         android:text="Button" />
 
                     <Button
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="0"
                         android:text="Button" />
 
                     <Button
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="0"
                         android:text="Button" />
 
                     <Button
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="0"
                         android:text="Button" />
 
                     <Button
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="0"
                         android:text="Button" />
 
                     <Button
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="BITE!!!" />
+                        android:layout_weight="0"
+                        android:text="Button" />
                 </LinearLayout>
             </LinearLayout>
         </io.chord.ui.components.TwoDimensionalScrollView>
@@ -282,10 +282,11 @@
                 android:paddingTop="12dp"
                 android:paddingBottom="12dp"
                 app:cio_sb_orientation="vertical" />
-            <SeekBar
+            <io.chord.ui.components.ZoomBar
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="0.6"/>
+                android:layout_weight="0.4"
+                app:cio_zb_orientation="vertical"/>
         </LinearLayout>
 
         <LinearLayout
@@ -303,10 +304,11 @@
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
                 app:cio_sb_orientation="horizontal" />
-            <SeekBar
+            <io.chord.ui.components.ZoomBar
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="0.3"/>
+                android:layout_weight="0.4"
+                app:cio_zb_orientation="horizontal"/>
         </LinearLayout>
     </GridLayout>
 </LinearLayout>

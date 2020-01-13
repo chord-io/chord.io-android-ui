@@ -2,7 +2,6 @@
 <resources>
     <declare-styleable name="ScrollBar">
         <attr name="cio_sb_orientation" format="string"/>
-        <attr name="cio_sb_backgroundColor" format="color"/>
         <attr name="cio_sb_trackColor" format="color"/>
         <attr name="cio_sb_color" format="color"/>
         <attr name="cio_sb_trackThickness" format="dimension"/>

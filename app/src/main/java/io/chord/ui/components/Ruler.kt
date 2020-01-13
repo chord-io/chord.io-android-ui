@@ -14,15 +14,8 @@ class Ruler : View
 {
 	private val painter: Paint = Paint()
 	
-	private var _backgroundColor: Int? = null
 	private var _defaultWidth: Float? = null
 	private var _tickThickness: Float? = null
-	
-	var backgroundColor: Int?
-		get() = this._backgroundColor
-		set(value) {
-			this._backgroundColor = value
-		}
 	
 	var defaultWidth: Float?
 		get() = this._defaultWidth
@@ -76,11 +69,6 @@ class Ruler : View
 		
 		val theme = this.context.theme
 		
-		this.backgroundColor = typedArray.getColor(
-			R.styleable.ScrollBar_cio_sb_backgroundColor,
-			this.resources.getColor(R.color.backgroundSecondary, theme)
-		)
-		
 		this.defaultWidth = typedArray.getDimension(
 			R.styleable.Ruler_cio_rl_defaultWidth,
 			this.resources.getDimension(R.dimen.ruler_default_width)
@@ -96,18 +84,6 @@ class Ruler : View
 	
 	override fun onDraw(canvas: Canvas?)
 	{
-		this.backgroundColor?.apply {
-			painter.color = this
-		}
-		
-		canvas?.drawRect(
-			0f,
-			0f,
-			this.width.toFloat(),
-			this.height.toFloat(),
-			this.painter
-		)
-		
 		this.drawBar(canvas, 0)
 	}
 	

@@ -54,6 +54,11 @@
     <dimen name="scrollbar_thumb_thickness">12dp</dimen>
     <dimen name="scrollbar_thumb_roundness">999dp</dimen>
 
+    <dimen name="zoombar_default_thickness">32dp</dimen>
+    <dimen name="zoombar_track_thickness">4dp</dimen>
+    <dimen name="zoombar_thumb_thickness">12dp</dimen>
+    <dimen name="zoombar_thumb_roundness">999dp</dimen>
+
     <dimen name="ruler_default_width">100dp</dimen>
     <dimen name="ruler_tick_thickness">1dp</dimen>
 

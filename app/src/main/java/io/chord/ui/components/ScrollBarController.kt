@@ -7,7 +7,7 @@ import android.widget.ScrollView
 import io.chord.ui.utils.ViewUtils
 
 class ScrollBarController(
-	id: Int,
+	private val id: Int,
 	private val scrollBar: ScrollBar
 )
 {
@@ -20,7 +20,7 @@ class ScrollBarController(
 		{
 			is TwoDimensionalScrollView ->
 			{
-				if(scrollBar.orientation == ScrollBarOrientation.Vertical)
+				if(scrollBar.orientation == ViewOrientation.Vertical)
 				{
 					scrollView.verticalScrollView
 				} else
@@ -40,7 +40,7 @@ class ScrollBarController(
 		{
 			when
 			{
-				this.getSizeWithoutPaddings() != other.getSizeWithoutPaddings() ->
+				this.getSizeWithoutPadding() != other.getSizeWithoutPadding() ->
 				{
 					return false
 				}
@@ -67,7 +67,12 @@ class ScrollBarController(
 	
 	override fun hashCode(): Int
 	{
-		return this.scrollView.hashCode()
+		return (
+			this.getSizeWithoutPadding() +
+			this.getContentSize() +
+			this.getPaddingLeft() +
+			this.getPaddingRight()
+		).hashCode()
 	}
 	
 	fun getContentSize(): Int
@@ -76,7 +81,7 @@ class ScrollBarController(
 		{
 			val child = scrollView.getChildAt(0)
 			
-			return if(this.scrollBar.orientation == ScrollBarOrientation.Vertical)
+			return if(this.scrollBar.orientation == ViewOrientation.Vertical)
 			{
 				child.height
 			}
@@ -86,12 +91,12 @@ class ScrollBarController(
 			}
 		}
 		
-		return this.getSizeWithoutPaddings()
+		return this.getSizeWithoutPadding()
 	}
 	
-	fun getSizeWithoutPaddings(): Int
+	fun getSizeWithoutPadding(): Int
 	{
-		return if(this.scrollBar.orientation == ScrollBarOrientation.Vertical)
+		return if(this.scrollBar.orientation == ViewOrientation.Vertical)
 		{
 			this.scrollView.height
 		}
@@ -103,12 +108,12 @@ class ScrollBarController(
 	
 	fun getSize(): Int
 	{
-		return this.getSizeWithoutPaddings() - this.getPaddingLeft() - this.getPaddingRight()
+		return this.getSizeWithoutPadding() - this.getPaddingLeft() - this.getPaddingRight()
 	}
 	
 	fun getPaddingLeft(): Int
 	{
-		return if(this.scrollBar.orientation == ScrollBarOrientation.Vertical)
+		return if(this.scrollBar.orientation == ViewOrientation.Vertical)
 		{
 			this.scrollView.paddingTop
 		}
@@ -120,7 +125,7 @@ class ScrollBarController(
 	
 	fun getPaddingRight(): Int
 	{
-		return if(this.scrollBar.orientation == ScrollBarOrientation.Vertical)
+		return if(this.scrollBar.orientation == ViewOrientation.Vertical)
 		{
 			this.scrollView.paddingBottom
 		}
@@ -132,7 +137,7 @@ class ScrollBarController(
 	
 	fun getPosition(): Int
 	{
-		return if(this.scrollBar.orientation == ScrollBarOrientation.Vertical)
+		return if(this.scrollBar.orientation == ViewOrientation.Vertical)
 		{
 			this.scrollView.scrollY
 		}
@@ -144,7 +149,7 @@ class ScrollBarController(
 	
 	fun setPosition(position: Int)
 	{
-		return if(this.scrollBar.orientation == ScrollBarOrientation.Vertical)
+		return if(this.scrollBar.orientation == ViewOrientation.Vertical)
 		{
 			this.scrollView.scrollY = position
 		}

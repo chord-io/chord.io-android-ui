@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:cio_bn_backgroundColor="@color/backgroundSecondary"
+        android:background="@color/backgroundSecondary"
         app:cio_bn_color="@color/errorColor"
         app:cio_bn_icon="faw_exclamation_circle" />
 

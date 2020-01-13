@@ -3,7 +3,6 @@
 <declare-styleable name="Banner">
     <attr name="cio_bn_message" format="string|reference"/>
     <attr name="cio_bn_icon" format="string|reference"/>
-    <attr name="cio_bn_backgroundColor" format="color"/>
     <attr name="cio_bn_color" format="color"/>
     <attr name="cio_bn_left_button_text" format="string|reference"/>
     <attr name="cio_bn_right_button_text" format="string|reference"/>

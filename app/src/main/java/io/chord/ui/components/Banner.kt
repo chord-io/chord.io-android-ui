@@ -16,14 +16,13 @@ import kotlinx.android.synthetic.main.component_banner.view.*
 
 class Banner : LinearLayout
 {
-	private var _message: String? = null
-	private var _icon: String? = null
-	private var _backgroundColor: Int? = null
-	private var _color: Int? = null
+	private lateinit var _message: String
+	private lateinit var _icon: String
+	private var _color: Int = 0
 	private var _leftButtonText: String? = null
 	private var _rightButtonText: String? = null
 	
-	var message: String?
+	var message: String
 		get() = this._message
 		set(value) {
 			this._message = value
@@ -33,35 +32,21 @@ class Banner : LinearLayout
 	@Suppress("SetterBackingFieldAssignment")
 	var messageId: Int? = null
 		set(value) {
-			this._message = value?.let { this.context.getString(it) }
+			if(value != null)
+			{
+				this.message = value.let { this.context.getString(it) }
+			}
 		}
 	
-	var icon: String?
+	var icon: String
 		get() = this._icon
 		set(value) {
 			this._icon = value
-			
-			if(value != null)
-			{
-				this.iconView.visibility = View.VISIBLE
-				this.iconView.icon = IconicsDrawable(this.context)
-					.icon(value)
-				this.updateColor()
-			}
-			else
-			{
-				this.iconView.visibility = View.GONE
-			}
-		}
-	
-	var backgroundColor: Int?
-		get() = this._backgroundColor
-		set(value) {
-			this._backgroundColor = value
+			this.iconView.icon = IconicsDrawable(this.context).icon(value)
 			this.updateColor()
 		}
 	
-	var color: Int?
+	var color: Int
 		get() = this._color
 		set(value) {
 			this._color = value
@@ -143,22 +128,19 @@ class Banner : LinearLayout
 			attrs, R.styleable.Banner, defStyle, 0
 		)
 		
+		val theme = this.context.theme
+		
 		this.message = typedArray.getString(
 			R.styleable.Banner_cio_bn_message
-		)
+		)!!
 		
 		this.icon = typedArray.getString(
 			R.styleable.Banner_cio_bn_icon
-		)
-		
-		this.backgroundColor = typedArray.getColor(
-			R.styleable.Banner_cio_bn_backgroundColor,
-			R.color.backgroundSecondary.toInt()
-		)
+		)!!
 		
 		this.color = typedArray.getColor(
 			R.styleable.Banner_cio_bn_color,
-			R.color.colorAccent.toInt()
+			this.resources.getColor(R.color.colorAccent, theme)
 		)
 		
 		this.leftButtonText = typedArray.getString(
@@ -191,33 +173,26 @@ class Banner : LinearLayout
 	@SuppressLint("ResourceAsColor")
 	private fun updateColor()
 	{
-		val backgroundColor = if(this._backgroundColor != null) this._backgroundColor!! else R.color.backgroundSecondary
-		val color = if(this._color != null) this._color!! else R.color.colorAccent
+		val transparentColor = this.resources.getColor(android.R.color.transparent, this.context.theme)
+		this.lineView.setBackgroundColor(this._color)
 		
-		this.setBackgroundColor(backgroundColor)
-		
-		this.lineView.setBackgroundColor(color)
-		
-		this.leftButton.apply {
-			this.setTextColor(color)
-			this.rippleColor = RippleDrawableUtils.getColorStateList(
-				backgroundColor,
-				color
+		this.leftButton.let {
+			it.setTextColor(this._color)
+			it.rippleColor = RippleDrawableUtils.getColorStateList(
+				transparentColor,
+				this._color
 			)
 		}
 		
-		this.rightButton.apply {
-			this.setTextColor(color)
-			this.rippleColor = RippleDrawableUtils.getColorStateList(
-				backgroundColor,
-				color
+		this.rightButton.let {
+			it.setTextColor(this._color)
+			it.rippleColor = RippleDrawableUtils.getColorStateList(
+				transparentColor,
+				this._color
 			)
 		}
 		
-		if(this._icon != null)
-		{
-			this.iconView.icon!!.color(IconicsColor.colorInt(color))
-		}
+		this.iconView.icon!!.color(IconicsColor.colorInt(this._color))
 	}
 	
 	private fun updateButtons()

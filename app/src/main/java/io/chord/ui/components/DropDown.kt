@@ -16,9 +16,9 @@ import kotlinx.android.synthetic.main.component_dropdown.view.*
 open class DropDown : LinearLayout
 {
 	private var _label: String? = null
-	private var _textColor: Int? = null
-	private var _iconSize: Int? = null
-	private var _textSize: Int? = null
+	private var _textColor: Int = 0
+	private var _iconSize: Int = 0
+	private var _textSize: Int = 0
 	
 	var label: String?
 		get() = this._label
@@ -36,72 +36,42 @@ open class DropDown : LinearLayout
 			}
 		}
 	
-	var textColor: Int?
+	var textColor: Int
 		get() = this._textColor
 		set(value) {
 			this._textColor = value
-			this._textColor?.apply {
-				labelView.setTextColor(this)
-				selectedItemTextView.setTextColor(this)
+			this._textColor.let {
+				this.labelView.setTextColor(it)
+				this.selectedItemTextView.setTextColor(it)
 			}
 			
-			if(this._textColor == null)
-			{
-				val color = this.resources.getColor(R.color.textColor, this.context.theme)
-				this.labelView.setTextColor(color)
-				this.selectedItemTextView.setTextColor(color)
-				this.iconView.setColorFilter(color)
-				
-			}
-			else
-			{
-				this.labelView.setTextColor(value!!)
-				this.selectedItemTextView.setTextColor(value)
-				this.iconView.setColorFilter(value)
-			}
+			this.labelView.setTextColor(value)
+			this.selectedItemTextView.setTextColor(value)
+			this.iconView.setColorFilter(value)
 		}
 	
-	var iconSize: Int?
+	var iconSize: Int
 		get() = this._iconSize
 		set(value) {
-			this._iconSize = value
-			
-			val dropDownLayoutParams = this.dropdownView.layoutParams as RelativeLayout.LayoutParams
-			val iconLayoutParams = this.iconView.layoutParams as RelativeLayout.LayoutParams
-			
-			if(this._iconSize == null)
-			{
-				val size = this.resources.getDimension(R.dimen.dropdown_icon_size).toInt()
-				dropDownLayoutParams.width = size
-				dropDownLayoutParams.height = size
-				iconLayoutParams.width = size
-				iconLayoutParams.height = size
-			}
-			else
-			{
-				dropDownLayoutParams.width = value!!
-				dropDownLayoutParams.height = value
-				iconLayoutParams.width = value!!
-				iconLayoutParams.height = value
+			this._iconSize = value.let {
+				val dropDownLayoutParams = this.dropdownView.layoutParams as RelativeLayout.LayoutParams
+				val iconLayoutParams = this.iconView.layoutParams as RelativeLayout.LayoutParams
+				dropDownLayoutParams.width = it
+				dropDownLayoutParams.height = it
+				iconLayoutParams.width = it
+				iconLayoutParams.height = it
+				it
 			}
 		}
 	
-	var textSize: Int?
+	var textSize: Int
 		get() = this._textSize
 		set(value) {
-			this._textSize = value
-			
-			if(this._textSize == null)
-			{
-				val size = this.resources.getDimension(R.dimen.dropdown_text_size)
+			this._textSize = value.let {
+				val size = it.toFloat()
 				this.labelView.textSize = size
 				this.selectedItemTextView.textSize = size
-			}
-			else
-			{
-				val size = value!!.toFloat()
-				this.labelView.textSize = size
-				this.selectedItemTextView.textSize = size
+				it
 			}
 		}
 	
@@ -150,7 +120,7 @@ open class DropDown : LinearLayout
 		
 		this.textColor = typedArray.getColor(
 			R.styleable.DropDown_cio_dd_textColor,
-			R.color.textColor.toInt()
+			this.resources.getColor(R.color.textColor, this.context.theme)
 		)
 		
 		this.iconSize = typedArray.getDimension(
