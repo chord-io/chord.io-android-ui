@@ -1,12 +1,11 @@
 package io.chord.ui.extensions
 
-import android.view.View
 import androidx.fragment.app.FragmentActivity
 import io.chord.R
-import io.chord.client.ApiThrowable
-import io.chord.client.toApiThrowable
+import io.chord.clients.ApiThrowable
+import io.chord.clients.toApiThrowable
 import io.chord.ui.components.Banner
-import io.chord.ui.dialog.ErrorDialogFragment
+import io.chord.ui.dialogs.ErrorDialogFragment
 
 @Suppress("ThrowableNotThrown")
 fun Throwable.toActivityApiThrowable(activity: FragmentActivity): ApiThrowable {

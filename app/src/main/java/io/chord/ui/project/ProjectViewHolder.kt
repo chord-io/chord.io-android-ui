@@ -1,19 +1,16 @@
 package io.chord.ui.project
 
 import android.view.View
-import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import com.mikepenz.iconics.IconicsDrawable
 import com.mikepenz.iconics.typeface.library.fontawesome.FontAwesome
 import com.mikepenz.iconics.utils.colorRes
-import com.mikepenz.iconics.view.IconicsImageView
 import io.chord.R
-import io.chord.client.models.Project
+import io.chord.clients.models.Project
 import io.chord.databinding.ProjectListItemBinding
 import io.chord.ui.ChordIOApplication
-import io.chord.ui.section.ClickListener
-import io.chord.ui.section.ViewHolderBase
+import io.chord.ui.sections.ClickListener
+import io.chord.ui.sections.ViewHolderBase
 
 class ProjectViewHolder(
     view: View

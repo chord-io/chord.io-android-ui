@@ -4,7 +4,7 @@ import android.content.SharedPreferences
 import com.auth0.android.jwt.JWT
 import com.google.gson.Gson
 import io.chord.R
-import io.chord.client.models.Authentication
+import io.chord.clients.models.Authentication
 import java.util.*
 
 open class SharedPreferencesAuthenticationStorage(

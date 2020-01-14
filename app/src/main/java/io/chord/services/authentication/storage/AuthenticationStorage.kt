@@ -1,6 +1,6 @@
 package io.chord.services.authentication.storage
 
-import io.chord.client.models.Authentication
+import io.chord.clients.models.Authentication
 
 interface AuthenticationStorage
 {

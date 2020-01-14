@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="ZoomBar">
-        <attr name="cio_zb_orientation" format="string"/>
+        <attr name="cio_zb_orientation">
+            <enum name="horizontal" value="0" />
+            <enum name="vertical" value="1" />
+        </attr>
         <attr name="cio_zb_trackColor" format="color"/>
         <attr name="cio_zb_color" format="color"/>
         <attr name="cio_zb_trackThickness" format="dimension"/>

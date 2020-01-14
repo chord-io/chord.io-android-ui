@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="ScrollBar">
-        <attr name="cio_sb_orientation" format="string"/>
+        <attr name="cio_sb_orientation">
+            <enum name="horizontal" value="0" />
+            <enum name="vertical" value="1" />
+        </attr>
         <attr name="cio_sb_trackColor" format="color"/>
         <attr name="cio_sb_color" format="color"/>
         <attr name="cio_sb_trackThickness" format="dimension"/>

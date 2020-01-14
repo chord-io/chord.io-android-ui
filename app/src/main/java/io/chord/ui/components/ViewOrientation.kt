@@ -1,7 +1,7 @@
 package io.chord.ui.components
 
-enum class ViewOrientation(val orientation: String)
+enum class ViewOrientation(val orientation: Int)
 {
-	Horizontal("horizontal"),
-	Vertical("vertical")
+	Horizontal(0),
+	Vertical(1)
 }

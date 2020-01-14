@@ -14,7 +14,7 @@ import kotlin.math.min
 class ScrollBar : View
 {
 	private val painter: Paint = Paint()
-	private val _scrollBarControllers: MutableMap<Int, ScrollBarController> = mutableMapOf()
+	private val scrollBarControllers: MutableMap<Int, ScrollBarController> = mutableMapOf()
 	
 	private var _orientation: ViewOrientation = ViewOrientation.Horizontal
 	private var _trackColor: Int = -1
@@ -105,16 +105,11 @@ class ScrollBar : View
 		
 		val theme = this.context.theme
 		
-		typedArray.getString(
-			R.styleable.ScrollBar_cio_sb_orientation
-		)?.let {
-			this.orientation = if(it == ViewOrientation.Vertical.orientation)
-			{
-				ViewOrientation.Vertical
-			} else
-			{
-				ViewOrientation.Horizontal
-			}
+		this.orientation = typedArray.getInteger(
+			R.styleable.ScrollBar_cio_sb_orientation,
+			ViewOrientation.Horizontal.orientation
+		).let {
+			ViewOrientation.values()[it]
 		}
 		
 		this.trackColor = typedArray.getColor(
@@ -145,24 +140,24 @@ class ScrollBar : View
 		typedArray.recycle()
 	}
 	
-	fun attachScrollView(id: Int)
+	fun attach(id: Int)
 	{
-		this._scrollBarControllers[id] = ScrollBarController(id, this)
+		this.scrollBarControllers[id] = ScrollBarController(id, this)
 	}
 	
-	fun detachScrollView(id: Int)
+	fun detach(id: Int)
 	{
-		this._scrollBarControllers.remove(id)
+		this.scrollBarControllers.remove(id)
 	}
 	
 	private fun checkScrollBarControllerAreEquals()
 	{
-		if(this._scrollBarControllers.isEmpty() || this._scrollBarControllers.size == 1)
+		if(this.scrollBarControllers.isEmpty() || this.scrollBarControllers.size == 1)
 		{
 			return
 		}
 		
-		val result = this._scrollBarControllers
+		val result = this.scrollBarControllers
 			.values
 			.stream()
 			.distinct()
@@ -176,19 +171,19 @@ class ScrollBar : View
 	private fun getScrollViewContentSize(): Int
 	{
 		this.checkScrollBarControllerAreEquals()
-		return this._scrollBarControllers.values.first().getContentSize()
+		return this.scrollBarControllers.values.first().getContentSize()
 	}
 	
 	private fun getScrollViewSize(): Int
 	{
 		this.checkScrollBarControllerAreEquals()
-		return this._scrollBarControllers.values.first().getSize()
+		return this.scrollBarControllers.values.first().getSize()
 	}
 	
 	private fun getScrollViewPosition(): Int
 	{
 		this.checkScrollBarControllerAreEquals()
-		return this._scrollBarControllers.values.first().getPosition()
+		return this.scrollBarControllers.values.first().getPosition()
 	}
 	
 	private fun getSizeWithoutPaddings(): Int
@@ -248,7 +243,7 @@ class ScrollBar : View
 	private fun setPosition(position: Int)
 	{
 		this.checkScrollBarControllerAreEquals()
-		this._scrollBarControllers.forEach {
+		this.scrollBarControllers.forEach {
 			it.value.setPosition(position)
 		}
 	}
@@ -284,7 +279,7 @@ class ScrollBar : View
 	{
 		this.drawTrack(canvas)
 		
-		if(this._scrollBarControllers.isNotEmpty())
+		if(this.scrollBarControllers.isNotEmpty())
 		{
 			this.drawThumb(canvas)
 		}

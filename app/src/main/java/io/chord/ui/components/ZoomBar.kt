@@ -5,17 +5,80 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.util.Log
+import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
+import android.widget.HorizontalScrollView
+import android.widget.ScrollView
 import io.chord.R
 import io.chord.ui.utils.MathUtils
 import io.chord.ui.utils.ViewUtils
 
 class ZoomBar : View
 {
+	private class ZoomBarGestureListener(
+		private val zoomBar: ZoomBar
+	) : GestureDetector.SimpleOnGestureListener()
+	{
+		override fun onDown(event: MotionEvent): Boolean {
+			return true
+		}
+		
+		override fun onScroll(
+			event1: MotionEvent,
+			event2: MotionEvent,
+			distanceX: Float,
+			distanceY: Float
+		): Boolean {
+			this.computePosition(event2)
+			return true
+		}
+		
+		override fun onDoubleTap(event: MotionEvent): Boolean {
+			this.zoomBar.setFactor(this.zoomBar.factors[this.zoomBar.defaultFactorIndex])
+			return true
+		}
+		
+		override fun onSingleTapConfirmed(event: MotionEvent): Boolean {
+			this.computePosition(event)
+			return true
+		}
+		
+		private fun computePosition(event: MotionEvent)
+		{
+			var position = if(this.zoomBar.orientation == ViewOrientation.Vertical)
+			{
+				event.y - this.zoomBar.thumbThickness / 2f
+			}
+			else
+			{
+				event.x - this.zoomBar.thumbThickness / 2f
+			}
+			
+			val limit = this.zoomBar.getLimit()
+			
+			position = when
+			{
+				position < this.zoomBar._getPaddingLeft() -> this.zoomBar._getPaddingLeft().toFloat()
+				position > limit -> limit
+				else -> position
+			}
+			
+			this.zoomBar.setPosition(position)
+		}
+	}
+	
+	private val zoomables: MutableMap<Int, Zoomable> = mutableMapOf()
+	
+	private val gestureDetector: GestureDetector = GestureDetector(
+		this.context,
+		ZoomBarGestureListener(this)
+	)
 	private val painter: Paint = Paint()
 	private var position: Float = 0f
 	private var factor: Float = -1f
+	
+	private val defaultFactorIndex = 5
 	
 	private val factors: List<Float> = listOf(
 		0.30f,
@@ -115,16 +178,11 @@ class ZoomBar : View
 		
 		val theme = this.context.theme
 		
-		typedArray.getString(
-			R.styleable.ScrollBar_cio_sb_orientation
-		)?.let {
-			this.orientation = if(it == ViewOrientation.Vertical.orientation)
-			{
-				ViewOrientation.Vertical
-			} else
-			{
-				ViewOrientation.Horizontal
-			}
+		this.orientation = typedArray.getInteger(
+			R.styleable.ScrollBar_cio_sb_orientation,
+			ViewOrientation.Horizontal.orientation
+		).let {
+			ViewOrientation.values()[it]
 		}
 		
 		this.trackColor = typedArray.getColor(
@@ -148,6 +206,19 @@ class ZoomBar : View
 		)
 		
 		typedArray.recycle()
+	}
+	
+	fun attach(id: Int)
+	{
+		val rootView = ViewUtils.getParentRootView(this)
+		val zoomable = rootView.findViewById<View>(id)
+		
+		this.zoomables[id] = zoomable as Zoomable
+	}
+	
+	fun detach(id: Int)
+	{
+		this.zoomables.remove(id)
 	}
 	
 	private fun getSizeWithoutPaddings(): Int
@@ -241,34 +312,21 @@ class ZoomBar : View
 	
 	override fun onTouchEvent(event: MotionEvent): Boolean
 	{
-		var position = if(this.orientation == ViewOrientation.Vertical)
+		return if (this.gestureDetector.onTouchEvent(event))
 		{
-			event.y - this.thumbThickness / 2f
+			true
 		}
 		else
 		{
-			event.x - this.thumbThickness / 2f
+			super.onTouchEvent(event)
 		}
-		
-		val limit = this.getLimit()
-		
-		position = when
-		{
-			position < this._getPaddingLeft() -> this._getPaddingLeft().toFloat()
-			position > limit -> limit
-			else -> position
-		}
-		
-		this.setPosition(position)
-		
-		return true
 	}
 	
 	override fun onDraw(canvas: Canvas?)
 	{
 		if(this.factor == -1f)
 		{
-			this.setFactor(this.factors[5])
+			this.setFactor(this.factors[this.defaultFactorIndex])
 		}
 		
 		this.drawTrack(canvas)

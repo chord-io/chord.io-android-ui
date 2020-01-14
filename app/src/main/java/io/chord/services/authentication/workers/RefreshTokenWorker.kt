@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.work.*
 import java.util.concurrent.TimeUnit
 import androidx.work.ExistingPeriodicWorkPolicy.REPLACE
-import io.chord.client.ClientApi
-import io.chord.client.apis.AuthenticationApi
+import io.chord.clients.ClientApi
+import io.chord.clients.apis.AuthenticationApi
 import io.chord.services.authentication.storage.SharedPreferencesAuthenticationStorage
 import kotlinx.coroutines.runBlocking
 import org.koin.core.KoinComponent
