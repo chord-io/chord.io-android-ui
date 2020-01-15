@@ -2,26 +2,43 @@ package io.chord.ui.components
 
 import android.content.Context
 import android.graphics.*
-import android.text.Layout
-import android.text.StaticLayout
-import android.text.TextPaint
 import android.util.AttributeSet
-import android.util.Log
-import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import io.chord.R
+import io.chord.ui.gestures.GestureDetector
+import io.chord.ui.gestures.SimpleOnGestureListener
 import io.chord.ui.utils.MathUtils
 import io.chord.ui.utils.ViewUtils
 
 
 class ZoomBar : View
 {
+	private class ZoomBarFocusListener(
+		private val zoomBar: ZoomBar
+	) : OnFocusChangeListener
+	{
+		override fun onFocusChange(
+			view: View?,
+			hasFocus: Boolean
+		)
+		{
+			this.zoomBar.invalidate()
+		}
+	}
+	
 	private class ZoomBarGestureListener(
 		private val zoomBar: ZoomBar
-	) : GestureDetector.SimpleOnGestureListener()
+	) : SimpleOnGestureListener()
 	{
 		override fun onDown(event: MotionEvent): Boolean {
+			this.zoomBar.requestFocus()
+			return true
+		}
+		
+		override fun onUp(event: MotionEvent): Boolean
+		{
+			this.zoomBar.clearFocus()
 			return true
 		}
 		
@@ -99,6 +116,7 @@ class ZoomBar : View
 	)
 	
 	private var _orientation: ViewOrientation = ViewOrientation.Horizontal
+	private var _focusExitDuration: Long = -1
 	private var _trackColor: Int = -1
 	private var _bubbleBackgroundColor: Int = -1
 	private var _bubbleTextColor: Int = -1
@@ -110,11 +128,19 @@ class ZoomBar : View
 	private var _bubblePadding: Float = -1f
 	private var _bubbleMargin: Float = -1f
 	private var _bubbleTextSize: Float = -1f
+	private var _bubbleInvert: Boolean = false
 	
 	var orientation: ViewOrientation
 		get() = this._orientation
 		set(value) {
 			this._orientation = value
+			this.invalidate()
+		}
+	
+	var focusExitDuration: Long
+		get() = this._focusExitDuration
+		set(value) {
+			this._focusExitDuration = value
 			this.invalidate()
 		}
 	
@@ -195,6 +221,13 @@ class ZoomBar : View
 			this.invalidate()
 		}
 	
+	var bubbleInvert: Boolean
+		get() = this._bubbleInvert
+		set(value) {
+			this._bubbleInvert = value
+			this.invalidate()
+		}
+	
 	constructor(context: Context?) : super(context)
 	{
 		this.init(null, 0)
@@ -229,6 +262,10 @@ class ZoomBar : View
 	
 	private fun init(attrs: AttributeSet?, defStyle: Int)
 	{
+		this.isFocusable = true
+		this.isFocusableInTouchMode = true
+		this.onFocusChangeListener = ZoomBarFocusListener(this)
+		
 		val typedArray = this.context.obtainStyledAttributes(
 			attrs, R.styleable.ZoomBar, defStyle, 0
 		)
@@ -241,6 +278,11 @@ class ZoomBar : View
 		).let {
 			ViewOrientation.values()[it]
 		}
+		
+		this.focusExitDuration = typedArray.getInteger(
+			R.styleable.ZoomBar_cio_zb_focusExitDuration,
+			this.resources.getInteger(R.integer.zoombar_focus_exit_duration)
+		).toLong()
 		
 		this.trackColor = typedArray.getColor(
 			R.styleable.ZoomBar_cio_zb_trackColor,
@@ -295,6 +337,11 @@ class ZoomBar : View
 		this.bubbleTextSize = typedArray.getDimension(
 			R.styleable.ZoomBar_cio_zb_bubbleTextSize,
 			this.resources.getDimension(R.dimen.zoombar_bubble_text_size)
+		)
+		
+		this.bubbleInvert = typedArray.getBoolean(
+			R.styleable.ZoomBar_cio_zb_bubbleInvert,
+			false
 		)
 		
 		typedArray.recycle()
@@ -414,6 +461,16 @@ class ZoomBar : View
 		}
 	}
 	
+	override fun clearFocus()
+	{
+		this.handler.postDelayed(
+			{
+				super.clearFocus()
+			},
+			this.focusExitDuration
+		)
+	}
+	
 	override fun onDraw(canvas: Canvas?)
 	{
 		if(this.factor == -1f)
@@ -515,14 +572,17 @@ class ZoomBar : View
 	
 	private fun drawBubble(canvas: Canvas?)
 	{
-		// TODO: invert bubble to a specific direction
+		if(!this.isFocused)
+		{
+			return
+		}
 		
 		this.bubbleTextSize.let {
 			this.painter.textSize = it
 			this.painter.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD))
 		}
 		
-		val rect = Rect(canvas!!.clipBounds)
+		val bounds = Rect(canvas!!.clipBounds)
 		val position = this.position + this.thumbThickness / 2
 		val label = this.factor.toString()
 		val width = (ViewUtils.getTextWidth(label, this.painter) + this.bubblePadding).toInt()
@@ -537,27 +597,40 @@ class ZoomBar : View
 
 		if(this._orientation == ViewOrientation.Horizontal)
 		{
-			val offset = rect.height() + this.bubbleMargin.toInt()
-			val left = rect.left + position - halfWidth
+			val offset = bounds.height() + this.bubbleMargin.toInt()
+			val left = bounds.left + position - halfWidth
 			val right = left + width
+			val translatedBounds: Rect?
 			
-			rect.set(
-				rect.left - halfWidth,
-				rect.bottom - offset - height,
-				rect.right + halfWidth,
-				rect.bottom - offset
-			)
+			if(this.bubbleInvert)
+			{
+				translatedBounds = Rect(
+					bounds.left - halfWidth,
+					bounds.top + offset,
+					bounds.right + halfWidth,
+					bounds.top + offset + height
+				)
+			}
+			else
+			{
+				translatedBounds = Rect(
+					bounds.left - halfWidth,
+					bounds.bottom - offset - height,
+					bounds.right + halfWidth,
+					bounds.bottom - offset
+				)
+			}
 			
 			val rectBackgroundBubble = RectF(
 				left,
-				rect.top.toFloat(),
+				translatedBounds.top.toFloat(),
 				right,
-				rect.bottom.toFloat()
+				translatedBounds.bottom.toFloat()
 			)
 			
 			canvas.save()
 			
-			canvas.clipRect(rect)
+			canvas.clipRect(translatedBounds)
 			
 			canvas.drawRoundRect(
 				rectBackgroundBubble.left,
@@ -591,27 +664,40 @@ class ZoomBar : View
 		}
 		else
 		{
-			val offset = rect.width() + this.bubbleMargin.toInt()
-			val top = rect.top + position - halfHeight
+			val offset = bounds.width() + this.bubbleMargin.toInt()
+			val top = bounds.top + position - halfHeight
 			val bottom = top + height
+			val translatedBounds: Rect?
 			
-			rect.set(
-				rect.right - offset - width,
-				rect.top - halfHeight,
-				rect.right - offset,
-				rect.bottom + halfHeight
-			)
+			if(this.bubbleInvert)
+			{
+				translatedBounds = Rect(
+					bounds.left + offset,
+					bounds.top - halfHeight,
+					bounds.left + offset + width,
+					bounds.bottom + halfHeight
+				)
+			}
+			else
+			{
+				translatedBounds = Rect(
+					bounds.right - offset - width,
+					bounds.top - halfHeight,
+					bounds.right - offset,
+					bounds.bottom + halfHeight
+				)
+			}
 			
 			val rectBackgroundBubble = RectF(
-				rect.left.toFloat(),
+				translatedBounds.left.toFloat(),
 				top,
-				rect.right.toFloat(),
+				translatedBounds.right.toFloat(),
 				bottom
 			)
 			
 			canvas.save()
 			
-			canvas.clipRect(rect)
+			canvas.clipRect(translatedBounds)
 			
 			canvas.drawRoundRect(
 				rectBackgroundBubble.left,

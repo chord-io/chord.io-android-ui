@@ -5,6 +5,7 @@
             <enum name="horizontal" value="0" />
             <enum name="vertical" value="1" />
         </attr>
+        <attr name="cio_zb_focusExitDuration" format="integer"/>
         <attr name="cio_zb_trackColor" format="color"/>
         <attr name="cio_zb_bubbleBackgroundColor" format="color"/>
         <attr name="cio_zb_bubbleTextColor" format="color"/>
@@ -16,5 +17,6 @@
         <attr name="cio_zb_bubblePadding" format="dimension"/>
         <attr name="cio_zb_bubbleMargin" format="dimension"/>
         <attr name="cio_zb_bubbleTextSize" format="dimension"/>
+        <attr name="cio_zb_bubbleInvert" format="boolean"/>
     </declare-styleable>
 </resources>
