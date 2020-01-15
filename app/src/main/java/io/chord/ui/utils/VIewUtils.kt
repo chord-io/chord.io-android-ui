@@ -1,11 +1,16 @@
 package io.chord.ui.utils
 
+import android.graphics.Paint
+import android.graphics.Point
+import android.graphics.PointF
+import android.graphics.Rect
+import android.util.Size
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.forEach
-import androidx.core.view.get
 import androidx.fragment.app.FragmentActivity
+import kotlin.collections.set
 
 class ViewUtils
 {
@@ -103,6 +108,32 @@ class ViewUtils
 		{
 			val metrics = view.context.resources.displayMetrics
 			return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value, metrics)
+		}
+		
+		fun getTextWidth(text: String, painter: Paint): Int
+		{
+			val bounds = Rect()
+			painter.getTextBounds(text, 0, text.count(), bounds)
+			return bounds.width()
+		}
+		
+		fun getTextHeight(text: String, painter: Paint): Int
+		{
+			val bounds = Rect()
+			painter.getTextBounds(text, 0, text.count(), bounds)
+			return bounds.height()
+		}
+		
+		fun getTextCentered(
+			text: String,
+			x: Int,
+			y: Int,
+			painter: Paint
+		): PointF
+		{
+			val newX = x - painter.measureText(text) / 2f
+			val newY = y - (painter.descent() + painter.ascent()) / 2f
+			return PointF(newX, newY)
 		}
 	}
 }

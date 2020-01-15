@@ -1,18 +1,19 @@
 package io.chord.ui.components
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Paint
+import android.graphics.*
+import android.text.Layout
+import android.text.StaticLayout
+import android.text.TextPaint
 import android.util.AttributeSet
 import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
-import android.widget.HorizontalScrollView
-import android.widget.ScrollView
 import io.chord.R
 import io.chord.ui.utils.MathUtils
 import io.chord.ui.utils.ViewUtils
+
 
 class ZoomBar : View
 {
@@ -99,9 +100,16 @@ class ZoomBar : View
 	
 	private var _orientation: ViewOrientation = ViewOrientation.Horizontal
 	private var _trackColor: Int = -1
-	private var _color: Int = -1
+	private var _bubbleBackgroundColor: Int = -1
+	private var _bubbleTextColor: Int = -1
+	private var _thumbColor: Int = -1
 	private var _trackThickness: Float = -1f
 	private var _thumbThickness: Float = -1f
+	private var _bubbleThickness: Float = -1f
+	private var _bubbleRoundness: Float = -1f
+	private var _bubblePadding: Float = -1f
+	private var _bubbleMargin: Float = -1f
+	private var _bubbleTextSize: Float = -1f
 	
 	var orientation: ViewOrientation
 		get() = this._orientation
@@ -117,10 +125,24 @@ class ZoomBar : View
 			this.invalidate()
 		}
 	
-	var color: Int
-		get() = this._color
+	var bubbleBackgroundColor: Int
+		get() = this._bubbleBackgroundColor
 		set(value) {
-			this._color = value
+			this._bubbleBackgroundColor = value
+			this.invalidate()
+		}
+	
+	var bubbleTextColor: Int
+		get() = this._bubbleTextColor
+		set(value) {
+			this._bubbleTextColor = value
+			this.invalidate()
+		}
+	
+	var thumbColor: Int
+		get() = this._thumbColor
+		set(value) {
+			this._thumbColor = value
 			this.invalidate()
 		}
 	
@@ -135,6 +157,41 @@ class ZoomBar : View
 		get() = this._thumbThickness
 		set(value) {
 			this._thumbThickness = value
+			this.invalidate()
+		}
+	
+	var bubbleThickness: Float
+		get() = this._bubbleThickness
+		set(value) {
+			this._bubbleThickness = value
+			this.invalidate()
+		}
+	
+	var bubbleRoundness: Float
+		get() = this._bubbleRoundness
+		set(value) {
+			this._bubbleRoundness = value
+			this.invalidate()
+		}
+	
+	var bubblePadding: Float
+		get() = this._bubblePadding
+		set(value) {
+			this._bubblePadding = value
+			this.invalidate()
+		}
+	
+	var bubbleMargin: Float
+		get() = this._bubbleMargin
+		set(value) {
+			this._bubbleMargin = value
+			this.invalidate()
+		}
+	
+	var bubbleTextSize: Float
+		get() = this._bubbleTextSize
+		set(value) {
+			this._bubbleTextSize = value
 			this.invalidate()
 		}
 	
@@ -179,30 +236,65 @@ class ZoomBar : View
 		val theme = this.context.theme
 		
 		this.orientation = typedArray.getInteger(
-			R.styleable.ScrollBar_cio_sb_orientation,
+			R.styleable.ZoomBar_cio_zb_orientation,
 			ViewOrientation.Horizontal.orientation
 		).let {
 			ViewOrientation.values()[it]
 		}
 		
 		this.trackColor = typedArray.getColor(
-			R.styleable.ScrollBar_cio_sb_trackColor,
+			R.styleable.ZoomBar_cio_zb_trackColor,
 			this.resources.getColor(R.color.borderColor, theme)
 		)
 		
-		this.color = typedArray.getColor(
-			R.styleable.ScrollBar_cio_sb_color,
+		this.bubbleBackgroundColor = typedArray.getColor(
+			R.styleable.ZoomBar_cio_zb_bubbleBackgroundColor,
+			this.resources.getColor(R.color.colorAccent, theme)
+		)
+		
+		this.bubbleTextColor = typedArray.getColor(
+			R.styleable.ZoomBar_cio_zb_bubbleTextColor,
+			this.resources.getColor(R.color.backgroundPrimary, theme)
+		)
+		
+		this.thumbColor = typedArray.getColor(
+			R.styleable.ZoomBar_cio_zb_thumbColor,
 			this.resources.getColor(R.color.colorAccent, theme)
 		)
 		
 		this.trackThickness = typedArray.getDimension(
-			R.styleable.ScrollBar_cio_sb_trackThickness,
+			R.styleable.ZoomBar_cio_zb_trackThickness,
 			this.resources.getDimension(R.dimen.zoombar_track_thickness)
 		)
 		
 		this.thumbThickness = typedArray.getDimension(
-			R.styleable.ScrollBar_cio_sb_thumbThickness,
+			R.styleable.ZoomBar_cio_zb_thumbThickness,
 			this.resources.getDimension(R.dimen.zoombar_thumb_thickness)
+		)
+		
+		this.bubbleThickness = typedArray.getDimension(
+			R.styleable.ZoomBar_cio_zb_bubbleThickness,
+			this.resources.getDimension(R.dimen.zoombar_bubble_thickness)
+		)
+		
+		this.bubbleRoundness = typedArray.getDimension(
+			R.styleable.ZoomBar_cio_zb_bubbleRoundness,
+			this.resources.getDimension(R.dimen.zoombar_bubble_roundness)
+		)
+		
+		this.bubblePadding = typedArray.getDimension(
+			R.styleable.ZoomBar_cio_zb_bubblePadding,
+			this.resources.getDimension(R.dimen.zoombar_bubble_padding)
+		)
+		
+		this.bubbleMargin = typedArray.getDimension(
+			R.styleable.ZoomBar_cio_zb_bubbleMargin,
+			this.resources.getDimension(R.dimen.zoombar_bubble_margin)
+		)
+		
+		this.bubbleTextSize = typedArray.getDimension(
+			R.styleable.ZoomBar_cio_zb_bubbleTextSize,
+			this.resources.getDimension(R.dimen.zoombar_bubble_text_size)
 		)
 		
 		typedArray.recycle()
@@ -330,8 +422,8 @@ class ZoomBar : View
 		}
 		
 		this.drawTrack(canvas)
-		
 		this.drawThumb(canvas)
+		this.drawBubble(canvas)
 		
 		this.invalidate()
 	}
@@ -378,7 +470,7 @@ class ZoomBar : View
 	
 	private fun drawThumb(canvas: Canvas?)
 	{
-		this.color.let {
+		this.thumbColor.let {
 			this.painter.color = it
 		}
 
@@ -418,6 +510,139 @@ class ZoomBar : View
 				roundness,
 				this.painter
 			)
+		}
+	}
+	
+	private fun drawBubble(canvas: Canvas?)
+	{
+		// TODO: invert bubble to a specific direction
+		
+		this.bubbleTextSize.let {
+			this.painter.textSize = it
+			this.painter.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD))
+		}
+		
+		val rect = Rect(canvas!!.clipBounds)
+		val position = this.position + this.thumbThickness / 2
+		val label = this.factor.toString()
+		val width = (ViewUtils.getTextWidth(label, this.painter) + this.bubblePadding).toInt()
+		val halfWidth = width / 2
+		val height = this.bubbleThickness.toInt()
+		val halfHeight = height / 2
+		val textHeight = ViewUtils.getTextHeight(label, this.painter)
+		
+		this.bubbleBackgroundColor.let {
+			this.painter.color = it
+		}
+
+		if(this._orientation == ViewOrientation.Horizontal)
+		{
+			val offset = rect.height() + this.bubbleMargin.toInt()
+			val left = rect.left + position - halfWidth
+			val right = left + width
+			
+			rect.set(
+				rect.left - halfWidth,
+				rect.bottom - offset - height,
+				rect.right + halfWidth,
+				rect.bottom - offset
+			)
+			
+			val rectBackgroundBubble = RectF(
+				left,
+				rect.top.toFloat(),
+				right,
+				rect.bottom.toFloat()
+			)
+			
+			canvas.save()
+			
+			canvas.clipRect(rect)
+			
+			canvas.drawRoundRect(
+				rectBackgroundBubble.left,
+				rectBackgroundBubble.top,
+				rectBackgroundBubble.right,
+				rectBackgroundBubble.bottom,
+				this.bubbleRoundness,
+				this.bubbleRoundness,
+				this.painter
+			)
+
+			this.bubbleTextColor.let {
+				this.painter.color = it
+			}
+
+			val textPosition = ViewUtils.getTextCentered(
+				label,
+				rectBackgroundBubble.centerX().toInt(),
+				0,
+				this.painter
+			)
+
+			canvas.drawText(
+				label,
+				textPosition.x,
+				rectBackgroundBubble.centerY() + textHeight / 2f,
+				this.painter
+			)
+			
+			canvas.restore()
+		}
+		else
+		{
+			val offset = rect.width() + this.bubbleMargin.toInt()
+			val top = rect.top + position - halfHeight
+			val bottom = top + height
+			
+			rect.set(
+				rect.right - offset - width,
+				rect.top - halfHeight,
+				rect.right - offset,
+				rect.bottom + halfHeight
+			)
+			
+			val rectBackgroundBubble = RectF(
+				rect.left.toFloat(),
+				top,
+				rect.right.toFloat(),
+				bottom
+			)
+			
+			canvas.save()
+			
+			canvas.clipRect(rect)
+			
+			canvas.drawRoundRect(
+				rectBackgroundBubble.left,
+				rectBackgroundBubble.top,
+				rectBackgroundBubble.right,
+				rectBackgroundBubble.bottom,
+				this.bubbleRoundness,
+				this.bubbleRoundness,
+				this.painter
+			)
+
+			this.bubbleTextColor.let {
+				this.painter.color = it
+			}
+
+
+			val textPosition = ViewUtils.getTextCentered(
+				label,
+				rectBackgroundBubble.centerX().toInt(),
+				rectBackgroundBubble.centerY().toInt(),
+				this.painter
+			)
+
+			canvas.drawText(
+				label,
+				textPosition.x,
+				textPosition.y,
+				this.painter
+			)
+			
+			canvas.restore()
 		}
 	}
 }

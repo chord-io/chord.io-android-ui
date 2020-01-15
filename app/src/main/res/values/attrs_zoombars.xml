@@ -6,8 +6,15 @@
             <enum name="vertical" value="1" />
         </attr>
         <attr name="cio_zb_trackColor" format="color"/>
-        <attr name="cio_zb_color" format="color"/>
+        <attr name="cio_zb_bubbleBackgroundColor" format="color"/>
+        <attr name="cio_zb_bubbleTextColor" format="color"/>
+        <attr name="cio_zb_thumbColor" format="color"/>
         <attr name="cio_zb_trackThickness" format="dimension"/>
         <attr name="cio_zb_thumbThickness" format="dimension"/>
+        <attr name="cio_zb_bubbleThickness" format="dimension"/>
+        <attr name="cio_zb_bubbleRoundness" format="dimension"/>
+        <attr name="cio_zb_bubblePadding" format="dimension"/>
+        <attr name="cio_zb_bubbleMargin" format="dimension"/>
+        <attr name="cio_zb_bubbleTextSize" format="dimension"/>
     </declare-styleable>
 </resources>

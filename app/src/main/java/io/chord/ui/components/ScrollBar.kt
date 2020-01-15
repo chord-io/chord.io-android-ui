@@ -18,7 +18,7 @@ class ScrollBar : View
 	
 	private var _orientation: ViewOrientation = ViewOrientation.Horizontal
 	private var _trackColor: Int = -1
-	private var _color: Int = -1
+	private var _thumbColor: Int = -1
 	private var _trackThickness: Float = -1f
 	private var _thumbThickness: Float = -1f
 	private var _thumbRoundness: Float = -1f
@@ -37,10 +37,10 @@ class ScrollBar : View
 			this.invalidate()
 		}
 	
-	var color: Int
-		get() = this._color
+	var thumbColor: Int
+		get() = this._thumbColor
 		set(value) {
-			this._color = value
+			this._thumbColor = value
 			this.invalidate()
 		}
 	
@@ -117,8 +117,8 @@ class ScrollBar : View
 			this.resources.getColor(R.color.borderColor, theme)
 		)
 		
-		this.color = typedArray.getColor(
-			R.styleable.ScrollBar_cio_sb_color,
+		this.thumbColor = typedArray.getColor(
+			R.styleable.ScrollBar_cio_sb_thumbColor,
 			this.resources.getColor(R.color.colorAccent, theme)
 		)
 		
@@ -329,7 +329,7 @@ class ScrollBar : View
 	
 	private fun drawThumb(canvas: Canvas?)
 	{
-		this.color.let {
+		this.thumbColor.let {
 			this.painter.color = it
 		}
 		

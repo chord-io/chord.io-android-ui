@@ -58,6 +58,11 @@
     <dimen name="zoombar_track_thickness">4dp</dimen>
     <dimen name="zoombar_thumb_thickness">12dp</dimen>
     <dimen name="zoombar_thumb_roundness">999dp</dimen>
+    <dimen name="zoombar_bubble_thickness">24dp</dimen>
+    <dimen name="zoombar_bubble_roundness">999dp</dimen>
+    <dimen name="zoombar_bubble_padding">24dp</dimen>
+    <dimen name="zoombar_bubble_margin">10dp</dimen>
+    <dimen name="zoombar_bubble_text_size">14sp</dimen>
 
     <dimen name="ruler_default_width">100dp</dimen>
     <dimen name="ruler_tick_thickness">1dp</dimen>

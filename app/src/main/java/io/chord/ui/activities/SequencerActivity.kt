@@ -15,9 +15,5 @@ class SequencerActivity : AppCompatActivity()
 		
 		val horizontalScrollBar = this.findViewById<ScrollBar>(R.id.horizontalScrollBar)
 		val verticalScrollBar = this.findViewById<ScrollBar>(R.id.verticalScrollBar)
-		
-		horizontalScrollBar.attach(R.id.scrollview)
-		horizontalScrollBar.attach(R.id.scrollview2)
-		verticalScrollBar.attach(R.id.scrollview)
 	}
 }

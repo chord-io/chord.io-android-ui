@@ -6,7 +6,7 @@
             <enum name="vertical" value="1" />
         </attr>
         <attr name="cio_sb_trackColor" format="color"/>
-        <attr name="cio_sb_color" format="color"/>
+        <attr name="cio_sb_thumbColor" format="color"/>
         <attr name="cio_sb_trackThickness" format="dimension"/>
         <attr name="cio_sb_thumbThickness" format="dimension"/>
         <attr name="cio_sb_thumbRoundness" format="dimension"/>

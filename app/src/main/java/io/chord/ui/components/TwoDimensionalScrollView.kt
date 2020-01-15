@@ -44,8 +44,8 @@ class TwoDimensionalScrollView : LinearLayout
 	{
 		super.onFinishInflate()
 		
-		val children = ViewUtils.getDirectChildren(this)
-		(children!!.parent as ViewGroup).removeView(children)
+		val children = ViewUtils.getDirectChildren(this) ?: return
+		(children.parent as ViewGroup).removeView(children)
 		val view = View.inflate(context, R.layout.component_two_dimensional_scroll_view, this)
 		this.verticalScrollView = view.findViewById(R.id.vertical_scroll_view)
 		this.horizontalScrollView = view.findViewById(R.id.horizontal_scroll_view)
