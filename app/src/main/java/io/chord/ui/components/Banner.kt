@@ -34,7 +34,7 @@ class Banner : LinearLayout
 		set(value) {
 			if(value != null)
 			{
-				this.message = value.let { this.context.getString(it) }
+				this.message = this.context.getString(value)
 			}
 		}
 	
@@ -174,21 +174,21 @@ class Banner : LinearLayout
 	private fun updateColor()
 	{
 		val transparentColor = this.resources.getColor(android.R.color.transparent, this.context.theme)
-		this.lineView.setBackgroundColor(this._color)
+		this.lineView.setBackgroundColor(this.color)
 		
-		this.leftButton.let {
-			it.setTextColor(this._color)
-			it.rippleColor = RippleDrawableUtils.getColorStateList(
+		this.leftButton.apply {
+			this.setTextColor(color)
+			this.rippleColor = RippleDrawableUtils.getColorStateList(
 				transparentColor,
-				this._color
+				color
 			)
 		}
 		
-		this.rightButton.let {
-			it.setTextColor(this._color)
-			it.rippleColor = RippleDrawableUtils.getColorStateList(
+		this.rightButton.apply {
+			this.setTextColor(color)
+			this.rippleColor = RippleDrawableUtils.getColorStateList(
 				transparentColor,
-				this._color
+				color
 			)
 		}
 		
@@ -197,7 +197,7 @@ class Banner : LinearLayout
 	
 	private fun updateButtons()
 	{
-		if(this._leftButtonText == null && this._rightButtonText == null)
+		if(this.leftButtonText == null && this.rightButtonText == null)
 		{
 			this.buttonLayout.visibility = View.GONE
 		}

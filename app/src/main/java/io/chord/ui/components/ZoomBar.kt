@@ -1,13 +1,16 @@
 package io.chord.ui.components
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import io.chord.R
 import io.chord.ui.gestures.GestureDetector
 import io.chord.ui.gestures.SimpleOnGestureListener
+import io.chord.ui.utils.ColorUtils
 import io.chord.ui.utils.MathUtils
 import io.chord.ui.utils.ViewUtils
 
@@ -18,11 +21,50 @@ class ZoomBar : View
 		private val zoomBar: ZoomBar
 	) : OnFocusChangeListener
 	{
+		init
+		{
+			this.zoomBar.focusEnterAnimator.setFloatValues(0f, 1f)
+			this.zoomBar.focusEnterAnimator.addUpdateListener { animator ->
+				val opacity = animator.animatedValue as Float
+				this.setOpacity(opacity)
+			}
+			
+			this.zoomBar.focusExitAnimator.setFloatValues(1f, 0f)
+			this.zoomBar.focusExitAnimator.addUpdateListener { animator ->
+				val opacity = animator.animatedValue as Float
+				this.setOpacity(opacity)
+			}
+			
+			this.setOpacity(0f)
+		}
+		
 		override fun onFocusChange(
 			view: View?,
 			hasFocus: Boolean
 		)
 		{
+			if(hasFocus)
+			{
+				this.zoomBar.focusEnterAnimator.start()
+			}
+			else
+			{
+				this.zoomBar.focusExitAnimator.start()
+			}
+		}
+		
+		private fun setOpacity(opacity: Float)
+		{
+			this.zoomBar._bubbleBackgroundColor = ColorUtils.toTransparent(
+				this.zoomBar._bubbleBackgroundColor,
+				opacity
+			)
+			
+			this.zoomBar._bubbleTextColor = ColorUtils.toTransparent(
+				this.zoomBar._bubbleTextColor,
+				opacity
+			)
+			
 			this.zoomBar.invalidate()
 		}
 	}
@@ -31,6 +73,21 @@ class ZoomBar : View
 		private val zoomBar: ZoomBar
 	) : SimpleOnGestureListener()
 	{
+		private var positionSource: Float = 0f
+		private var positionDestination: Float = 0f
+		
+		init
+		{
+			this.zoomBar.positionAnimator.addUpdateListener {
+				val position = it.animatedValue as Float
+				this.zoomBar.position = position
+				this.zoomBar.invalidate()
+			}
+			
+			// TODO : set interpolator on another place
+			this.zoomBar.positionAnimator.interpolator = FastOutSlowInInterpolator()
+		}
+		
 		override fun onDown(event: MotionEvent): Boolean {
 			this.zoomBar.requestFocus()
 			return true
@@ -48,22 +105,42 @@ class ZoomBar : View
 			distanceX: Float,
 			distanceY: Float
 		): Boolean {
-			this.computePosition(event2)
+			this.setPosition(event2)
 			return true
 		}
 		
 		override fun onDoubleTap(event: MotionEvent): Boolean {
+			this.beginConfigureAnimation()
 			this.zoomBar.setFactor(this.zoomBar.factors[this.zoomBar.defaultFactorIndex])
+			this.endConfigureAnimation()
 			return true
 		}
 		
 		override fun onSingleTapConfirmed(event: MotionEvent): Boolean {
-			this.computePosition(event)
+			this.beginConfigureAnimation()
+			this.setPosition(event)
+			this.endConfigureAnimation()
 			return true
 		}
 		
-		private fun computePosition(event: MotionEvent)
+		private fun beginConfigureAnimation()
 		{
+			this.positionSource = this.zoomBar.position
+		}
+		
+		private fun endConfigureAnimation()
+		{
+			this.positionDestination = this.zoomBar.position
+			this.zoomBar.positionAnimator.setFloatValues(
+				this.positionSource,
+				this.positionDestination
+			)
+			this.zoomBar.positionAnimator.start()
+		}
+		
+		private fun setPosition(event: MotionEvent)
+		{
+			val limit = this.zoomBar.getLimit()
 			var position = if(this.zoomBar.orientation == ViewOrientation.Vertical)
 			{
 				event.y - this.zoomBar.thumbThickness / 2f
@@ -73,8 +150,6 @@ class ZoomBar : View
 				event.x - this.zoomBar.thumbThickness / 2f
 			}
 			
-			val limit = this.zoomBar.getLimit()
-			
 			position = when
 			{
 				position < this.zoomBar._getPaddingLeft() -> this.zoomBar._getPaddingLeft().toFloat()
@@ -82,12 +157,15 @@ class ZoomBar : View
 				else -> position
 			}
 			
-			this.zoomBar.setPosition(position)
+			this.zoomBar.setPositionWithoutInvalidate(position)
 		}
 	}
 	
 	private val zoomables: MutableMap<Int, Zoomable> = mutableMapOf()
 	
+	private val positionAnimator: ValueAnimator = ValueAnimator()
+	private val focusEnterAnimator: ValueAnimator = ValueAnimator()
+	private val focusExitAnimator: ValueAnimator = ValueAnimator()
 	private val gestureDetector: GestureDetector = GestureDetector(
 		this.context,
 		ZoomBarGestureListener(this)
@@ -97,7 +175,6 @@ class ZoomBar : View
 	private var factor: Float = -1f
 	
 	private val defaultFactorIndex = 5
-	
 	private val factors: List<Float> = listOf(
 		0.30f,
 		0.50f,
@@ -116,6 +193,8 @@ class ZoomBar : View
 	)
 	
 	private var _orientation: ViewOrientation = ViewOrientation.Horizontal
+	private var _moveDuration: Long = -1
+	private var _focusEnterDuration: Long = -1
 	private var _focusExitDuration: Long = -1
 	private var _trackColor: Int = -1
 	private var _bubbleBackgroundColor: Int = -1
@@ -137,11 +216,27 @@ class ZoomBar : View
 			this.invalidate()
 		}
 	
+	var moveDuration: Long
+		get() = this._moveDuration
+		set(value) {
+			this._moveDuration = value
+			this.positionAnimator.duration = value
+		}
+	
+	var focusEnterDuration: Long
+		get() = this._focusEnterDuration
+		set(value) {
+			this._focusEnterDuration = value
+			this.focusEnterAnimator.startDelay = value
+			this.focusEnterAnimator.duration = value
+		}
+	
 	var focusExitDuration: Long
 		get() = this._focusExitDuration
 		set(value) {
 			this._focusExitDuration = value
-			this.invalidate()
+			this.focusExitAnimator.startDelay = value
+			this.focusExitAnimator.duration = value
 		}
 	
 	var trackColor: Int
@@ -262,10 +357,6 @@ class ZoomBar : View
 	
 	private fun init(attrs: AttributeSet?, defStyle: Int)
 	{
-		this.isFocusable = true
-		this.isFocusableInTouchMode = true
-		this.onFocusChangeListener = ZoomBarFocusListener(this)
-		
 		val typedArray = this.context.obtainStyledAttributes(
 			attrs, R.styleable.ZoomBar, defStyle, 0
 		)
@@ -278,6 +369,16 @@ class ZoomBar : View
 		).let {
 			ViewOrientation.values()[it]
 		}
+		
+		this.moveDuration = typedArray.getInteger(
+			R.styleable.ZoomBar_cio_zb_moveDuration,
+			this.resources.getInteger(R.integer.zoombar_move_duration)
+		).toLong()
+		
+		this.focusEnterDuration = typedArray.getInteger(
+			R.styleable.ZoomBar_cio_zb_focusEnterDuration,
+			this.resources.getInteger(R.integer.zoombar_focus_enter_duration)
+		).toLong()
 		
 		this.focusExitDuration = typedArray.getInteger(
 			R.styleable.ZoomBar_cio_zb_focusExitDuration,
@@ -345,6 +446,10 @@ class ZoomBar : View
 		)
 		
 		typedArray.recycle()
+		
+		this.isFocusable = true
+		this.isFocusableInTouchMode = true
+		this.onFocusChangeListener = ZoomBarFocusListener(this)
 	}
 	
 	fun attach(id: Int)
@@ -414,20 +519,28 @@ class ZoomBar : View
 	private fun getSteps(): List<Float>
 	{
 		val steps = mutableListOf<Float>()
-		val stepSize = this.getSize() / this.factors.size.toFloat()
 		val limit = this.getLimit()
+		val size = this.getSizeWithoutPaddings().toFloat()
+		val paddingLeft = this._getPaddingLeft().toFloat()
+		val stepSize = size / (this.factors.size.toFloat() - 1)
 		
-		this.factors.forEachIndexed { index, _ ->
+		steps.add(0f)
+		
+		for(index in 1 until this.factors.size)
+		{
 			val step = index * stepSize
 			steps.add(index, step)
 		}
 		
-		if(steps.last() != limit)
-		{
-			steps[steps.size - 1] = limit
+		return steps.map {
+			MathUtils.map(
+				it,
+				0f,
+				size,
+				paddingLeft,
+				limit
+			)
 		}
-		
-		return steps
 	}
 	
 	private fun setFactor(factor: Float)
@@ -439,13 +552,18 @@ class ZoomBar : View
 		this.invalidate()
 	}
 	
-	private fun setPosition(position: Float)
+	private fun setPositionWithoutInvalidate(position: Float)
 	{
 		val steps = this.getSteps()
 		val step = MathUtils.step(position, steps)
 		val index = steps.indexOf(step)
 		this.factor = this.factors[index]
 		this.position = step
+	}
+	
+	private fun setPosition(position: Float)
+	{
+		this.setPositionWithoutInvalidate(position)
 		this.invalidate()
 	}
 	
@@ -459,16 +577,6 @@ class ZoomBar : View
 		{
 			super.onTouchEvent(event)
 		}
-	}
-	
-	override fun clearFocus()
-	{
-		this.handler.postDelayed(
-			{
-				super.clearFocus()
-			},
-			this.focusExitDuration
-		)
 	}
 	
 	override fun onDraw(canvas: Canvas?)
@@ -487,14 +595,8 @@ class ZoomBar : View
 	
 	private fun drawTrack(canvas: Canvas?)
 	{
-		this.trackColor.let {
-			this.painter.color = it
-		}
-		
-		this.trackThickness.let {
-			this.painter.strokeWidth = it
-		}
-		
+		this.painter.color = this.trackColor
+		this.painter.strokeWidth = this.trackThickness
 		this.painter.strokeCap = Paint.Cap.ROUND
 		
 		if(this.orientation == ViewOrientation.Horizontal)
@@ -527,9 +629,7 @@ class ZoomBar : View
 	
 	private fun drawThumb(canvas: Canvas?)
 	{
-		this.thumbColor.let {
-			this.painter.color = it
-		}
+		this.painter.color = this.thumbColor
 
 		val thickness = this.thumbThickness
 		val position = this.position
@@ -541,8 +641,8 @@ class ZoomBar : View
 		if(this.orientation == ViewOrientation.Horizontal)
 		{
 			val centerVertical = (this.height / 2f) - (thickness / 2f)
-			val left = position + this.paddingStart
-			val right = position + thickness - this.paddingEnd
+			val left = position
+			val right = left + thickness
 			canvas?.drawRoundRect(
 				left,
 				centerVertical,
@@ -556,8 +656,8 @@ class ZoomBar : View
 		else
 		{
 			val centerHorizontal = (this.width / 2f) - (thickness / 2f)
-			val top = position + this.paddingTop
-			val bottom = position + thickness - this.paddingBottom
+			val top = position
+			val bottom = top + thickness
 			canvas?.drawRoundRect(
 				centerHorizontal,
 				top,
@@ -572,15 +672,9 @@ class ZoomBar : View
 	
 	private fun drawBubble(canvas: Canvas?)
 	{
-		if(!this.isFocused)
-		{
-			return
-		}
-		
-		this.bubbleTextSize.let {
-			this.painter.textSize = it
-			this.painter.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD))
-		}
+		this.painter.color = this.bubbleBackgroundColor
+		this.painter.textSize = this.bubbleTextSize
+		this.painter.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
 		
 		val bounds = Rect(canvas!!.clipBounds)
 		val position = this.position + this.thumbThickness / 2
@@ -590,10 +684,6 @@ class ZoomBar : View
 		val height = this.bubbleThickness.toInt()
 		val halfHeight = height / 2
 		val textHeight = ViewUtils.getTextHeight(label, this.painter)
-		
-		this.bubbleBackgroundColor.let {
-			this.painter.color = it
-		}
 
 		if(this._orientation == ViewOrientation.Horizontal)
 		{
@@ -641,10 +731,8 @@ class ZoomBar : View
 				this.bubbleRoundness,
 				this.painter
 			)
-
-			this.bubbleTextColor.let {
-				this.painter.color = it
-			}
+			
+			this.painter.color = this.bubbleTextColor
 
 			val textPosition = ViewUtils.getTextCentered(
 				label,
@@ -708,12 +796,9 @@ class ZoomBar : View
 				this.bubbleRoundness,
 				this.painter
 			)
-
-			this.bubbleTextColor.let {
-				this.painter.color = it
-			}
-
-
+			
+			this.painter.color = this.bubbleTextColor
+			
 			val textPosition = ViewUtils.getTextCentered(
 				label,
 				rectBackgroundBubble.centerX().toInt(),

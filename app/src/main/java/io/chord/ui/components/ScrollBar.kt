@@ -289,14 +289,8 @@ class ScrollBar : View
 	
 	private fun drawTrack(canvas: Canvas?)
 	{
-		this.trackColor.let {
-			this.painter.color = it
-		}
-		
-		this.trackThickness.let {
-			this.painter.strokeWidth = it
-		}
-		
+		this.painter.color = this.trackColor
+		this.painter.strokeWidth = this.trackThickness
 		this.painter.strokeCap = Paint.Cap.ROUND
 		
 		if(this.orientation == ViewOrientation.Horizontal)
@@ -329,9 +323,7 @@ class ScrollBar : View
 	
 	private fun drawThumb(canvas: Canvas?)
 	{
-		this.thumbColor.let {
-			this.painter.color = it
-		}
+		this.painter.color = this.thumbColor
 		
 		val thickness = this.thumbThickness
 		val roundness = this.thumbRoundness

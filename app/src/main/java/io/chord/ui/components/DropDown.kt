@@ -39,10 +39,9 @@ open class DropDown : LinearLayout
 	var textColor: Int
 		get() = this._textColor
 		set(value) {
-			this._textColor = value
-			this._textColor.let {
-				this.labelView.setTextColor(it)
-				this.selectedItemTextView.setTextColor(it)
+			this._textColor = value.apply {
+				labelView.setTextColor(this)
+				selectedItemTextView.setTextColor(this)
 			}
 			
 			this.labelView.setTextColor(value)
@@ -53,25 +52,23 @@ open class DropDown : LinearLayout
 	var iconSize: Int
 		get() = this._iconSize
 		set(value) {
-			this._iconSize = value.let {
-				val dropDownLayoutParams = this.dropdownView.layoutParams as RelativeLayout.LayoutParams
-				val iconLayoutParams = this.iconView.layoutParams as RelativeLayout.LayoutParams
-				dropDownLayoutParams.width = it
-				dropDownLayoutParams.height = it
-				iconLayoutParams.width = it
-				iconLayoutParams.height = it
-				it
+			this._iconSize = value.apply {
+				val dropDownLayoutParams = dropdownView.layoutParams as RelativeLayout.LayoutParams
+				val iconLayoutParams = iconView.layoutParams as RelativeLayout.LayoutParams
+				dropDownLayoutParams.width = this
+				dropDownLayoutParams.height = this
+				iconLayoutParams.width = this
+				iconLayoutParams.height = this
 			}
 		}
 	
 	var textSize: Int
 		get() = this._textSize
 		set(value) {
-			this._textSize = value.let {
-				val size = it.toFloat()
-				this.labelView.textSize = size
-				this.selectedItemTextView.textSize = size
-				it
+			this._textSize = value.apply {
+				val size = this.toFloat()
+				labelView.textSize = size
+				selectedItemTextView.textSize = size
 			}
 		}
 	

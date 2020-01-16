@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="refresh_token_worker_interval" type="integer">90000</item>
+    <item name="zoombar_move_duration" type="integer">500</item>
+    <item name="zoombar_focus_enter_duration" type="integer">250</item>
     <item name="zoombar_focus_exit_duration" type="integer">1000</item>
 </resources>
