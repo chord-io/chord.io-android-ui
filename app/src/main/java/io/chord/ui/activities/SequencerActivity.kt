@@ -13,7 +13,8 @@ class SequencerActivity : AppCompatActivity()
 		this.setContentView(R.layout.activity_sequencer)
 		this.setSupportActionBar(this.findViewById(R.id.toolbar))
 		
-//		val horizontalScrollBar = this.findViewById<ScrollBar>(R.id.horizontalScrollBar)
+		val horizontalScrollBar = this.findViewById<ScrollBar>(R.id.horizontalScrollBar)
+		horizontalScrollBar.attach(R.id.scrollview)
 //		val verticalScrollBar = this.findViewById<ScrollBar>(R.id.verticalScrollBar)
 	}
 }

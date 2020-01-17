@@ -17,7 +17,7 @@ import io.chord.ui.utils.ViewUtils
 
 class ZoomBar : View
 {
-	private class ZoomBarFocusListener(
+	private class FocusListener(
 		private val zoomBar: ZoomBar
 	) : OnFocusChangeListener
 	{
@@ -69,7 +69,7 @@ class ZoomBar : View
 		}
 	}
 	
-	private class ZoomBarGestureListener(
+	private class GestureListener(
 		private val zoomBar: ZoomBar
 	) : SimpleOnGestureListener()
 	{
@@ -168,7 +168,7 @@ class ZoomBar : View
 	private val focusExitAnimator: ValueAnimator = ValueAnimator()
 	private val gestureDetector: GestureDetector = GestureDetector(
 		this.context,
-		ZoomBarGestureListener(this)
+		GestureListener(this)
 	)
 	private val painter: Paint = Paint()
 	private var position: Float = 0f
@@ -488,7 +488,7 @@ class ZoomBar : View
 		
 		this.isFocusable = true
 		this.isFocusableInTouchMode = true
-		this.onFocusChangeListener = ZoomBarFocusListener(this)
+		this.onFocusChangeListener = FocusListener(this)
 	}
 	
 	fun attach(id: Int)

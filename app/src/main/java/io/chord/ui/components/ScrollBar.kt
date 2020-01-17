@@ -1,22 +1,178 @@
 package io.chord.ui.components
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import io.chord.R
+import io.chord.ui.gestures.GestureDetector
+import io.chord.ui.gestures.SimpleOnGestureListener
 import io.chord.ui.utils.MathUtils
 import kotlin.math.max
 import kotlin.math.min
 
 class ScrollBar : View
 {
-	private val painter: Paint = Paint()
+	private class GestureListener(
+		private val scrollBar: ScrollBar
+	) : SimpleOnGestureListener()
+	{
+		private var positionSource: Float = 0f
+		private var positionDestination: Float = 0f
+		
+		init
+		{
+			this.scrollBar.positionAnimator.addUpdateListener {
+				val position = it.animatedValue as Float
+				this.scrollBar.setPosition(position.toInt())
+				this.scrollBar.invalidate()
+			}
+			
+			// TODO : set interpolator on another place
+			this.scrollBar.positionAnimator.interpolator = FastOutSlowInInterpolator()
+		}
+		
+		override fun onDown(event: MotionEvent): Boolean {
+			this.scrollBar.requestFocus()
+			return true
+		}
+		
+		override fun onUp(event: MotionEvent): Boolean
+		{
+			this.scrollBar.clearFocus()
+			return true
+		}
+		
+		override fun onScroll(
+			event1: MotionEvent,
+			event2: MotionEvent,
+			distanceX: Float,
+			distanceY: Float
+		): Boolean {
+			this.setPosition(event2)
+			this.scrollBar.setPosition(this.scrollBar.position.toInt())
+			return true
+		}
+		
+		override fun onDoubleTap(event: MotionEvent): Boolean {
+			val limit = this.scrollBar.getLimitPosition()
+			val position = this.scrollBar.position
+			val invertedPosition = (1f - (position / limit)) * limit
+			
+			this.beginConfigureAnimation()
+
+			this.setPosition(MotionEvent.obtain(
+				event.downTime,
+				event.eventTime,
+				event.action,
+				invertedPosition,
+				invertedPosition,
+				event.metaState
+			))
+			
+			this.endConfigureAnimation()
+			return true
+		}
+		
+		override fun onSingleTapConfirmed(event: MotionEvent): Boolean {
+			this.beginConfigureAnimation()
+			this.setPosition(event)
+			this.endConfigureAnimation()
+			return true
+		}
+		
+		override fun onLongPress(event: MotionEvent)
+		{
+			val limit = this.scrollBar.getLimitPosition()
+			val halfLimit = limit / 2f
+			
+			this.beginConfigureAnimation()
+			
+			if(this.scrollBar.position <= halfLimit)
+			{
+				val position = limit.toFloat()
+				this.setPosition(MotionEvent.obtain(
+					event.downTime,
+					event.eventTime,
+					event.action,
+					position,
+					position,
+					event.metaState
+				))
+			}
+			else
+			{
+				val position = 0f
+				this.setPosition(MotionEvent.obtain(
+					event.downTime,
+					event.eventTime,
+					event.action,
+					position,
+					position,
+					event.metaState
+				))
+			}
+			
+			this.endConfigureAnimation()
+		}
+		
+		private fun beginConfigureAnimation()
+		{
+			this.positionSource = this.scrollBar.position
+		}
+		
+		private fun endConfigureAnimation()
+		{
+			this.positionDestination = this.scrollBar.position
+			this.scrollBar.positionAnimator.setFloatValues(
+				this.positionSource,
+				this.positionDestination
+			)
+			this.scrollBar.positionAnimator.start()
+		}
+		
+		private fun setPosition(event: MotionEvent)
+		{
+			val position = if(this.scrollBar.orientation == ViewOrientation.Vertical)
+			{
+				event.y
+			}
+			else
+			{
+				event.x
+			}
+			
+			val scrollBarSize = this.scrollBar.getSizeWithoutPaddings().toFloat()
+			val scrollContentSize = this.scrollBar.getScrollViewContentSize().toFloat()
+			val scrollViewSize = this.scrollBar.getScrollViewSize().toFloat()
+			val scaledPosition = MathUtils.map(
+				position,
+				0f,
+				scrollBarSize,
+				0f,
+				scrollContentSize - scrollViewSize
+			)
+			
+			this.scrollBar.position = scaledPosition
+		}
+	}
+	
 	private val scrollBarControllers: MutableMap<Int, ScrollBarController> = mutableMapOf()
 	
+	private val positionAnimator: ValueAnimator = ValueAnimator()
+	private val gestureDetector: GestureDetector = GestureDetector(
+		this.context,
+		GestureListener(this)
+	)
+	private val painter: Paint = Paint()
+	private var position: Float = 0f
+	
 	private var _orientation: ViewOrientation = ViewOrientation.Horizontal
+	private var _moveDuration: Long = -1
 	private var _trackColor: Int = -1
 	private var _thumbColor: Int = -1
 	private var _trackThickness: Float = -1f
@@ -28,6 +184,13 @@ class ScrollBar : View
 		set(value) {
 			this._orientation = value
 			this.invalidate()
+		}
+	
+	var moveDuration: Long
+		get() = this._moveDuration
+		set(value) {
+			this._moveDuration = value
+			this.positionAnimator.duration = value
 		}
 	
 	var trackColor: Int
@@ -111,6 +274,11 @@ class ScrollBar : View
 		).let {
 			ViewOrientation.values()[it]
 		}
+		
+		this.moveDuration = typedArray.getInteger(
+			R.styleable.ScrollBar_cio_sb_moveDuration,
+			this.resources.getInteger(R.integer.scrollbar_move_duration)
+		).toLong()
 		
 		this.trackColor = typedArray.getColor(
 			R.styleable.ScrollBar_cio_sb_trackColor,
@@ -240,6 +408,20 @@ class ScrollBar : View
 		)
 	}
 	
+	private fun getLimitPosition(): Int
+	{
+		val contentSize = this.getScrollViewContentSize()
+		val scrollViewSize = this.getScrollViewSize()
+		
+		return if(contentSize <= scrollViewSize)
+		{
+			scrollViewSize
+		} else
+		{
+			contentSize - scrollViewSize
+		}
+	}
+	
 	private fun setPosition(position: Int)
 	{
 		this.checkScrollBarControllerAreEquals()
@@ -250,29 +432,14 @@ class ScrollBar : View
 	
 	override fun onTouchEvent(event: MotionEvent): Boolean
 	{
-		val position = if(this.orientation == ViewOrientation.Vertical)
+		return if (this.gestureDetector.onTouchEvent(event))
 		{
-			event.y
+			true
 		}
 		else
 		{
-			event.x
+			super.onTouchEvent(event)
 		}
-		
-		val scrollBarSize = this.getSizeWithoutPaddings().toFloat()
-		val scrollContentSize = this.getScrollViewContentSize().toFloat()
-		val scrollViewSize = this.getScrollViewSize().toFloat()
-		val scaledPosition = MathUtils.map(
-			position,
-			0f,
-			scrollBarSize,
-			0f,
-			scrollContentSize - scrollViewSize
-		)
-		
-		this.setPosition(scaledPosition.toInt())
-		
-		return true
 	}
 	
 	override fun onDraw(canvas: Canvas?)

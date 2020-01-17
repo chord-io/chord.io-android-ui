@@ -5,6 +5,7 @@
             <enum name="horizontal" value="0" />
             <enum name="vertical" value="1" />
         </attr>
+        <attr name="cio_sb_moveDuration" format="integer"/>
         <attr name="cio_sb_trackColor" format="color"/>
         <attr name="cio_sb_thumbColor" format="color"/>
         <attr name="cio_sb_trackThickness" format="dimension"/>
