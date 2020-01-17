@@ -1,8 +1,6 @@
 package io.chord.ui.utils
 
-import kotlin.math.ceil
-import kotlin.math.floor
-import kotlin.math.log
+import kotlin.math.*
 import kotlin.streams.toList
 
 class MathUtils
@@ -21,11 +19,44 @@ class MathUtils
 		
 		fun step(value: Float, steps: List<Float>): Float
 		{
-			return steps
-				.stream()
-				.filter { it >= value }
-				.toList()
-				.min()!!
+			val first = steps.first()
+			val last = steps.last()
+			
+			return when
+			{
+				value < first -> first
+				value > last -> last
+				else -> steps
+					.stream()
+					.filter { it >= value }
+					.min { a, b -> a.compareTo(b) }
+					.get()
+			}
+			
+		}
+		
+		
+		fun nearest(value: Float, values: List<Float>): Float
+		{
+			val first = values.first()
+			val last = values.last()
+			
+			return when
+			{
+				value < first -> first
+				value > last -> last
+				else -> values
+					.stream()
+					.map {
+						val min = min(it, value)
+						val max = max(it, value)
+						Pair<Float, Float>(max - min, it)
+					}
+					.min { a, b -> a.first.compareTo(b.first) }
+					.get()
+					.second
+			}
+			
 		}
 	}
 }

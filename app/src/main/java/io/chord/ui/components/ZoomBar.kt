@@ -594,7 +594,7 @@ class ZoomBar : View
 	private fun setPositionWithoutInvalidate(position: Float)
 	{
 		val steps = this.getSteps()
-		val step = MathUtils.step(position, steps)
+		val step = MathUtils.nearest(position, steps)
 		val index = steps.indexOf(step)
 		this.factor = this.factors[index]
 		this.position = step
