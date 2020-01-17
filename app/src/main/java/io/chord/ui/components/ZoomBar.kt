@@ -197,10 +197,13 @@ class ZoomBar : View
 	private var _focusEnterDuration: Long = -1
 	private var _focusExitDuration: Long = -1
 	private var _trackColor: Int = -1
+	private var _ticksColor: Int = -1
 	private var _bubbleBackgroundColor: Int = -1
 	private var _bubbleTextColor: Int = -1
 	private var _thumbColor: Int = -1
 	private var _trackThickness: Float = -1f
+	private var _ticksThickness: Float = -1f
+	private var _ticksPadding: Float = -1f
 	private var _thumbThickness: Float = -1f
 	private var _bubbleThickness: Float = -1f
 	private var _bubbleRoundness: Float = -1f
@@ -246,6 +249,20 @@ class ZoomBar : View
 			this.invalidate()
 		}
 	
+	var ticksColor: Int
+		get() = this._ticksColor
+		set(value) {
+			this._ticksColor = value
+			this.invalidate()
+		}
+	
+	var thumbColor: Int
+		get() = this._thumbColor
+		set(value) {
+			this._thumbColor = value
+			this.invalidate()
+		}
+	
 	var bubbleBackgroundColor: Int
 		get() = this._bubbleBackgroundColor
 		set(value) {
@@ -260,17 +277,24 @@ class ZoomBar : View
 			this.invalidate()
 		}
 	
-	var thumbColor: Int
-		get() = this._thumbColor
-		set(value) {
-			this._thumbColor = value
-			this.invalidate()
-		}
-	
 	var trackThickness: Float
 		get() = this._trackThickness
 		set(value) {
 			this._trackThickness = value
+			this.invalidate()
+		}
+	
+	var ticksThickness: Float
+		get() = this._ticksThickness
+		set(value) {
+			this._ticksThickness = value
+			this.invalidate()
+		}
+	
+	var ticksPadding: Float
+		get() = this._ticksPadding
+		set(value) {
+			this._ticksPadding = value
 			this.invalidate()
 		}
 	
@@ -390,6 +414,16 @@ class ZoomBar : View
 			this.resources.getColor(R.color.borderColor, theme)
 		)
 		
+		this.ticksColor = typedArray.getColor(
+			R.styleable.ZoomBar_cio_zb_ticksColor,
+			this.resources.getColor(R.color.borderColor, theme)
+		)
+		
+		this.thumbColor = typedArray.getColor(
+			R.styleable.ZoomBar_cio_zb_thumbColor,
+			this.resources.getColor(R.color.colorAccent, theme)
+		)
+		
 		this.bubbleBackgroundColor = typedArray.getColor(
 			R.styleable.ZoomBar_cio_zb_bubbleBackgroundColor,
 			this.resources.getColor(R.color.colorAccent, theme)
@@ -400,14 +434,19 @@ class ZoomBar : View
 			this.resources.getColor(R.color.backgroundPrimary, theme)
 		)
 		
-		this.thumbColor = typedArray.getColor(
-			R.styleable.ZoomBar_cio_zb_thumbColor,
-			this.resources.getColor(R.color.colorAccent, theme)
-		)
-		
 		this.trackThickness = typedArray.getDimension(
 			R.styleable.ZoomBar_cio_zb_trackThickness,
 			this.resources.getDimension(R.dimen.zoombar_track_thickness)
+		)
+		
+		this.ticksThickness = typedArray.getDimension(
+			R.styleable.ZoomBar_cio_zb_ticksThickness,
+			this.resources.getDimension(R.dimen.zoombar_ticks_thickness)
+		)
+		
+		this.ticksPadding = typedArray.getDimension(
+			R.styleable.ZoomBar_cio_zb_ticksPadding,
+			this.resources.getDimension(R.dimen.zoombar_ticks_padding)
 		)
 		
 		this.thumbThickness = typedArray.getDimension(
@@ -586,6 +625,7 @@ class ZoomBar : View
 			this.setFactor(this.factors[this.defaultFactorIndex])
 		}
 		
+		this.drawTicks(canvas!!)
 		this.drawTrack(canvas)
 		this.drawThumb(canvas)
 		this.drawBubble(canvas)
@@ -593,7 +633,7 @@ class ZoomBar : View
 		this.invalidate()
 	}
 	
-	private fun drawTrack(canvas: Canvas?)
+	private fun drawTrack(canvas: Canvas)
 	{
 		this.painter.color = this.trackColor
 		this.painter.strokeWidth = this.trackThickness
@@ -604,7 +644,7 @@ class ZoomBar : View
 			val centerVertical = this.height / 2f
 			val left = this.paddingStart.toFloat()
 			val right = this.width - this.paddingEnd.toFloat()
-			canvas?.drawLine(
+			canvas.drawLine(
 				left,
 				centerVertical,
 				right,
@@ -617,7 +657,7 @@ class ZoomBar : View
 			val centerHorizontal = this.width / 2f
 			val top = this.paddingTop.toFloat()
 			val bottom = this.height - this.paddingBottom.toFloat()
-			canvas?.drawLine(
+			canvas.drawLine(
 				centerHorizontal,
 				top,
 				centerHorizontal,
@@ -627,7 +667,51 @@ class ZoomBar : View
 		}
 	}
 	
-	private fun drawThumb(canvas: Canvas?)
+	private fun drawTicks(canvas: Canvas)
+	{
+		this.painter.color = this.ticksColor
+		this.painter.strokeWidth = this.ticksThickness
+		this.painter.strokeCap = Paint.Cap.ROUND
+		
+		val steps = this.getSteps()
+		val bounds = canvas.clipBounds
+		val halfThumbThickness = this.thumbThickness / 2f
+		
+		if(this.orientation == ViewOrientation.Horizontal)
+		{
+			val top = bounds.top.toFloat() + this.ticksPadding
+			val bottom = bounds.bottom.toFloat() - this.ticksPadding
+			
+			steps.forEach { position ->
+				val x = position + halfThumbThickness
+				canvas.drawLine(
+					x,
+					bottom,
+					x,
+					top,
+					this.painter
+				)
+			}
+		}
+		else
+		{
+			val left = bounds.left.toFloat() - this.ticksPadding
+			val right = bounds.right.toFloat() + this.ticksPadding
+			
+			steps.forEach { position ->
+				val y = position + halfThumbThickness
+				canvas.drawLine(
+					right,
+					y,
+					left,
+					y,
+					this.painter
+				)
+			}
+		}
+	}
+	
+	private fun drawThumb(canvas: Canvas)
 	{
 		this.painter.color = this.thumbColor
 
@@ -643,7 +727,7 @@ class ZoomBar : View
 			val centerVertical = (this.height / 2f) - (thickness / 2f)
 			val left = position
 			val right = left + thickness
-			canvas?.drawRoundRect(
+			canvas.drawRoundRect(
 				left,
 				centerVertical,
 				right,
@@ -658,7 +742,7 @@ class ZoomBar : View
 			val centerHorizontal = (this.width / 2f) - (thickness / 2f)
 			val top = position
 			val bottom = top + thickness
-			canvas?.drawRoundRect(
+			canvas.drawRoundRect(
 				centerHorizontal,
 				top,
 				centerHorizontal + thickness,
@@ -670,13 +754,13 @@ class ZoomBar : View
 		}
 	}
 	
-	private fun drawBubble(canvas: Canvas?)
+	private fun drawBubble(canvas: Canvas)
 	{
 		this.painter.color = this.bubbleBackgroundColor
 		this.painter.textSize = this.bubbleTextSize
 		this.painter.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
 		
-		val bounds = Rect(canvas!!.clipBounds)
+		val bounds = Rect(canvas.clipBounds)
 		val position = this.position + this.thumbThickness / 2
 		val label = this.factor.toString()
 		val width = (ViewUtils.getTextWidth(label, this.painter) + this.bubblePadding).toInt()

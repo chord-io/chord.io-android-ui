@@ -9,10 +9,13 @@
         <attr name="cio_zb_focusEnterDuration" format="integer"/>
         <attr name="cio_zb_focusExitDuration" format="integer"/>
         <attr name="cio_zb_trackColor" format="color"/>
+        <attr name="cio_zb_ticksColor" format="color"/>
+        <attr name="cio_zb_thumbColor" format="color"/>
         <attr name="cio_zb_bubbleBackgroundColor" format="color"/>
         <attr name="cio_zb_bubbleTextColor" format="color"/>
-        <attr name="cio_zb_thumbColor" format="color"/>
         <attr name="cio_zb_trackThickness" format="dimension"/>
+        <attr name="cio_zb_ticksThickness" format="dimension"/>
+        <attr name="cio_zb_ticksPadding" format="dimension"/>
         <attr name="cio_zb_thumbThickness" format="dimension"/>
         <attr name="cio_zb_bubbleThickness" format="dimension"/>
         <attr name="cio_zb_bubbleRoundness" format="dimension"/>

@@ -277,7 +277,7 @@ class ScrollBar : View
 	
 	override fun onDraw(canvas: Canvas?)
 	{
-		this.drawTrack(canvas)
+		this.drawTrack(canvas!!)
 		
 		if(this.scrollBarControllers.isNotEmpty())
 		{
@@ -287,7 +287,7 @@ class ScrollBar : View
 		this.invalidate()
 	}
 	
-	private fun drawTrack(canvas: Canvas?)
+	private fun drawTrack(canvas: Canvas)
 	{
 		this.painter.color = this.trackColor
 		this.painter.strokeWidth = this.trackThickness
@@ -298,7 +298,7 @@ class ScrollBar : View
 			val centerVertical = this.height / 2f
 			val left = this.paddingStart.toFloat()
 			val right = this.width - this.paddingEnd.toFloat()
-			canvas?.drawLine(
+			canvas.drawLine(
 				left,
 				centerVertical,
 				right,
@@ -311,7 +311,7 @@ class ScrollBar : View
 			val centerHorizontal = this.width / 2f
 			val top = this.paddingTop.toFloat()
 			val bottom = this.height - this.paddingBottom.toFloat()
-			canvas?.drawLine(
+			canvas.drawLine(
 				centerHorizontal,
 				top,
 				centerHorizontal,
@@ -321,7 +321,7 @@ class ScrollBar : View
 		}
 	}
 	
-	private fun drawThumb(canvas: Canvas?)
+	private fun drawThumb(canvas: Canvas)
 	{
 		this.painter.color = this.thumbColor
 		
@@ -335,7 +335,7 @@ class ScrollBar : View
 			val centerVertical = (this.height / 2f) - (thickness / 2f)
 			val left = position + this.paddingStart
 			val right = position + size - this.paddingEnd
-			canvas?.drawRoundRect(
+			canvas.drawRoundRect(
 				left,
 				centerVertical,
 				right,
@@ -350,7 +350,7 @@ class ScrollBar : View
 			val centerHorizontal = (this.width / 2f) - (thickness / 2f)
 			val top = position + this.paddingTop
 			val bottom = position + size - this.paddingBottom
-			canvas?.drawRoundRect(
+			canvas.drawRoundRect(
 				centerHorizontal,
 				top,
 				centerHorizontal + thickness,
