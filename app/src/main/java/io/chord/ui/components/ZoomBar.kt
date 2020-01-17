@@ -669,6 +669,11 @@ class ZoomBar : View
 	
 	private fun drawTicks(canvas: Canvas)
 	{
+		if(this.ticksThickness == 0f)
+		{
+			return
+		}
+		
 		this.painter.color = this.ticksColor
 		this.painter.strokeWidth = this.ticksThickness
 		this.painter.strokeCap = Paint.Cap.ROUND
@@ -695,8 +700,8 @@ class ZoomBar : View
 		}
 		else
 		{
-			val left = bounds.left.toFloat() - this.ticksPadding
-			val right = bounds.right.toFloat() + this.ticksPadding
+			val left = bounds.left.toFloat() + this.ticksPadding
+			val right = bounds.right.toFloat() - this.ticksPadding
 			
 			steps.forEach { position ->
 				val y = position + halfThumbThickness
