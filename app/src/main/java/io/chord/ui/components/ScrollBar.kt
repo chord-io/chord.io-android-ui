@@ -457,7 +457,7 @@ class ScrollBar : View
 			this.drawThumb(canvas)
 		}
 		
-		this.invalidate()
+		// TODO handle redraw attached scrollview
 	}
 	
 	private fun drawTrack(canvas: Canvas)

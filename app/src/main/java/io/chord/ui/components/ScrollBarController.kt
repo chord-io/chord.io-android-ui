@@ -35,6 +35,14 @@ class ScrollBarController(
 		
 		this.scrollView.isVerticalScrollBarEnabled = false
 		this.scrollView.isHorizontalScrollBarEnabled = false
+		
+		this.scrollView.addOnLayoutChangeListener {	_, _, _, _, _, _, _, _, _ ->
+			this.scrollBar.invalidate()
+		}
+		
+		this.scrollView.setOnScrollChangeListener { _, _, _, _, _ ->
+			this.scrollBar.invalidate()
+		}
 	}
 	
 	override fun equals(other: Any?): Boolean
