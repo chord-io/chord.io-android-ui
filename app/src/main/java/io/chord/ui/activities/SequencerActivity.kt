@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import io.chord.R
 import io.chord.ui.components.ScrollBar
+import io.chord.ui.components.ZoomBar
 
 class SequencerActivity : AppCompatActivity()
 {
@@ -15,6 +16,10 @@ class SequencerActivity : AppCompatActivity()
 		
 		val horizontalScrollBar = this.findViewById<ScrollBar>(R.id.horizontalScrollBar)
 		horizontalScrollBar.attach(R.id.scrollview)
-//		val verticalScrollBar = this.findViewById<ScrollBar>(R.id.verticalScrollBar)
+		val verticalScrollBar = this.findViewById<ScrollBar>(R.id.verticalScrollBar)
+		verticalScrollBar.attach(R.id.scrollview)
+		
+		val horizontalZoomBar = this.findViewById<ZoomBar>(R.id.horizontalZoomBar)
+		horizontalZoomBar.attach(R.id.ruler)
 	}
 }

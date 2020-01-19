@@ -1,5 +1,7 @@
 package io.chord.ui.utils
 
+import kotlin.math.ceil
+
 class QuantizeUtils
 {
 	enum class QuantizeMode(val mode: Int)
@@ -62,8 +64,20 @@ class QuantizeUtils
 			return when(mode)
 			{
 				QuantizeMode.Natural -> 1 / n
-				QuantizeMode.Ternary -> 1/ ((n - 1) * 3)
-				QuantizeMode.Dotted -> 1 / n + ((1 / n) / 2)
+				QuantizeMode.Ternary -> 1/ convert(value, mode).toFloat()
+				QuantizeMode.Dotted -> 0.75f / (n / 2)
+			}
+		}
+		
+		fun convert(value: QuantizeValue, mode: QuantizeMode): Int
+		{
+			val n = value.value
+			
+			return when(mode)
+			{
+				QuantizeMode.Natural -> n
+				QuantizeMode.Ternary -> n / 2 * 3
+				QuantizeMode.Dotted -> ceil(1 / (0.75f / (n / 2))).toInt() + 1
 			}
 		}
 	}

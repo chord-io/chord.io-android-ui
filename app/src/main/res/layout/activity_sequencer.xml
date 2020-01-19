@@ -19,6 +19,7 @@
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/backgroundSecondary"
         android:orientation="horizontal"
         android:columnCount="2"
         android:rowCount="3"
@@ -30,77 +31,13 @@
             android:layout_columnWeight="1"
             android:layout_rowWeight="1"
             android:layout_column="0"
-            android:layout_row="1">
-            <LinearLayout
+            android:layout_row="1"
+            android:background="@color/backgroundPrimary">
+            <io.chord.ui.components.Ruler
+                android:id="@+id/ruler"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="LOL"
-                        android:layout_margin="5dp"/>
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="LOL"
-                        android:layout_margin="5dp"/>
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="LOL"
-                        android:layout_margin="5dp"/>
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="LOL"
-                        android:layout_margin="5dp"/>
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="LOL"
-                        android:layout_margin="5dp"/>
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="LOL"
-                        android:layout_margin="5dp"/>
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="LOL"
-                        android:layout_margin="5dp"/>
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="LOL"
-                        android:layout_margin="5dp"/>
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="LOL"
-                        android:layout_margin="5dp"/>
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="LOL"
-                        android:layout_margin="5dp"/>
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="LOL"
-                        android:layout_margin="5dp"/>
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="LOL"
-                        android:layout_margin="5dp"/>
-                </LinearLayout>
-            </LinearLayout>
+                android:layout_height="20dp"
+                android:background="@color/borderColor"/>
         </io.chord.ui.components.TwoDimensionalScrollView>
 
         <LinearLayout
@@ -122,6 +59,7 @@
                 android:paddingBottom="12dp"
                 app:cio_sb_orientation="vertical" />
             <io.chord.ui.components.ZoomBar
+                android:id="@+id/verticalZoomBar"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="0.4"
@@ -146,6 +84,7 @@
                 android:paddingEnd="12dp"
                 app:cio_sb_orientation="horizontal" />
             <io.chord.ui.components.ZoomBar
+                android:id="@+id/horizontalZoomBar"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.4"

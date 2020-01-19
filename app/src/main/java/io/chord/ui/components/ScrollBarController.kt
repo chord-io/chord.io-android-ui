@@ -32,6 +32,9 @@ class ScrollBarController(
 			is HorizontalScrollView -> scrollView
 			else -> throw IllegalStateException("view is not a scrollview")
 		}
+		
+		this.scrollView.isVerticalScrollBarEnabled = false
+		this.scrollView.isHorizontalScrollBarEnabled = false
 	}
 	
 	override fun equals(other: Any?): Boolean

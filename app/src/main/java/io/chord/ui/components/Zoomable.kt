@@ -2,5 +2,5 @@ package io.chord.ui.components
 
 interface Zoomable
 {
-	fun setZoomFactor(factor: Float)
+	fun setZoomFactor(orientation: ViewOrientation, factor: Float)
 }

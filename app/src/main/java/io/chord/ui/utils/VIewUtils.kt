@@ -8,6 +8,7 @@ import android.util.Size
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewParent
 import androidx.core.view.forEach
 import androidx.fragment.app.FragmentActivity
 import kotlin.collections.set
@@ -51,6 +52,16 @@ class ViewUtils
 			}.forEach {
 				it.isEnabled = state
 			}
+		}
+		
+		fun invalidateParent(parent: ViewParent?)
+		{
+			when(parent)
+			{
+				null -> return
+				is View -> parent.invalidate()
+			}
+			
 		}
 		
 		fun getDirectChildrens(view: View): List<View>?
@@ -104,10 +115,16 @@ class ViewUtils
 			return lastParent as View
 		}
 		
-		fun dipToPixel(view: View, value: Float): Float
+		fun dpToPixel(view: View, value: Float): Float
 		{
 			val metrics = view.context.resources.displayMetrics
 			return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value, metrics)
+		}
+		
+		fun spToPixel(view: View, value: Float): Float
+		{
+			val metrics = view.context.resources.displayMetrics
+			return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, value, metrics)
 		}
 		
 		fun getTextWidth(text: String, painter: Paint): Int

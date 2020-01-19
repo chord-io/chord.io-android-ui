@@ -3,30 +3,68 @@ package io.chord.ui.components
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
-import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
-import androidx.annotation.Dimension
+import androidx.core.graphics.toRectF
 import io.chord.R
+import io.chord.ui.utils.QuantizeUtils
 import io.chord.ui.utils.ViewUtils
 
-class Ruler : View
+
+class Ruler : View, Zoomable
 {
-	private val painter: Paint = Paint()
+	private var barCount: Int = 3
+	private var zoomfactor: Float = 0.3f
+	private var factorizedWidth: Float = -1f
+	private val painter: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
 	
-	private var _defaultWidth: Float? = null
-	private var _tickThickness: Float? = null
+	private var _defaultWidth: Float = -1f
+	private var _ticksColor: Int = -1
+	private var _textColor: Int = -1
+	private var _ticksThickness: Float = -1f
+	private var _textSize: Float = -1f
+	private var _textMargin: Float = -1f
 	
-	var defaultWidth: Float?
+	var defaultWidth: Float
 		get() = this._defaultWidth
 		set(value) {
 			this._defaultWidth = value
+			this.setZoomFactor(ViewOrientation.Horizontal, this.zoomfactor)
 		}
 	
-	var tickThickness: Float?
-		get() = this._tickThickness
+	var ticksColor: Int
+		get() = this._ticksColor
 		set(value) {
-			this._tickThickness = value
+			this._ticksColor = value
+			this.invalidate()
+		}
+	
+	var textColor: Int
+		get() = this._textColor
+		set(value) {
+			this._textColor = value
+			this.invalidate()
+		}
+	
+	var ticksThickness: Float
+		get() = this._ticksThickness
+		set(value) {
+			this._ticksThickness = value
+			this.invalidate()
+		}
+	
+	var textSize: Float
+		get() = this._textSize
+		set(value) {
+			this._textSize = value
+			this.invalidate()
+		}
+	
+	var textMargin: Float
+		get() = this._textMargin
+		set(value) {
+			this._textMargin = value
+			this.invalidate()
 		}
 	
 	constructor(context: Context?) : super(context)
@@ -74,31 +112,131 @@ class Ruler : View
 			this.resources.getDimension(R.dimen.ruler_default_width)
 		)
 		
-		this.tickThickness = typedArray.getDimension(
-			R.styleable.Ruler_cio_rl_tickThickness,
+		this.ticksColor = typedArray.getColor(
+			R.styleable.Ruler_cio_rl_ticksColor,
+			this.resources.getColor(R.color.textColor, theme)
+		)
+		
+		this.textColor = typedArray.getColor(
+			R.styleable.Ruler_cio_rl_textColor,
+			this.resources.getColor(R.color.textColor, theme)
+		)
+		
+		this.ticksThickness = typedArray.getDimension(
+			R.styleable.Ruler_cio_rl_ticksThickness,
 			this.resources.getDimension(R.dimen.ruler_tick_thickness)
+		)
+		
+		this.textSize = typedArray.getDimension(
+			R.styleable.Ruler_cio_rl_textSize,
+			this.resources.getDimension(R.dimen.ruler_text_size)
+		)
+		
+		this.textMargin = typedArray.getDimension(
+			R.styleable.Ruler_cio_rl_textMargin,
+			this.resources.getDimension(R.dimen.ruler_text_margin)
 		)
 		
 		typedArray.recycle()
 	}
 	
-	override fun onDraw(canvas: Canvas?)
+	override fun setZoomFactor(orientation: ViewOrientation, factor: Float)
 	{
-		this.drawBar(canvas, 0)
+		if(orientation == ViewOrientation.Horizontal)
+		{
+			this.zoomfactor = factor
+			this.factorizedWidth = this.defaultWidth * this.zoomfactor
+			this.requestLayout()
+			this.invalidate()
+		}
 	}
 	
-	private fun drawBar(canvas: Canvas?, bar: Int)
+	override fun onMeasure(
+		widthMeasureSpec: Int,
+		heightMeasureSpec: Int
+	)
 	{
-		val rect = RectF(
-			0f,
-			0f,
-			this.defaultWidth!!,
-			this.height.toFloat()
+		val width = this.factorizedWidth * this.barCount
+		val height = MeasureSpec.getSize(heightMeasureSpec)
+		this.setMeasuredDimension(width.toInt(), height)
+	}
+	
+	override fun onDraw(canvas: Canvas?)
+	{
+		for(i in 0 until this.barCount)
+		{
+			this.drawBar(canvas!!, i)
+		}
+	}
+	
+	private fun drawBar(canvas: Canvas, index: Int)
+	{
+		val quantizeValue = QuantizeUtils.QuantizeValue.Fourth
+		val quantizeMode = QuantizeUtils.QuantizeMode.Natural
+		val q  = QuantizeUtils.quantize(quantizeValue, quantizeMode)
+		val label = (index + 1).toString()
+		val left = this.factorizedWidth * index
+		val right = left + this.factorizedWidth
+		val halfTickThickness = this.ticksThickness / 2f
+		val bounds = canvas.clipBounds.toRectF()
+		
+		bounds.set(
+			left,
+			bounds.top,
+			right,
+			bounds.bottom
 		)
 		
-		canvas?.drawRect(
-			rect,
+		this.painter.color = this.ticksColor
+		this.painter.strokeWidth = this.ticksThickness
+		
+		canvas.save()
+		
+		canvas.clipRect(bounds)
+		
+		for(i in 0..QuantizeUtils.convert(quantizeValue, quantizeMode))
+		{
+			val height = when(i)
+			{
+				0 -> bounds.top
+				else -> bounds.height() * 0.5f
+			}
+			
+			val x = bounds.width() * (i * q) + halfTickThickness
+			
+			canvas.drawLine(
+				bounds.left + x,
+				height,
+				bounds.left + x,
+				bounds.bottom,
+				this.painter
+			)
+		}
+		
+		this.painter.color = this.textColor
+		this.painter.textSize = this.textSize
+		
+		val textPosition = ViewUtils.getTextCentered(
+			label,
+			bounds.left.toInt(),
+			bounds.centerY().toInt(),
 			this.painter
 		)
+		
+		var scaledTextMargin = this.textMargin / this.defaultWidth * bounds.width()
+		
+		if(scaledTextMargin > this.textMargin)
+		{
+			scaledTextMargin = this.textMargin
+		}
+		
+		canvas.drawText(
+			label,
+			bounds.left + scaledTextMargin,
+			textPosition.y,
+			this.painter
+		)
+		
+		canvas.restore()
 	}
 }

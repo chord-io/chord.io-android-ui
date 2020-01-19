@@ -168,7 +168,7 @@ class ScrollBar : View
 		this.context,
 		GestureListener(this)
 	)
-	private val painter: Paint = Paint()
+	private val painter: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
 	private var position: Float = 0f
 	
 	private var _orientation: ViewOrientation = ViewOrientation.Horizontal
@@ -388,6 +388,12 @@ class ScrollBar : View
 		val contentSize = this.getScrollViewContentSize().toFloat()
 		val scrollViewSize = this.getScrollViewSize().toFloat()
 		val scrollBarSize = this.getSizeWithoutPaddings()
+		
+		if(contentSize <= scrollViewSize)
+		{
+			return scrollBarSize.toFloat()
+		}
+		
 		val maxSize = max(scrollViewSize, contentSize)
 		val minSize= min(scrollViewSize, contentSize)
 		val ratio = minSize / maxSize

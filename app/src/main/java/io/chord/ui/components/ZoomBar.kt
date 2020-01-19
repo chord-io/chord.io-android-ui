@@ -6,6 +6,7 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import androidx.core.graphics.toRectF
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import io.chord.R
 import io.chord.ui.gestures.GestureDetector
@@ -170,7 +171,7 @@ class ZoomBar : View
 		this.context,
 		GestureListener(this)
 	)
-	private val painter: Paint = Paint()
+	private val painter: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
 	private var position: Float = 0f
 	private var factor: Float = -1f
 	
@@ -589,6 +590,10 @@ class ZoomBar : View
 		this.factor = factor
 		this.position = steps[index]
 		this.invalidate()
+		
+		this.zoomables.forEach { (_, zoomable) ->
+			zoomable.setZoomFactor(this.orientation, this.factor)
+		}
 	}
 	
 	private fun setPositionWithoutInvalidate(position: Float)
@@ -598,6 +603,10 @@ class ZoomBar : View
 		val index = steps.indexOf(step)
 		this.factor = this.factors[index]
 		this.position = step
+		
+		this.zoomables.forEach { (_, zoomable) ->
+			zoomable.setZoomFactor(this.orientation, this.factor)
+		}
 	}
 	
 	private fun setPosition(position: Float)
@@ -722,7 +731,7 @@ class ZoomBar : View
 
 		val thickness = this.thumbThickness
 		val position = this.position
-		val roundness = ViewUtils.dipToPixel(
+		val roundness = ViewUtils.dpToPixel(
 			this,
 			this.resources.getDimension(R.dimen.zoombar_thumb_roundness)
 		)
@@ -765,25 +774,25 @@ class ZoomBar : View
 		this.painter.textSize = this.bubbleTextSize
 		this.painter.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
 		
-		val bounds = Rect(canvas.clipBounds)
+		val bounds = Rect(canvas.clipBounds).toRectF()
 		val position = this.position + this.thumbThickness / 2
 		val label = this.factor.toString()
 		val width = (ViewUtils.getTextWidth(label, this.painter) + this.bubblePadding).toInt()
-		val halfWidth = width / 2
+		val halfWidth = width / 2f
 		val height = this.bubbleThickness.toInt()
-		val halfHeight = height / 2
+		val halfHeight = height / 2f
 		val textHeight = ViewUtils.getTextHeight(label, this.painter)
 
 		if(this._orientation == ViewOrientation.Horizontal)
 		{
-			val offset = bounds.height() + this.bubbleMargin.toInt()
+			val offset = bounds.height() + this.bubbleMargin
 			val left = bounds.left + position - halfWidth
 			val right = left + width
-			val translatedBounds: Rect?
+			val translatedBounds: RectF?
 			
 			if(this.bubbleInvert)
 			{
-				translatedBounds = Rect(
+				translatedBounds = RectF(
 					bounds.left - halfWidth,
 					bounds.top + offset,
 					bounds.right + halfWidth,
@@ -792,7 +801,7 @@ class ZoomBar : View
 			}
 			else
 			{
-				translatedBounds = Rect(
+				translatedBounds = RectF(
 					bounds.left - halfWidth,
 					bounds.bottom - offset - height,
 					bounds.right + halfWidth,
@@ -802,9 +811,9 @@ class ZoomBar : View
 			
 			val rectBackgroundBubble = RectF(
 				left,
-				translatedBounds.top.toFloat(),
+				translatedBounds.top,
 				right,
-				translatedBounds.bottom.toFloat()
+				translatedBounds.bottom
 			)
 			
 			canvas.save()
@@ -841,14 +850,14 @@ class ZoomBar : View
 		}
 		else
 		{
-			val offset = bounds.width() + this.bubbleMargin.toInt()
+			val offset = bounds.width() + this.bubbleMargin
 			val top = bounds.top + position - halfHeight
 			val bottom = top + height
-			val translatedBounds: Rect?
+			val translatedBounds: RectF?
 			
 			if(this.bubbleInvert)
 			{
-				translatedBounds = Rect(
+				translatedBounds = RectF(
 					bounds.left + offset,
 					bounds.top - halfHeight,
 					bounds.left + offset + width,
@@ -857,7 +866,7 @@ class ZoomBar : View
 			}
 			else
 			{
-				translatedBounds = Rect(
+				translatedBounds = RectF(
 					bounds.right - offset - width,
 					bounds.top - halfHeight,
 					bounds.right - offset,
@@ -866,9 +875,9 @@ class ZoomBar : View
 			}
 			
 			val rectBackgroundBubble = RectF(
-				translatedBounds.left.toFloat(),
+				translatedBounds.left,
 				top,
-				translatedBounds.right.toFloat(),
+				translatedBounds.right,
 				bottom
 			)
 			
