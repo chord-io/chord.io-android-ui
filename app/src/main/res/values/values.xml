@@ -7,4 +7,6 @@
     <item name="zoombar_move_duration" type="integer">500</item>
     <item name="zoombar_focus_enter_duration" type="integer">250</item>
     <item name="zoombar_focus_exit_duration" type="integer">1000</item>
+
+    <item name="ruler_zoom_duration" type="integer">500</item>
 </resources>

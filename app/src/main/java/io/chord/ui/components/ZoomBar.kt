@@ -97,6 +97,12 @@ class ZoomBar : View
 		override fun onUp(event: MotionEvent): Boolean
 		{
 			this.zoomBar.clearFocus()
+			
+			if(this.zoomBar.isScrolling)
+			{
+				this.zoomBar.isScrolling = false
+			}
+			
 			return true
 		}
 		
@@ -106,6 +112,11 @@ class ZoomBar : View
 			distanceX: Float,
 			distanceY: Float
 		): Boolean {
+			if(!this.zoomBar.isScrolling)
+			{
+				this.zoomBar.isScrolling = true
+			}
+			
 			this.setPosition(event2)
 			return true
 		}
@@ -174,6 +185,7 @@ class ZoomBar : View
 	private val painter: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
 	private var position: Float = 0f
 	private var factor: Float = -1f
+	private var isScrolling: Boolean = false
 	
 	private val defaultFactorIndex = 5
 	private val factors: List<Float> = listOf(
@@ -505,6 +517,13 @@ class ZoomBar : View
 		this.zoomables.remove(id)
 	}
 	
+	private fun dispatchEvent()
+	{
+		this.zoomables.forEach { (_, zoomable) ->
+			zoomable.setZoomFactor(this.orientation, this.factor, !this.isScrolling)
+		}
+	}
+	
 	private fun getSizeWithoutPaddings(): Int
 	{
 		return if(this.orientation == ViewOrientation.Vertical)
@@ -591,9 +610,7 @@ class ZoomBar : View
 		this.position = steps[index]
 		this.invalidate()
 		
-		this.zoomables.forEach { (_, zoomable) ->
-			zoomable.setZoomFactor(this.orientation, this.factor)
-		}
+		this.dispatchEvent()
 	}
 	
 	private fun setPositionWithoutInvalidate(position: Float)
@@ -604,9 +621,7 @@ class ZoomBar : View
 		this.factor = this.factors[index]
 		this.position = step
 		
-		this.zoomables.forEach { (_, zoomable) ->
-			zoomable.setZoomFactor(this.orientation, this.factor)
-		}
+		this.dispatchEvent()
 	}
 	
 	private fun setPosition(position: Float)

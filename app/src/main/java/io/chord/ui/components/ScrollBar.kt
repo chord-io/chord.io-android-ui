@@ -5,18 +5,211 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import android.widget.FrameLayout
+import android.widget.HorizontalScrollView
+import android.widget.ScrollView
+import androidx.core.animation.doOnEnd
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import io.chord.R
 import io.chord.ui.gestures.GestureDetector
 import io.chord.ui.gestures.SimpleOnGestureListener
 import io.chord.ui.utils.MathUtils
+import io.chord.ui.utils.ViewUtils
 import kotlin.math.max
 import kotlin.math.min
 
 class ScrollBar : View
 {
+	private class ScrollBarController(
+		id: Int,
+		private val scrollBar: ScrollBar
+	)
+	{
+		private val scrollView: FrameLayout
+		private var size: Int = 0
+		private var contentSize: Int = 0
+		
+		init
+		{
+			val rootView = ViewUtils.getParentRootView(scrollBar)
+			this.scrollView = when(val scrollView = rootView.findViewById<View>(id))
+			{
+				is TwoDimensionalScrollView ->
+				{
+					if(scrollBar.orientation == ViewOrientation.Vertical)
+					{
+						scrollView.verticalScrollView
+					} else
+					{
+						scrollView.horizontalScrollView
+					}
+				}
+				is ScrollView -> scrollView
+				is HorizontalScrollView -> scrollView
+				else -> throw IllegalStateException("view is not a scrollview")
+			}
+			
+			this.scrollView.isVerticalScrollBarEnabled = false
+			this.scrollView.isHorizontalScrollBarEnabled = false
+			
+			this.scrollView.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+				val oldContentSize = this.contentSize
+				val oldSize = this.size
+				val contentSize = this.getContentSize()
+				val size = this.getSize()
+				val position = this.getPosition()
+				
+				when
+				{
+					oldSize == 0 || oldContentSize == 0 -> return@addOnLayoutChangeListener
+					else -> this.scrollBar.onResizeEvent(
+						size,
+						contentSize,
+						oldSize,
+						oldContentSize,
+						position
+					)
+				}
+			}
+			
+			this.scrollView.setOnScrollChangeListener { _, _, _, _, _ ->
+				this.scrollBar.invalidate()
+			}
+		}
+		
+		override fun equals(other: Any?): Boolean
+		{
+			if(other is ScrollBarController)
+			{
+				when
+				{
+					this.getSizeWithoutPadding() != other.getSizeWithoutPadding() ->
+					{
+						return false
+					}
+					this.getContentSize() != other.getContentSize() ->
+					{
+						return false
+					}
+					this.getPaddingLeft() != other.getPaddingLeft() ->
+					{
+						return false
+					}
+					this.getPaddingRight() != other.getPaddingRight() ->
+					{
+						return false
+					}
+					else -> return true
+				}
+			}
+			else
+			{
+				return false
+			}
+		}
+		
+		override fun hashCode(): Int
+		{
+			return (
+					this.getSizeWithoutPadding() +
+							this.getContentSize() +
+							this.getPaddingLeft() +
+							this.getPaddingRight()
+					).hashCode()
+		}
+		
+		fun getContentSize(): Int
+		{
+			if(this.scrollView.childCount > 0)
+			{
+				val child = scrollView.getChildAt(0)
+				
+				this.contentSize = if(this.scrollBar.orientation == ViewOrientation.Vertical)
+				{
+					child.height
+				}
+				else
+				{
+					child.width
+				}
+				
+				return this.contentSize
+			}
+			
+			this.contentSize = this.getSizeWithoutPadding()
+			return this.contentSize
+		}
+		
+		fun getSizeWithoutPadding(): Int
+		{
+			return if(this.scrollBar.orientation == ViewOrientation.Vertical)
+			{
+				this.scrollView.height
+			}
+			else
+			{
+				this.scrollView.width
+			}
+		}
+		
+		fun getSize(): Int
+		{
+			this.size = this.getSizeWithoutPadding() - this.getPaddingLeft() - this.getPaddingRight()
+			return this.size
+		}
+		
+		fun getPaddingLeft(): Int
+		{
+			return if(this.scrollBar.orientation == ViewOrientation.Vertical)
+			{
+				this.scrollView.paddingTop
+			}
+			else
+			{
+				this.scrollView.paddingStart
+			}
+		}
+		
+		fun getPaddingRight(): Int
+		{
+			return if(this.scrollBar.orientation == ViewOrientation.Vertical)
+			{
+				this.scrollView.paddingBottom
+			}
+			else
+			{
+				this.scrollView.paddingEnd
+			}
+		}
+		
+		fun getPosition(): Int
+		{
+			return if(this.scrollBar.orientation == ViewOrientation.Vertical)
+			{
+				this.scrollView.scrollY
+			}
+			else
+			{
+				this.scrollView.scrollX
+			}
+		}
+		
+		fun setPosition(position: Int)
+		{
+			return if(this.scrollBar.orientation == ViewOrientation.Vertical)
+			{
+				this.scrollView.scrollY = position
+			}
+			else
+			{
+				this.scrollView.scrollX = position
+			}
+		}
+	}
+	
 	private class GestureListener(
 		private val scrollBar: ScrollBar
 	) : SimpleOnGestureListener()
@@ -59,21 +252,13 @@ class ScrollBar : View
 		}
 		
 		override fun onDoubleTap(event: MotionEvent): Boolean {
-			val limit = this.scrollBar.getLimitPosition()
+			val limit = this.scrollBar.getLimitPosition().toFloat()
 			val position = this.scrollBar.position
-			val invertedPosition = (1f - (position / limit)) * limit
+			val ratio = MathUtils.ratio(position, limit)
+			val invertedPosition = ((1f - ratio) * limit)
 			
 			this.beginConfigureAnimation()
-
-			this.setPosition(MotionEvent.obtain(
-				event.downTime,
-				event.eventTime,
-				event.action,
-				invertedPosition,
-				invertedPosition,
-				event.metaState
-			))
-			
+			this.scrollBar.position = invertedPosition
 			this.endConfigureAnimation()
 			return true
 		}
@@ -94,27 +279,11 @@ class ScrollBar : View
 			
 			if(this.scrollBar.position <= halfLimit)
 			{
-				val position = limit.toFloat()
-				this.setPosition(MotionEvent.obtain(
-					event.downTime,
-					event.eventTime,
-					event.action,
-					position,
-					position,
-					event.metaState
-				))
+				this.scrollBar.position = limit.toFloat()
 			}
 			else
 			{
-				val position = 0f
-				this.setPosition(MotionEvent.obtain(
-					event.downTime,
-					event.eventTime,
-					event.action,
-					position,
-					position,
-					event.metaState
-				))
+				this.scrollBar.position = 0f
 			}
 			
 			this.endConfigureAnimation()
@@ -448,6 +617,33 @@ class ScrollBar : View
 		}
 	}
 	
+	private fun onResizeEvent(
+		scrollViewSize: Int,
+		scrollViewContentSize: Int,
+		oldScrollViewSize: Int,
+		oldScrollViewContentSize: Int,
+		position: Int)
+	{
+		// TODO see what happen when multiple scroll view are controlled
+		
+		if(position > 0)
+		{
+			val scaledPosition = MathUtils.map(
+				position.toFloat(),
+				0f,
+				oldScrollViewContentSize.toFloat(),
+				0f,
+				scrollViewContentSize.toFloat()
+			).toInt()
+			
+			this.position = scaledPosition.toFloat()
+			
+			this.setPosition(scaledPosition)
+		}
+		
+		this.invalidate()
+	}
+	
 	override fun onDraw(canvas: Canvas?)
 	{
 		this.drawTrack(canvas!!)
@@ -456,8 +652,6 @@ class ScrollBar : View
 		{
 			this.drawThumb(canvas)
 		}
-		
-		// TODO handle redraw attached scrollview
 	}
 	
 	private fun drawTrack(canvas: Canvas)

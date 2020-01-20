@@ -35,7 +35,6 @@ class MathUtils
 			
 		}
 		
-		
 		fun nearest(value: Float, values: List<Float>): Float
 		{
 			val first = values.first()
@@ -56,7 +55,18 @@ class MathUtils
 					.get()
 					.second
 			}
-			
+		}
+		
+		fun ratio(a: Float, b: Float): Float
+		{
+			val min = min(a, b)
+			val max = max(a, b)
+			return min / max
+		}
+		
+		fun ratio(a: Int, b: Int): Float
+		{
+			return ratio(a.toFloat(), b.toFloat())
 		}
 	}
 }

@@ -1,11 +1,14 @@
 package io.chord.ui.components
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.animation.doOnEnd
 import androidx.core.graphics.toRectF
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import io.chord.R
 import io.chord.ui.utils.QuantizeUtils
 import io.chord.ui.utils.ViewUtils
@@ -14,8 +17,9 @@ import io.chord.ui.utils.ViewUtils
 class Ruler : View, Zoomable
 {
 	private var barCount: Int = 3
-	private var zoomfactor: Float = 0.3f
+	private var zoomfactor: Float = 1f
 	private var factorizedWidth: Float = -1f
+	private var factorAnimator: ValueAnimator = ValueAnimator()
 	private val painter: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
 	
 	private var _defaultWidth: Float = -1f
@@ -29,7 +33,7 @@ class Ruler : View, Zoomable
 		get() = this._defaultWidth
 		set(value) {
 			this._defaultWidth = value
-			this.setZoomFactor(ViewOrientation.Horizontal, this.zoomfactor)
+			this.setZoomFactor(ViewOrientation.Horizontal, this.zoomfactor, true)
 		}
 	
 	var ticksColor: Int
@@ -138,16 +142,44 @@ class Ruler : View, Zoomable
 		)
 		
 		typedArray.recycle()
+		
+		// TODO : set interpolator on another place
+		this.factorAnimator.interpolator = FastOutSlowInInterpolator()
+		// TODO : set as an attribute view
+		this.factorAnimator.duration = this.resources.getInteger(R.integer.ruler_zoom_duration).toLong()
+		this.factorAnimator.addUpdateListener { animator ->
+			val factor = animator.animatedValue as Float
+			this.internalSetZoomFactor(factor)
+		}
+		this.factorAnimator.doOnEnd {
+			val animator = it as ValueAnimator
+			val factor = animator.animatedValue as Float
+			this.internalSetZoomFactor(factor)
+		}
 	}
 	
-	override fun setZoomFactor(orientation: ViewOrientation, factor: Float)
+	private fun internalSetZoomFactor(factor: Float)
+	{
+		this.zoomfactor = factor
+		this.factorizedWidth = this.defaultWidth * this.zoomfactor
+		this.requestLayout()
+		this.invalidate()
+	}
+	
+	override fun setZoomFactor(orientation: ViewOrientation, factor: Float, animate: Boolean)
 	{
 		if(orientation == ViewOrientation.Horizontal)
 		{
-			this.zoomfactor = factor
-			this.factorizedWidth = this.defaultWidth * this.zoomfactor
-			this.requestLayout()
-			this.invalidate()
+			when
+			{
+				animate ->
+				{
+					this.factorAnimator.cancel()
+					this.factorAnimator.setFloatValues(this.zoomfactor, factor)
+					this.factorAnimator.start()
+				}
+				else -> this.internalSetZoomFactor(factor)
+			}
 		}
 	}
 	
