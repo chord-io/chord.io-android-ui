@@ -14,12 +14,16 @@ import io.chord.ui.utils.QuantizeUtils
 import io.chord.ui.utils.ViewUtils
 
 
-class Ruler : View, Zoomable
+class Ruler : View, Zoomable, Quantifiable
 {
 	private var barCount: Int = 3
 	private var zoomfactor: Float = 1f
 	private var factorizedWidth: Float = -1f
 	private var factorAnimator: ValueAnimator = ValueAnimator()
+	private var quantization: QuantizeUtils.Quantization = QuantizeUtils.Quantization(
+		QuantizeUtils.QuantizeValue.First,
+		QuantizeUtils.QuantizeMode.Natural
+	)
 	private val painter: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
 	
 	private var _defaultWidth: Float = -1f
@@ -183,6 +187,12 @@ class Ruler : View, Zoomable
 		}
 	}
 	
+	override fun setQuantization(quantization: QuantizeUtils.Quantization)
+	{
+		this.quantization = quantization
+		this.invalidate()
+	}
+	
 	override fun onMeasure(
 		widthMeasureSpec: Int,
 		heightMeasureSpec: Int
@@ -203,9 +213,9 @@ class Ruler : View, Zoomable
 	
 	private fun drawBar(canvas: Canvas, index: Int)
 	{
-		val quantizeValue = QuantizeUtils.QuantizeValue.Fourth
-		val quantizeMode = QuantizeUtils.QuantizeMode.Natural
-		val q  = QuantizeUtils.quantize(quantizeValue, quantizeMode)
+		this.painter.color = this.ticksColor
+		this.painter.strokeWidth = this.ticksThickness
+		
 		val label = (index + 1).toString()
 		val left = this.factorizedWidth * index
 		val right = left + this.factorizedWidth
@@ -219,14 +229,11 @@ class Ruler : View, Zoomable
 			bounds.bottom
 		)
 		
-		this.painter.color = this.ticksColor
-		this.painter.strokeWidth = this.ticksThickness
-		
 		canvas.save()
 		
 		canvas.clipRect(bounds)
 		
-		for(i in 0..QuantizeUtils.convert(quantizeValue, quantizeMode))
+		for(i in 0..this.quantization.count)
 		{
 			val height = when(i)
 			{
@@ -234,7 +241,7 @@ class Ruler : View, Zoomable
 				else -> bounds.height() * 0.5f
 			}
 			
-			val x = bounds.width() * (i * q) + halfTickThickness
+			val x = bounds.width() * (i * this.quantization.value) + halfTickThickness
 			
 			canvas.drawLine(
 				bounds.left + x,
@@ -247,6 +254,8 @@ class Ruler : View, Zoomable
 		
 		this.painter.color = this.textColor
 		this.painter.textSize = this.textSize
+		
+		// TODO text position on first half height
 		
 		val textPosition = ViewUtils.getTextCentered(
 			label,

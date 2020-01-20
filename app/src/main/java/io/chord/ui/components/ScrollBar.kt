@@ -5,13 +5,11 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
 import android.widget.ScrollView
-import androidx.core.animation.doOnEnd
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import io.chord.R
 import io.chord.ui.gestures.GestureDetector
@@ -21,7 +19,7 @@ import io.chord.ui.utils.ViewUtils
 import kotlin.math.max
 import kotlin.math.min
 
-class ScrollBar : View
+class ScrollBar : View, Binder
 {
 	private class ScrollBarController(
 		id: Int,
@@ -477,12 +475,12 @@ class ScrollBar : View
 		typedArray.recycle()
 	}
 	
-	fun attach(id: Int)
+	override fun attach(id: Int)
 	{
 		this.scrollBarControllers[id] = ScrollBarController(id, this)
 	}
 	
-	fun detach(id: Int)
+	override fun detach(id: Int)
 	{
 		this.scrollBarControllers.remove(id)
 	}

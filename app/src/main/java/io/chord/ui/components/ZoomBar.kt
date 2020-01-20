@@ -16,7 +16,7 @@ import io.chord.ui.utils.MathUtils
 import io.chord.ui.utils.ViewUtils
 
 
-class ZoomBar : View
+class ZoomBar : View, Binder
 {
 	private class FocusListener(
 		private val zoomBar: ZoomBar
@@ -504,15 +504,14 @@ class ZoomBar : View
 		this.onFocusChangeListener = FocusListener(this)
 	}
 	
-	fun attach(id: Int)
+	override fun attach(id: Int)
 	{
 		val rootView = ViewUtils.getParentRootView(this)
 		val zoomable = rootView.findViewById<View>(id)
-		
 		this.zoomables[id] = zoomable as Zoomable
 	}
 	
-	fun detach(id: Int)
+	override fun detach(id: Int)
 	{
 		this.zoomables.remove(id)
 	}

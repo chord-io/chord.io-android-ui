@@ -3,6 +3,7 @@ package io.chord.ui.activities
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import io.chord.R
+import io.chord.ui.components.QuantizeDropDown
 import io.chord.ui.components.ScrollBar
 import io.chord.ui.components.ZoomBar
 
@@ -21,5 +22,8 @@ class SequencerActivity : AppCompatActivity()
 		
 		val horizontalZoomBar = this.findViewById<ZoomBar>(R.id.horizontalZoomBar)
 		horizontalZoomBar.attach(R.id.ruler)
+		
+		this.findViewById<QuantizeDropDown>(R.id.quantizeDropDown)
+			.attach(R.id.ruler)
 	}
 }

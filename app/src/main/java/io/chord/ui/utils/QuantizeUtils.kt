@@ -23,6 +23,15 @@ class QuantizeUtils
 		HundredTwentyEighth(128)
 	}
 	
+	class Quantization(
+		value: QuantizeValue,
+		mode: QuantizeMode
+	)
+	{
+		val value: Float = quantify(value, mode)
+		val count: Int = count(value, mode)
+	}
+	
 	companion object
 	{
 		val values: List<Pair<QuantizeMode, QuantizeValue>> = listOf(
@@ -52,7 +61,7 @@ class QuantizeUtils
 			Pair(QuantizeMode.Dotted, QuantizeValue.HundredTwentyEighth)
 		)
 		
-		fun quantize(value: QuantizeValue, mode: QuantizeMode): Float
+		fun quantify(value: QuantizeValue, mode: QuantizeMode): Float
 		{
 			if(value == QuantizeValue.First && (mode == QuantizeMode.Ternary || mode == QuantizeMode.Dotted))
 			{
@@ -64,12 +73,12 @@ class QuantizeUtils
 			return when(mode)
 			{
 				QuantizeMode.Natural -> 1 / n
-				QuantizeMode.Ternary -> 1/ convert(value, mode).toFloat()
+				QuantizeMode.Ternary -> 1/ count(value, mode).toFloat()
 				QuantizeMode.Dotted -> 0.75f / (n / 2)
 			}
 		}
 		
-		fun convert(value: QuantizeValue, mode: QuantizeMode): Int
+		fun count(value: QuantizeValue, mode: QuantizeMode): Int
 		{
 			val n = value.value
 			

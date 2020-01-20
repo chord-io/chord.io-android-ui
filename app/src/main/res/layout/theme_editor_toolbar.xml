@@ -40,6 +40,7 @@
         </com.google.android.material.button.MaterialButtonToggleGroup>
 
         <io.chord.ui.components.QuantizeDropDown
+            android:id="@+id/quantizeDropDown"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"

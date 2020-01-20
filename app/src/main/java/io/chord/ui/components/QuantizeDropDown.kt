@@ -4,15 +4,15 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.LinearLayout
 import io.chord.R
 import io.chord.ui.utils.QuantizeUtils
+import io.chord.ui.utils.ViewUtils
 import kotlinx.android.synthetic.main.component_dropdown.view.*
 
-class QuantizeDropDown : DropDown, AdapterView.OnItemSelectedListener
+class QuantizeDropDown : DropDown, AdapterView.OnItemSelectedListener, Binder
 {
 	private lateinit var adapter: QuantizeDropDownAdapter
+	private val quantifiables: MutableMap<Int, Quantifiable> = mutableMapOf()
 	
 	constructor(context: Context?) : super(context)
 	
@@ -50,12 +50,33 @@ class QuantizeDropDown : DropDown, AdapterView.OnItemSelectedListener
 		id: Long
 	)
 	{
+		val item = this.adapter.getItem(position)!!
 		val text = this.adapter.getText(position, true)
 		this.selectedItemTextView.text = text
+		
+		val quantization = QuantizeUtils.Quantization(
+			item.second, item.first
+		)
+		
+		this.quantifiables.forEach { (_, quantifiable) ->
+			quantifiable.setQuantization(quantization)
+		}
 	}
 	
 	override fun onNothingSelected(parent: AdapterView<*>?)
 	{
-		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+		throw NotImplementedError()
+	}
+	
+	override fun attach(id: Int)
+	{
+		val rootView = ViewUtils.getParentRootView(this)
+		val quantifiable = rootView.findViewById<View>(id)
+		this.quantifiables[id] = quantifiable as Quantifiable
+	}
+	
+	override fun detach(id: Int)
+	{
+		this.quantifiables.remove(id)
 	}
 }
