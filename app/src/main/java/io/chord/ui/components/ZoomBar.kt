@@ -702,13 +702,13 @@ class ZoomBar : View, Binder
 		this.painter.strokeCap = Paint.Cap.ROUND
 		
 		val steps = this.getSteps()
-		val bounds = canvas.clipBounds
+		val bounds = canvas.clipBounds.toRectF()
 		val halfThumbThickness = this.thumbThickness / 2f
 		
 		if(this.orientation == ViewOrientation.Horizontal)
 		{
-			val top = bounds.top.toFloat() + this.ticksPadding
-			val bottom = bounds.bottom.toFloat() - this.ticksPadding
+			val top = bounds.top + this.ticksPadding
+			val bottom = bounds.bottom - this.ticksPadding
 			
 			steps.forEach { position ->
 				val x = position + halfThumbThickness
@@ -723,8 +723,8 @@ class ZoomBar : View, Binder
 		}
 		else
 		{
-			val left = bounds.left.toFloat() + this.ticksPadding
-			val right = bounds.right.toFloat() - this.ticksPadding
+			val left = bounds.left + this.ticksPadding
+			val right = bounds.right - this.ticksPadding
 			
 			steps.forEach { position ->
 				val y = position + halfThumbThickness

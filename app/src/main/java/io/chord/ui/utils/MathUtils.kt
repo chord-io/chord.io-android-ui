@@ -12,6 +12,17 @@ class MathUtils
 			return (value - a) / (b - a) * (d-c) + c
 		}
 		
+		fun map(value: Int, a: Int, b: Int, c: Int, d: Int): Int
+		{
+			return map(
+				value.toFloat(),
+				a.toFloat(),
+				b.toFloat(),
+				c.toFloat(),
+				d.toFloat()
+			).toInt()
+		}
+		
 		fun isPowerOf(value: Float, base: Int): Boolean
 		{
 			return ceil(log(value, base.toFloat())) == floor(log(value, base.toFloat()))

@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
@@ -246,14 +247,14 @@ class ScrollBar : View, Binder
 		private val scrollBar: ScrollBar
 	) : SimpleOnGestureListener()
 	{
-		private var positionSource: Float = 0f
-		private var positionDestination: Float = 0f
+		private var positionSource: Int = 0
+		private var positionDestination: Int = 0
 		
 		init
 		{
 			this.scrollBar.positionAnimator.addUpdateListener {
-				val position = it.animatedValue as Float
-				this.scrollBar.setPosition(position.toInt())
+				val position = it.animatedValue as Int
+				this.scrollBar.setPosition(position)
 				this.scrollBar.invalidate()
 			}
 			
@@ -279,15 +280,15 @@ class ScrollBar : View, Binder
 			distanceY: Float
 		): Boolean {
 			this.setPosition(event2)
-			this.scrollBar.setPosition(this.scrollBar.position.toInt())
+			this.scrollBar.setPosition(this.scrollBar.position)
 			return true
 		}
 		
 		override fun onDoubleTap(event: MotionEvent): Boolean {
-			val limit = this.scrollBar.getLimitPosition().toFloat()
+			val limit = this.scrollBar.getLimitPosition()
 			val position = this.scrollBar.position
 			val ratio = MathUtils.ratio(position, limit)
-			val invertedPosition = ((1f - ratio) * limit)
+			val invertedPosition = ((1 - ratio) * limit).toInt()
 			
 			this.beginConfigureAnimation()
 			this.scrollBar.position = invertedPosition
@@ -311,11 +312,11 @@ class ScrollBar : View, Binder
 			
 			if(this.scrollBar.position <= halfLimit)
 			{
-				this.scrollBar.position = limit.toFloat()
+				this.scrollBar.position = limit
 			}
 			else
 			{
-				this.scrollBar.position = 0f
+				this.scrollBar.position = 0
 			}
 			
 			this.endConfigureAnimation()
@@ -329,7 +330,7 @@ class ScrollBar : View, Binder
 		private fun endConfigureAnimation()
 		{
 			this.positionDestination = this.scrollBar.position
-			this.scrollBar.positionAnimator.setFloatValues(
+			this.scrollBar.positionAnimator.setIntValues(
 				this.positionSource,
 				this.positionDestination
 			)
@@ -347,14 +348,14 @@ class ScrollBar : View, Binder
 				event.x
 			}
 			
-			val scrollBarSize = this.scrollBar.getSizeWithoutPadding().toFloat()
-			val scrollContentSize = this.scrollBar.getScrollViewContentSize().toFloat()
-			val scrollViewSize = this.scrollBar.getScrollViewSize().toFloat()
+			val scrollBarSize = this.scrollBar.getSizeWithoutPadding()
+			val scrollContentSize = this.scrollBar.getScrollViewContentSize()
+			val scrollViewSize = this.scrollBar.getScrollViewSize()
 			val scaledPosition = MathUtils.map(
-				position,
-				0f,
+				position.toInt(),
+				0,
 				scrollBarSize,
-				0f,
+				0,
 				scrollContentSize - scrollViewSize
 			)
 			
@@ -369,7 +370,7 @@ class ScrollBar : View, Binder
 		GestureListener(this)
 	)
 	private val painter: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
-	private var position: Float = 0f
+	private var position: Int = 0
 	
 	private var _orientation: ViewOrientation = ViewOrientation.Horizontal
 	private var _moveDuration: Long = -1
@@ -629,14 +630,14 @@ class ScrollBar : View, Binder
 		if(position > 0)
 		{
 			val scaledPosition = MathUtils.map(
-				position.toFloat(),
-				0f,
-				oldScrollViewContentSize.toFloat() - oldScrollViewSize.toFloat(),
-				0f,
-				scrollViewContentSize.toFloat() - scrollViewSize.toFloat()
-			).toInt()
+				position,
+				0,
+				oldScrollViewContentSize - oldScrollViewSize,
+				0,
+				scrollViewContentSize - scrollViewSize
+			)
 			
-			this.position = scaledPosition.toFloat()
+			this.position = scaledPosition
 			this.setPosition(scaledPosition)
 		}
 		
