@@ -16,12 +16,46 @@ import io.chord.ui.gestures.GestureDetector
 import io.chord.ui.gestures.SimpleOnGestureListener
 import io.chord.ui.utils.MathUtils
 import io.chord.ui.utils.ViewUtils
-import kotlin.math.max
-import kotlin.math.min
 
 class ScrollBar : View, Binder
 {
-	private class ScrollBarController(
+	private class Thumb(
+		private val scrollBar: ScrollBar
+	)
+	{
+		val position: Float
+		val size: Float
+		
+		init
+		{
+			val scrollViewContentSize = this.scrollBar.getScrollViewContentSize().toFloat()
+			val scrollViewSize = this.scrollBar.getScrollViewSize().toFloat()
+			val scrollBarSize = this.scrollBar.getSizeWithoutPadding().toFloat()
+			val scrollViewPosition = this.scrollBar.getScrollViewPosition().toFloat()
+			
+			if(scrollViewContentSize <= scrollViewSize)
+			{
+				this.size = scrollBarSize
+			}
+			else
+			{
+				val ratio = MathUtils.ratio(scrollViewSize, scrollViewContentSize)
+				this.size = ratio * scrollBarSize
+			}
+			
+			val position = MathUtils.map(
+				scrollViewPosition,
+				0f,
+				scrollViewContentSize,
+				0f,
+				scrollBarSize
+			)
+			
+			this.position = position
+		}
+	}
+	
+	private class Controller(
 		id: Int,
 		private val scrollBar: ScrollBar
 	)
@@ -80,7 +114,7 @@ class ScrollBar : View, Binder
 		
 		override fun equals(other: Any?): Boolean
 		{
-			if(other is ScrollBarController)
+			if(other is Controller)
 			{
 				when
 				{
@@ -313,7 +347,7 @@ class ScrollBar : View, Binder
 				event.x
 			}
 			
-			val scrollBarSize = this.scrollBar.getSizeWithoutPaddings().toFloat()
+			val scrollBarSize = this.scrollBar.getSizeWithoutPadding().toFloat()
 			val scrollContentSize = this.scrollBar.getScrollViewContentSize().toFloat()
 			val scrollViewSize = this.scrollBar.getScrollViewSize().toFloat()
 			val scaledPosition = MathUtils.map(
@@ -328,8 +362,7 @@ class ScrollBar : View, Binder
 		}
 	}
 	
-	private val scrollBarControllers: MutableMap<Int, ScrollBarController> = mutableMapOf()
-	
+	private val controllers: MutableMap<Int, Controller> = mutableMapOf()
 	private val positionAnimator: ValueAnimator = ValueAnimator()
 	private val gestureDetector: GestureDetector = GestureDetector(
 		this.context,
@@ -477,22 +510,22 @@ class ScrollBar : View, Binder
 	
 	override fun attach(id: Int)
 	{
-		this.scrollBarControllers[id] = ScrollBarController(id, this)
+		this.controllers[id] = Controller(id, this)
 	}
 	
 	override fun detach(id: Int)
 	{
-		this.scrollBarControllers.remove(id)
+		this.controllers.remove(id)
 	}
 	
 	private fun checkScrollBarControllerAreEquals()
 	{
-		if(this.scrollBarControllers.isEmpty() || this.scrollBarControllers.size == 1)
+		if(this.controllers.isEmpty() || this.controllers.size == 1)
 		{
 			return
 		}
 		
-		val result = this.scrollBarControllers
+		val result = this.controllers
 			.values
 			.stream()
 			.distinct()
@@ -506,22 +539,22 @@ class ScrollBar : View, Binder
 	private fun getScrollViewContentSize(): Int
 	{
 		this.checkScrollBarControllerAreEquals()
-		return this.scrollBarControllers.values.first().getContentSize()
+		return this.controllers.values.first().getContentSize()
 	}
 	
 	private fun getScrollViewSize(): Int
 	{
 		this.checkScrollBarControllerAreEquals()
-		return this.scrollBarControllers.values.first().getSize()
+		return this.controllers.values.first().getSize()
 	}
 	
 	private fun getScrollViewPosition(): Int
 	{
 		this.checkScrollBarControllerAreEquals()
-		return this.scrollBarControllers.values.first().getPosition()
+		return this.controllers.values.first().getPosition()
 	}
 	
-	private fun getSizeWithoutPaddings(): Int
+	private fun getSizeWithoutPadding(): Int
 	{
 		return if(this.orientation == ViewOrientation.Vertical)
 		{
@@ -535,7 +568,7 @@ class ScrollBar : View, Binder
 	
 	private fun getSize(): Int
 	{
-		return this.getSizeWithoutPaddings() - this.getPadding()
+		return this.getSizeWithoutPadding() - this.getPadding()
 	}
 	
 	private fun getPadding(): Int
@@ -548,37 +581,6 @@ class ScrollBar : View, Binder
 		{
 			this.paddingStart + this.paddingEnd
 		}
-	}
-	
-	private fun getSizeFromContent(): Float
-	{
-		val contentSize = this.getScrollViewContentSize().toFloat()
-		val scrollViewSize = this.getScrollViewSize().toFloat()
-		val scrollBarSize = this.getSizeWithoutPaddings()
-		
-		if(contentSize <= scrollViewSize)
-		{
-			return scrollBarSize.toFloat()
-		}
-		
-		val maxSize = max(scrollViewSize, contentSize)
-		val minSize= min(scrollViewSize, contentSize)
-		val ratio = minSize / maxSize
-		return ratio * scrollBarSize
-	}
-	
-	private fun getPosition(): Float
-	{
-		val contentSize = this.getScrollViewContentSize().toFloat()
-		val scrollBarSize = this.getSizeWithoutPaddings().toFloat()
-		val position = this.getScrollViewPosition().toFloat()
-		return MathUtils.map(
-			position,
-			0f,
-			contentSize,
-			0f,
-			scrollBarSize
-		)
 	}
 	
 	private fun getLimitPosition(): Int
@@ -598,7 +600,7 @@ class ScrollBar : View, Binder
 	private fun setPosition(position: Int)
 	{
 		this.checkScrollBarControllerAreEquals()
-		this.scrollBarControllers.forEach {
+		this.controllers.forEach {
 			it.value.setPosition(position)
 		}
 	}
@@ -629,13 +631,12 @@ class ScrollBar : View, Binder
 			val scaledPosition = MathUtils.map(
 				position.toFloat(),
 				0f,
-				oldScrollViewContentSize.toFloat(),
+				oldScrollViewContentSize.toFloat() - oldScrollViewSize.toFloat(),
 				0f,
-				scrollViewContentSize.toFloat()
+				scrollViewContentSize.toFloat() - scrollViewSize.toFloat()
 			).toInt()
 			
 			this.position = scaledPosition.toFloat()
-			
 			this.setPosition(scaledPosition)
 		}
 		
@@ -646,7 +647,7 @@ class ScrollBar : View, Binder
 	{
 		this.drawTrack(canvas!!)
 		
-		if(this.scrollBarControllers.isNotEmpty())
+		if(this.controllers.isNotEmpty())
 		{
 			this.drawThumb(canvas)
 		}
@@ -692,14 +693,13 @@ class ScrollBar : View, Binder
 		
 		val thickness = this.thumbThickness
 		val roundness = this.thumbRoundness
-		val position = this.getPosition()
-		val size = this.getSizeFromContent()
+		val thumb = Thumb(this)
 		
 		if(this.orientation == ViewOrientation.Horizontal)
 		{
 			val centerVertical = (this.height / 2f) - (thickness / 2f)
-			val left = position + this.paddingStart
-			val right = position + size - this.paddingEnd
+			val left = thumb.position + this.paddingStart
+			val right = thumb.position + thumb.size - this.paddingEnd
 			canvas.drawRoundRect(
 				left,
 				centerVertical,
@@ -713,8 +713,8 @@ class ScrollBar : View, Binder
 		else
 		{
 			val centerHorizontal = (this.width / 2f) - (thickness / 2f)
-			val top = position + this.paddingTop
-			val bottom = position + size - this.paddingBottom
+			val top = thumb.position + this.paddingTop
+			val bottom = thumb.position + thumb.size - this.paddingBottom
 			canvas.drawRoundRect(
 				centerHorizontal,
 				top,
