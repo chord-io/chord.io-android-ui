@@ -14,30 +14,16 @@
         android:paddingEnd="@dimen/app_bar_padding_right"
         android:background="@color/backgroundSecondary">
 
-        <com.google.android.material.button.MaterialButtonToggleGroup
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:singleSelection="true">
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/mute"
-                android:layout_width="@dimen/mini_button_width"
-                android:layout_height="@dimen/mini_button_height"
-                android:backgroundTint="@color/mini_button_mute_background"
-                android:textColor="@color/mini_button_text"
-                android:text="@string/mini_button_mute" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/solo"
-                android:layout_width="@dimen/mini_button_width"
-                android:layout_height="@dimen/mini_button_height"
-                android:backgroundTint="@color/mini_button_solo_background"
-                android:textColor="@color/mini_button_text"
-                android:text="@string/mini_button_solo" />
-        </com.google.android.material.button.MaterialButtonToggleGroup>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" >
+            <include
+                layout="@layout/track_controls" />
+        </LinearLayout>
 
         <io.chord.ui.components.QuantizeDropDown
             android:id="@+id/quantizeDropDown"

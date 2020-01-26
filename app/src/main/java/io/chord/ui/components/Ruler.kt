@@ -268,9 +268,6 @@ class Ruler : View, Zoomable, Quantifiable
 	
 	private fun drawBar(canvas: Canvas, index: Int)
 	{
-		this.painter.color = this.ticksColor
-		this.painter.strokeWidth = this.ticksThickness
-		
 		val label = (index + 1).toString()
 		val left = this.factorizedWidth * index
 		val right = left + this.factorizedWidth
@@ -284,9 +281,7 @@ class Ruler : View, Zoomable, Quantifiable
 			bounds.bottom
 		)
 		
-		canvas.save()
-		
-		canvas.clipRect(bounds)
+		val points = mutableListOf<Float>()
 		
 		for(i in 0..this.quantization.count)
 		{
@@ -298,15 +293,16 @@ class Ruler : View, Zoomable, Quantifiable
 			
 			val x = bounds.width() * (i * this.quantization.value) + halfTickThickness
 			
-			// TODO: optimize draw lines in one draw call
-			canvas.drawLine(
-				bounds.left + x,
-				height,
-				bounds.left + x,
-				bounds.bottom,
-				this.painter
-			)
+			points.add(bounds.left + x)
+			points.add(height)
+			points.add(bounds.left + x)
+			points.add(bounds.bottom)
 		}
+		
+		this.painter.color = this.ticksColor
+		this.painter.strokeWidth = this.ticksThickness
+		
+		canvas.drawLines(points.toFloatArray(), this.painter)
 		
 		this.painter.color = this.textColor
 		this.painter.textSize = this.textSizeOptimum
@@ -318,7 +314,5 @@ class Ruler : View, Zoomable, Quantifiable
 			textPosition + this.textHalfPadding,
 			this.painter
 		)
-		
-		canvas.restore()
 	}
 }
