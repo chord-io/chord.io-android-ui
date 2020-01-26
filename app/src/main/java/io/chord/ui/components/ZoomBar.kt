@@ -745,10 +745,7 @@ class ZoomBar : View, Binder
 
 		val thickness = this.thumbThickness
 		val position = this.position
-		val roundness = ViewUtils.dpToPixel(
-			this,
-			this.resources.getDimension(R.dimen.zoombar_thumb_roundness)
-		)
+		val roundness = ViewUtils.dpToPixel(this.resources.getDimension(R.dimen.zoombar_thumb_roundness))
 
 		if(this.orientation == ViewOrientation.Horizontal)
 		{

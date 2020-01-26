@@ -31,7 +31,7 @@ class ScrollBar : View, Binder
 		{
 			val scrollViewContentSize = this.scrollBar.getScrollViewContentSize().toFloat()
 			val scrollViewSize = this.scrollBar.getScrollViewSize().toFloat()
-			val scrollBarSize = this.scrollBar.getSizeWithoutPadding().toFloat()
+			val scrollBarSize = this.scrollBar.getSize().toFloat()
 			val scrollViewPosition = this.scrollBar.getScrollViewPosition().toFloat()
 			
 			if(scrollViewContentSize <= scrollViewSize)
@@ -41,18 +41,25 @@ class ScrollBar : View, Binder
 			else
 			{
 				val ratio = MathUtils.ratio(scrollViewSize, scrollViewContentSize)
-				this.size = ratio * scrollBarSize
+				val size = ratio * scrollBarSize
+				
+				if(size < this.scrollBar.thumbThickness)
+				{
+					this.size = this.scrollBar.thumbThickness
+				}
+				else
+				{
+					this.size = size
+				}
 			}
 			
-			val position = MathUtils.map(
+			this.position = MathUtils.map(
 				scrollViewPosition,
 				0f,
-				scrollViewContentSize,
+				scrollViewContentSize - scrollViewSize,
 				0f,
-				scrollBarSize
+				scrollBarSize - this.size
 			)
-			
-			this.position = position
 		}
 	}
 	
@@ -627,19 +634,16 @@ class ScrollBar : View, Binder
 	{
 		// TODO see what happen when multiple scroll view are controlled
 		
-		if(position > 0)
-		{
-			val scaledPosition = MathUtils.map(
-				position,
-				0,
-				oldScrollViewContentSize - oldScrollViewSize,
-				0,
-				scrollViewContentSize - scrollViewSize
-			)
-			
-			this.position = scaledPosition
-			this.setPosition(scaledPosition)
-		}
+		val scaledPosition = MathUtils.map(
+			position,
+			0,
+			oldScrollViewContentSize - oldScrollViewSize,
+			0,
+			scrollViewContentSize - scrollViewSize
+		)
+		
+		this.position = scaledPosition
+		this.setPosition(scaledPosition)
 		
 		this.invalidate()
 	}
@@ -700,7 +704,7 @@ class ScrollBar : View, Binder
 		{
 			val centerVertical = (this.height / 2f) - (thickness / 2f)
 			val left = thumb.position + this.paddingStart
-			val right = thumb.position + thumb.size - this.paddingEnd
+			val right = left + thumb.size
 			canvas.drawRoundRect(
 				left,
 				centerVertical,
@@ -715,7 +719,7 @@ class ScrollBar : View, Binder
 		{
 			val centerHorizontal = (this.width / 2f) - (thickness / 2f)
 			val top = thumb.position + this.paddingTop
-			val bottom = thumb.position + thumb.size - this.paddingBottom
+			val bottom = top + thumb.size
 			canvas.drawRoundRect(
 				centerHorizontal,
 				top,

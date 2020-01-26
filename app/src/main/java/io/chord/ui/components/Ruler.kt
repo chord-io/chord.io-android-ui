@@ -4,6 +4,7 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.animation.doOnEnd
@@ -16,7 +17,10 @@ import io.chord.ui.utils.ViewUtils
 
 class Ruler : View, Zoomable, Quantifiable
 {
-	private var barCount: Int = 3
+	private var barCount: Int = 10
+	private var textSizeOptimum: Float = -1f
+	private var textPosition: Float = -1f
+	private var textHalfPadding: Float = -1f
 	private var zoomfactor: Float = 1f
 	private var factorizedWidth: Float = -1f
 	private var factorAnimator: ValueAnimator = ValueAnimator()
@@ -30,8 +34,10 @@ class Ruler : View, Zoomable, Quantifiable
 	private var _ticksColor: Int = -1
 	private var _textColor: Int = -1
 	private var _ticksThickness: Float = -1f
+	private var _ticksWeight: Float = -1f
 	private var _textSize: Float = -1f
 	private var _textMargin: Float = -1f
+	private var _textPadding: Float = -1f
 	
 	var defaultWidth: Float
 		get() = this._defaultWidth
@@ -61,6 +67,18 @@ class Ruler : View, Zoomable, Quantifiable
 			this.invalidate()
 		}
 	
+	var ticksWeight: Float
+		get() = this._ticksWeight
+		set(value) {
+			this._ticksWeight = when
+			{
+				value > 1f -> 1f
+				value < 0f -> 0f
+				else -> value
+			}
+			this.invalidate()
+		}
+	
 	var textSize: Float
 		get() = this._textSize
 		set(value) {
@@ -72,6 +90,13 @@ class Ruler : View, Zoomable, Quantifiable
 		get() = this._textMargin
 		set(value) {
 			this._textMargin = value
+			this.invalidate()
+		}
+	
+	var textPadding: Float
+		get() = this._textPadding
+		set(value) {
+			this._textPadding = value
 			this.invalidate()
 		}
 	
@@ -135,6 +160,11 @@ class Ruler : View, Zoomable, Quantifiable
 			this.resources.getDimension(R.dimen.ruler_tick_thickness)
 		)
 		
+		this.ticksWeight = typedArray.getFloat(
+			R.styleable.Ruler_cio_rl_ticksWeight,
+			this.resources.getInteger(R.integer.ruler_ticks_wieght) / 100f
+		)
+		
 		this.textSize = typedArray.getDimension(
 			R.styleable.Ruler_cio_rl_textSize,
 			this.resources.getDimension(R.dimen.ruler_text_size)
@@ -143,6 +173,11 @@ class Ruler : View, Zoomable, Quantifiable
 		this.textMargin = typedArray.getDimension(
 			R.styleable.Ruler_cio_rl_textMargin,
 			this.resources.getDimension(R.dimen.ruler_text_margin)
+		)
+		
+		this.textPadding = typedArray.getDimension(
+			R.styleable.Ruler_cio_rl_textPadding,
+			this.resources.getDimension(R.dimen.ruler_text_padding)
 		)
 		
 		typedArray.recycle()
@@ -203,6 +238,26 @@ class Ruler : View, Zoomable, Quantifiable
 		this.setMeasuredDimension(width.toInt(), height)
 	}
 	
+	override fun onLayout(
+		changed: Boolean,
+		left: Int,
+		top: Int,
+		right: Int,
+		bottom: Int
+	)
+	{
+		super.onLayout(changed, left, top, right, bottom)
+		
+		this.textPosition = (this.bottom - this.height * (1f - this.ticksWeight)) - this.textPadding
+		this.textSizeOptimum = ViewUtils.getOptimalTextSize(
+			"0123456789",
+			this.textSize,
+			this.textPosition,
+			this.painter
+		)
+		this.textHalfPadding = this.textPadding / 2f
+	}
+	
 	override fun onDraw(canvas: Canvas?)
 	{
 		for(i in 0 until this.barCount)
@@ -238,11 +293,12 @@ class Ruler : View, Zoomable, Quantifiable
 			val height = when(i)
 			{
 				0 -> bounds.top
-				else -> bounds.height() * 0.5f
+				else -> bounds.height() * this.ticksWeight
 			}
 			
 			val x = bounds.width() * (i * this.quantization.value) + halfTickThickness
 			
+			// TODO: optimize draw lines in one draw call
 			canvas.drawLine(
 				bounds.left + x,
 				height,
@@ -253,28 +309,13 @@ class Ruler : View, Zoomable, Quantifiable
 		}
 		
 		this.painter.color = this.textColor
-		this.painter.textSize = this.textSize
-		
-		// TODO text position on first half height
-		
-		val textPosition = ViewUtils.getTextCentered(
-			label,
-			bounds.left.toInt(),
-			bounds.centerY().toInt(),
-			this.painter
-		)
-		
-		var scaledTextMargin = this.textMargin / this.defaultWidth * bounds.width()
-		
-		if(scaledTextMargin > this.textMargin)
-		{
-			scaledTextMargin = this.textMargin
-		}
+		this.painter.textSize = this.textSizeOptimum
+		this.painter.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
 		
 		canvas.drawText(
 			label,
-			bounds.left + scaledTextMargin,
-			textPosition.y,
+			bounds.left + this.textMargin,
+			textPosition + this.textHalfPadding,
 			this.painter
 		)
 		

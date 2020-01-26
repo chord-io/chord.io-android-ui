@@ -1,16 +1,15 @@
 package io.chord.ui.utils
 
 import android.graphics.Paint
-import android.graphics.Point
 import android.graphics.PointF
 import android.graphics.Rect
-import android.util.Size
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewParent
 import androidx.core.view.forEach
 import androidx.fragment.app.FragmentActivity
+import io.chord.ui.ChordIOApplication
+import io.chord.ui.maths.LocalOptimumResolver
 import kotlin.collections.set
 
 class ViewUtils
@@ -52,16 +51,6 @@ class ViewUtils
 			}.forEach {
 				it.isEnabled = state
 			}
-		}
-		
-		fun invalidateParent(parent: ViewParent?)
-		{
-			when(parent)
-			{
-				null -> return
-				is View -> parent.invalidate()
-			}
-			
 		}
 		
 		fun getDirectChildrens(view: View): List<View>?
@@ -115,16 +104,28 @@ class ViewUtils
 			return lastParent as View
 		}
 		
-		fun dpToPixel(view: View, value: Float): Float
+		fun dpToPixel(value: Float): Float
 		{
-			val metrics = view.context.resources.displayMetrics
+			val metrics = ChordIOApplication.instance.resources.displayMetrics
 			return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value, metrics)
 		}
 		
-		fun spToPixel(view: View, value: Float): Float
+		fun pixelToDp(value: Float): Float
 		{
-			val metrics = view.context.resources.displayMetrics
+			val metrics = ChordIOApplication.instance.resources.displayMetrics
+			return value / metrics.density;
+		}
+		
+		fun spToPixel(value: Float): Float
+		{
+			val metrics = ChordIOApplication.instance.resources.displayMetrics
 			return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, value, metrics)
+		}
+		
+		fun pixelToSp(value: Float): Float
+		{
+			val metrics = ChordIOApplication.instance.resources.displayMetrics
+			return value / metrics.scaledDensity;
 		}
 		
 		fun getTextWidth(text: String, painter: Paint): Int
@@ -151,6 +152,38 @@ class ViewUtils
 			val newX = x - painter.measureText(text) / 2f
 			val newY = y - (painter.descent() + painter.ascent()) / 2f
 			return PointF(newX, newY)
+		}
+		
+		fun getOptimalTextSize(
+			text: String,
+			textSize: Float,
+			height: Float,
+			painter: Paint
+		): Float
+		{
+			val resolver = LocalOptimumResolver(textSize, 0.001f)
+			val bounds = Rect()
+			val clonedPainter = Paint(painter)
+			
+			return resolver.resolve { value ->
+				clonedPainter.textSize = value
+				clonedPainter.getTextBounds(text, 0, text.length, bounds)
+				
+				var spSize = pixelToSp(value)
+				
+				if(bounds.height() > height)
+				{
+					spSize -= 1
+				}
+				else if(bounds.height() <= height)
+				{
+					spSize += 1
+				}
+				
+				val lll = bounds.height()
+				
+				spToPixel(spSize)
+			}
 		}
 	}
 }

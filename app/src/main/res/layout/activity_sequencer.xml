@@ -36,7 +36,7 @@
             <io.chord.ui.components.Ruler
                 android:id="@+id/ruler"
                 android:layout_width="wrap_content"
-                android:layout_height="20dp"
+                android:layout_height="24dp"
                 android:background="@color/borderColor"/>
         </io.chord.ui.components.TwoDimensionalScrollView>
 

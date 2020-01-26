@@ -5,7 +5,10 @@
         <attr name="cio_rl_ticksColor" format="color"/>
         <attr name="cio_rl_textColor" format="color"/>
         <attr name="cio_rl_ticksThickness" format="dimension"/>
+        <attr name="cio_rl_ticksWeight" format="float"/>
         <attr name="cio_rl_textSize" format="dimension"/>
         <attr name="cio_rl_textMargin" format="dimension"/>
+        <attr name="cio_rl_textPadding" format="dimension"/>
     </declare-styleable>
+<!-- TODO move all default values here   -->
 </resources>
