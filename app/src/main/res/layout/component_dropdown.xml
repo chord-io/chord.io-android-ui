@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout"
     android:orientation="horizontal"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true">
     <TextView
         android:id="@+id/labelView"
         android:layout_width="wrap_content"
@@ -28,7 +30,9 @@
             android:layout_gravity="center_vertical"
             android:layout_centerInParent="true"
             android:background="@null"
-            android:spinnerMode="dialog"/>
+            android:spinnerMode="dialog"
+            android:clickable="false"
+            android:focusable="false"/>
         <com.mikepenz.iconics.view.IconicsImageView
             android:id="@+id/iconView"
             android:layout_width="@dimen/dropdown_icon_size"

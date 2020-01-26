@@ -6,11 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
+import android.widget.Spinner
 import androidx.core.view.marginEnd
 import androidx.core.view.setMargins
 import com.mikepenz.iconics.IconicsDrawable
 import com.mikepenz.iconics.typeface.library.fontawesome.FontAwesome
 import io.chord.R
+import io.chord.ui.utils.ViewUtils
 import kotlinx.android.synthetic.main.component_dropdown.view.*
 
 open class DropDown : LinearLayout
@@ -105,7 +107,7 @@ open class DropDown : LinearLayout
 	}
 	
 	protected open fun init(attrs: AttributeSet?, defStyle: Int) {
-		View.inflate(this.context, R.layout.component_dropdown, this)
+		val rootView = View.inflate(this.context, R.layout.component_dropdown, this)
 		
 		val typedArray = context.obtainStyledAttributes(
 			attrs, R.styleable.DropDown, defStyle, 0
@@ -131,5 +133,11 @@ open class DropDown : LinearLayout
 		).toInt()
 		
 		typedArray.recycle()
+		
+		val layout = this.findViewById<LinearLayout>(R.id.layout)
+		val dropdown = this.findViewById<Spinner>(R.id.dropdownView)
+		layout.setOnClickListener {
+			dropdown.performClick()
+		}
 	}
 }
