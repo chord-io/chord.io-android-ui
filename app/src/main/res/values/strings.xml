@@ -54,6 +54,9 @@
     <string name="signup_email_address">Email address</string>
     <string name="signup_password">Password</string>
 
+    <string name="trackcontrol_mute">M</string>
+    <string name="trackcontrol_solo">S</string>
+
     <string name="section_load_failed">Failed to load, tap to try again.</string>
     <string name="section_empty">Section is empty</string>
 

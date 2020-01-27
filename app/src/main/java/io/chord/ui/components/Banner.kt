@@ -122,7 +122,7 @@ class Banner : LinearLayout
 	}
 	
 	private fun init(attrs: AttributeSet?, defStyle: Int) {
-		View.inflate(context, R.layout.component_banner, this)
+		View.inflate(this.context, R.layout.component_banner, this)
 		
 		val typedArray = context.obtainStyledAttributes(
 			attrs, R.styleable.Banner, defStyle, 0

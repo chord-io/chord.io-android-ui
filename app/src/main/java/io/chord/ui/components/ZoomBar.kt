@@ -400,6 +400,8 @@ class ZoomBar : View, Binder
 		
 		val theme = this.context.theme
 		
+		// TODO change affection public to private properties
+		
 		this.orientation = typedArray.getInteger(
 			R.styleable.ZoomBar_cio_zb_orientation,
 			ViewOrientation.Horizontal.orientation

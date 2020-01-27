@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="track"
+            type="io.chord.ui.models.TrackListItemViewModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/track_list_row_height"
+        android:padding="@dimen/track_list_row_padding"
+        android:orientation="horizontal"
+        android:background="@drawable/ripple_effect"
+        android:clickable="true"
+        android:focusable="true">
+        <io.chord.ui.components.TrackControl
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            app:cio_tc_textMute="@string/trackcontrol_mute"
+            app:cio_tc_textSolo="@string/trackcontrol_solo"
+            app:cio_tc_textSize="11sp">
+        </io.chord.ui.components.TrackControl>
+
+        <TextView
+            tools:text="@tools:sample/first_names"
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="5dp"
+            android:gravity="center_vertical"
+            android:text="@{track.name}"
+            android:textSize="13sp"
+            android:ellipsize="end"
+            android:maxLines="1"/>
+    </LinearLayout>
+</layout>

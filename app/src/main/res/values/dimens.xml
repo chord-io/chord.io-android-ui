@@ -78,5 +78,6 @@
     <dimen name="mini_button_width">48dp</dimen>
     <dimen name="mini_button_height">40dp</dimen>
 
-    <dimen name="track_list_item_space_between_component">5dp</dimen>
+    <dimen name="track_control_roundness">4dp</dimen>
+    <dimen name="track_control_text_size">14sp</dimen>
 </resources>

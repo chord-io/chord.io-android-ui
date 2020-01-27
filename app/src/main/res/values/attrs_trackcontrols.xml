@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="TrackControl">
+        <attr name="cio_tc_state">
+            <enum name="none" value="0"/>
+            <enum name="mute" value="1"/>
+            <enum name="solo" value="2"/>
+        </attr>
+        <attr name="cio_tc_backgroundNormalColor" format="color"/>
+        <attr name="cio_tc_backgroundMuteColor" format="color"/>
+        <attr name="cio_tc_backgroundSoloColor" format="color"/>
+        <attr name="cio_tc_unselectedTextColor" format="color"/>
+        <attr name="cio_tc_selectedTextColor" format="color"/>
+        <attr name="cio_tc_roundness" format="dimension"/>
+        <attr name="cio_tc_textSize" format="dimension"/>
+        <attr name="cio_tc_textMute" format="string"/>
+        <attr name="cio_tc_textSolo" format="string"/>
+    </declare-styleable>
+</resources>
