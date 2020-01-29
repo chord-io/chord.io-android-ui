@@ -5,6 +5,7 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
 import android.util.AttributeSet
+import android.view.MotionEvent
 import android.view.View
 import androidx.core.graphics.toRectF
 import io.chord.R
@@ -28,7 +29,7 @@ class TrackControl : View
 	var state: TrackControlState
 		get() = this._state
 		set(value) {
-			this._state
+			this._state = value
 			this.invalidate()
 		}
 	
@@ -185,6 +186,26 @@ class TrackControl : View
 		)!!
 
 		typedArray.recycle()
+	}
+	
+	override fun onTouchEvent(event: MotionEvent): Boolean
+	{
+		if(event.action == MotionEvent.ACTION_DOWN)
+		{
+			val position = event.x
+			val halfWidth = this.width / 2f
+			
+			this.state = when
+			{
+				position <= halfWidth && this.state != TrackControlState.Mute -> TrackControlState.Mute
+				position > halfWidth && this.state != TrackControlState.Solo -> TrackControlState.Solo
+				else -> TrackControlState.None
+			}
+			
+			return true
+		}
+		
+		return super.onTouchEvent(event)
 	}
 	
 	override fun onDraw(canvas: Canvas?)
