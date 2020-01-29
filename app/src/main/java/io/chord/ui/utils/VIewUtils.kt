@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.core.view.forEach
 import androidx.fragment.app.FragmentActivity
 import io.chord.ui.ChordIOApplication
+import io.chord.ui.maths.LocalMaximumResolver
 import io.chord.ui.maths.LocalOptimumResolver
 import kotlin.collections.set
 
@@ -180,7 +181,31 @@ class ViewUtils
 					spSize += 1
 				}
 				
-				val lll = bounds.height()
+				spToPixel(spSize)
+			}
+		}
+		
+		fun getMaximumTextSize(
+			text: String,
+			textSize: Float,
+			height: Float,
+			painter: Paint
+		): Float
+		{
+			val resolver = LocalMaximumResolver(textSize, 0.001f)
+			val bounds = Rect()
+			val clonedPainter = Paint(painter)
+			
+			return resolver.resolve { value ->
+				clonedPainter.textSize = value
+				clonedPainter.getTextBounds(text, 0, text.length, bounds)
+				
+				var spSize = pixelToSp(value)
+				
+				if(bounds.height() > height)
+				{
+					spSize -= 1
+				}
 				
 				spToPixel(spSize)
 			}

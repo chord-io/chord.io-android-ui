@@ -35,8 +35,8 @@ class MathUtils
 			
 			return when
 			{
-				value < first -> first
-				value > last -> last
+				value <= first -> first
+				value >= last -> last
 				else -> steps
 					.stream()
 					.filter { it >= value }
@@ -53,8 +53,8 @@ class MathUtils
 			
 			return when
 			{
-				value < first -> first
-				value > last -> last
+				value <= first -> first
+				value >= last -> last
 				else -> values
 					.stream()
 					.map {

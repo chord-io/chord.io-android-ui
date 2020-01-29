@@ -4,6 +4,7 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.graphics.toRectF
@@ -117,20 +118,24 @@ class ZoomBar : View, Binder
 				this.zoomBar.isScrolling = true
 			}
 			
-			this.setPosition(event2)
+			this.setPosition(event2) { position ->
+				this.zoomBar.setPosition(position)
+			}
 			return true
 		}
 		
 		override fun onDoubleTap(event: MotionEvent): Boolean {
 			this.beginConfigureAnimation()
-			this.zoomBar.setFactor(this.zoomBar.factors[this.zoomBar.defaultFactorIndex])
+			this.zoomBar.factor = this.zoomBar.factors[this.zoomBar.defaultFactorIndex]
 			this.endConfigureAnimation()
 			return true
 		}
 		
 		override fun onSingleTapConfirmed(event: MotionEvent): Boolean {
 			this.beginConfigureAnimation()
-			this.setPosition(event)
+			this.setPosition(event) { position ->
+				this.zoomBar.setPositionWithoutInvalidate(position)
+			}
 			this.endConfigureAnimation()
 			return true
 		}
@@ -150,7 +155,7 @@ class ZoomBar : View, Binder
 			this.zoomBar.positionAnimator.start()
 		}
 		
-		private fun setPosition(event: MotionEvent)
+		private fun setPosition(event: MotionEvent, setter: (Float) -> Unit)
 		{
 			val limit = this.zoomBar.getLimit()
 			var position = if(this.zoomBar.orientation == ViewOrientation.Vertical)
@@ -169,7 +174,7 @@ class ZoomBar : View, Binder
 				else -> position
 			}
 			
-			this.zoomBar.setPositionWithoutInvalidate(position)
+			setter(position)
 		}
 	}
 	
@@ -184,7 +189,6 @@ class ZoomBar : View, Binder
 	)
 	private val painter: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
 	private var position: Float = 0f
-	private var factor: Float = -1f
 	private var isScrolling: Boolean = false
 	
 	private val defaultFactorIndex = 5
@@ -206,6 +210,7 @@ class ZoomBar : View, Binder
 	)
 	
 	private var _orientation: ViewOrientation = ViewOrientation.Horizontal
+	private var _factor: Float = -1f
 	private var _moveDuration: Long = -1
 	private var _focusEnterDuration: Long = -1
 	private var _focusExitDuration: Long = -1
@@ -230,6 +235,17 @@ class ZoomBar : View, Binder
 		set(value) {
 			this._orientation = value
 			this.invalidate()
+		}
+	
+	var factor: Float
+		get() = this._factor
+		set(value) {
+			val factor = MathUtils.nearest(
+				value,
+				this.factors
+			)
+			
+			this.internalSetFactor(factor)
 		}
 	
 	var moveDuration: Long
@@ -409,6 +425,17 @@ class ZoomBar : View, Binder
 			ViewOrientation.values()[it]
 		}
 		
+		val factorTypedValue = TypedValue()
+		this.resources.getValue(
+			R.dimen.zoombar_factor,
+			factorTypedValue,
+			true
+		)
+		this.factor = typedArray.getFloat(
+			R.styleable.ZoomBar_cio_zb_factor,
+			factorTypedValue.float
+		)
+		
 		this.moveDuration = typedArray.getInteger(
 			R.styleable.ZoomBar_cio_zb_moveDuration,
 			this.resources.getInteger(R.integer.zoombar_move_duration)
@@ -511,6 +538,7 @@ class ZoomBar : View, Binder
 		val rootView = ViewUtils.getParentRootView(this)
 		val zoomable = rootView.findViewById<View>(id)
 		this.zoomables[id] = zoomable as Zoomable
+		this.dispatchEvent(zoomable)
 	}
 	
 	override fun detach(id: Int)
@@ -521,8 +549,13 @@ class ZoomBar : View, Binder
 	private fun dispatchEvent()
 	{
 		this.zoomables.forEach { (_, zoomable) ->
-			zoomable.setZoomFactor(this.orientation, this.factor, !this.isScrolling)
+			this.dispatchEvent(zoomable)
 		}
+	}
+	
+	private fun dispatchEvent(zoomable: Zoomable)
+	{
+		zoomable.setZoomFactor(this.orientation, this.factor, !this.isScrolling)
 	}
 	
 	private fun getSizeWithoutPadding(): Int
@@ -603,14 +636,18 @@ class ZoomBar : View, Binder
 		}
 	}
 	
-	private fun setFactor(factor: Float)
+	private fun factorToPosition(factor: Float)
 	{
 		val steps = this.getSteps()
 		val index = this.factors.indexOf(factor)
-		this.factor = factor
 		this.position = steps[index]
+	}
+	
+	private fun internalSetFactor(factor: Float)
+	{
+		this.factorToPosition(factor)
+		this._factor = factor
 		this.invalidate()
-		
 		this.dispatchEvent()
 	}
 	
@@ -619,9 +656,8 @@ class ZoomBar : View, Binder
 		val steps = this.getSteps()
 		val step = MathUtils.nearest(position, steps)
 		val index = steps.indexOf(step)
-		this.factor = this.factors[index]
+		this._factor = this.factors[index]
 		this.position = step
-		
 		this.dispatchEvent()
 	}
 	
@@ -645,17 +681,15 @@ class ZoomBar : View, Binder
 	
 	override fun onDraw(canvas: Canvas?)
 	{
-		if(this.factor == -1f)
+		if(this.position.isNaN())
 		{
-			this.setFactor(this.factors[this.defaultFactorIndex])
+			this.factorToPosition(this._factor)
 		}
 		
 		this.drawTicks(canvas!!)
 		this.drawTrack(canvas)
 		this.drawThumb(canvas)
 		this.drawBubble(canvas)
-		
-		this.invalidate()
 	}
 	
 	private fun drawTrack(canvas: Canvas)

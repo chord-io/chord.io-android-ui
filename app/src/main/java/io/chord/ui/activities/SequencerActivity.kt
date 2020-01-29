@@ -8,6 +8,7 @@ import io.chord.ui.components.QuantizeDropDown
 import io.chord.ui.components.ScrollBar
 import io.chord.ui.components.TrackList
 import io.chord.ui.components.ZoomBar
+import kotlinx.android.synthetic.main.activity_sequencer.*
 
 class SequencerActivity : AppCompatActivity()
 {
@@ -20,18 +21,37 @@ class SequencerActivity : AppCompatActivity()
 		val horizontalScrollBar = this.findViewById<ScrollBar>(R.id.horizontalScrollBar)
 		horizontalScrollBar.attach(R.id.scrollview)
 		val verticalScrollBar = this.findViewById<ScrollBar>(R.id.verticalScrollBar)
-		verticalScrollBar.attach(R.id.scrollview2)
+//		verticalScrollBar.attach(R.id.scrollview2)
+		verticalScrollBar.attach(R.id.trackListScrollView)
 		
 		val horizontalZoomBar = this.findViewById<ZoomBar>(R.id.horizontalZoomBar)
 		horizontalZoomBar.attach(R.id.ruler)
 		
+		val veticalZoomBar = this.findViewById<ZoomBar>(R.id.verticalZoomBar)
+		verticalZoomBar.attach(R.id.trackList)
+		
 		this.findViewById<QuantizeDropDown>(R.id.quantizeDropDown)
 			.attach(R.id.ruler)
 		
-		this.findViewById<TrackList>(R.id.tracklist)
+		this.findViewById<TrackList>(R.id.trackList)
 			.add(Track("track title too long", 10, mutableListOf()))
 		
-		this.findViewById<TrackList>(R.id.tracklist)
+		this.findViewById<TrackList>(R.id.trackList)
+			.add(Track("test2", 10, mutableListOf()))
+		
+		this.findViewById<TrackList>(R.id.trackList)
+			.add(Track("test2", 10, mutableListOf()))
+		
+		this.findViewById<TrackList>(R.id.trackList)
+			.add(Track("test2", 10, mutableListOf()))
+		
+		this.findViewById<TrackList>(R.id.trackList)
+			.add(Track("test2", 10, mutableListOf()))
+		
+		this.findViewById<TrackList>(R.id.trackList)
+			.add(Track("test2", 10, mutableListOf()))
+		
+		this.findViewById<TrackList>(R.id.trackList)
 			.add(Track("test2", 10, mutableListOf()))
 	}
 }

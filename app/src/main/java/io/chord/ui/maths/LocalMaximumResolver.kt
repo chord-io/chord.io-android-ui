@@ -4,7 +4,7 @@ import io.chord.ui.utils.ViewUtils
 import kotlin.math.abs
 import kotlin.math.sign
 
-class LocalOptimumResolver(
+class LocalMaximumResolver(
 	private var value: Float,
 	private val tolerance: Float
 )
@@ -15,26 +15,23 @@ class LocalOptimumResolver(
 	{
 		this.values.clear()
 		this.values.add(this.value)
+		var lastValue: Float
 		
 		do
 		{
-			val lastValue = this.values.last()
+			lastValue = this.values.last()
 			this.value = evaluator.invoke(lastValue)
 		}
-		while(!this.isOptimal(this.value))
+		while(!this.isOptimal(this.value, lastValue))
 		
 		return this.value
 	}
 	
-	private fun isOptimal(value: Float): Boolean
+	private fun isOptimal(value: Float, lastValue: Float): Boolean
 	{
-		val isOptimal = this.values
-			.stream()
-			.anyMatch {
-				abs(value - it) < this.tolerance
-			}
+		val isOptimal = abs(value - lastValue) < this.tolerance
 		
-		if(isOptimal && this.values.size > 1)
+		if(isOptimal)
 		{
 			return true
 		}

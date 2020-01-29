@@ -4,10 +4,14 @@
 
     <item name="scrollbar_move_duration" type="integer">500</item>
 
+    <item name="zoombar_factor" type="dimen" format="float">1.0</item>
     <item name="zoombar_move_duration" type="integer">500</item>
     <item name="zoombar_focus_enter_duration" type="integer">250</item>
     <item name="zoombar_focus_exit_duration" type="integer">1000</item>
 
     <item name="ruler_zoom_duration" type="integer">500</item>
     <item name="ruler_ticks_wieght" type="integer">75</item>
+
+    <!-- TODO: factoryze values -->
+    <item name="track_list_zoom_duration" type="integer">500</item>
 </resources>

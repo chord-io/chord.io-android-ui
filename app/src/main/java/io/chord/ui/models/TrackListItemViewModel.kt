@@ -9,6 +9,4 @@ class TrackListItemViewModel(
 ) : BaseObservable()
 {
 	var name: String = model.name
-	
-	var channel: Int = model.channel
 }

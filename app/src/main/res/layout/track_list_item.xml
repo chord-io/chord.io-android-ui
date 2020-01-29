@@ -10,15 +10,15 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/track_list_row_height"
-        android:padding="@dimen/track_list_row_padding"
+        android:layout_height="match_parent"
         android:orientation="horizontal"
         android:background="@drawable/ripple_effect"
         android:clickable="true"
         android:focusable="true">
         <io.chord.ui.components.TrackControl
             android:layout_width="48dp"
-            android:layout_height="match_parent"
+            android:layout_height="24dp"
+            android:layout_gravity="center_vertical"
             app:cio_tc_textMute="@string/trackcontrol_mute"
             app:cio_tc_textSolo="@string/trackcontrol_solo"
             app:cio_tc_textSize="11sp">

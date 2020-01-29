@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="TrackList">
+        <attr name="cio_tl_dividerColor" format="color"/>
+        <attr name="cio_tl_dividerThickness" format="dimension"/>
+        <attr name="cio_tl_rowHeight" format="dimension"/>
+        <attr name="cio_tl_rowPadding" format="dimension"/>
     </declare-styleable>
 </resources>

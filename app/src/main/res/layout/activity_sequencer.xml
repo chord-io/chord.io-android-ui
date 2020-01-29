@@ -26,15 +26,25 @@
             android:layout_row="0"
             android:background="@color/backgroundPrimary"/>
 
-        <io.chord.ui.components.TrackList
-            android:id="@+id/tracklist"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_columnWeight="0.33"
             android:layout_rowWeight="1"
             android:layout_column="0"
             android:layout_row="1"
-            android:background="@color/backgroundTernary"/>
+            android:background="@color/backgroundTernary">
+            <ScrollView
+                android:id="@+id/trackListScrollView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <io.chord.ui.components.TrackList
+                    android:id="@+id/trackList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:showDividers="middle"/>
+            </ScrollView>
+        </LinearLayout>
 
         <io.chord.ui.components.TwoDimensionalScrollView
             android:id="@+id/scrollview"
@@ -90,7 +100,9 @@
                 android:layout_height="0dp"
                 android:layout_weight="0.4"
                 app:cio_zb_orientation="vertical"
-                app:cio_zb_ticksThickness="0dp" />
+                app:cio_zb_ticksThickness="0dp"
+                app:cio_zb_bubbleMargin="20dp"
+                app:cio_zb_factor="0.3"/>
         </LinearLayout>
 
         <LinearLayout
