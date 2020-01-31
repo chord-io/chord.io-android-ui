@@ -120,6 +120,8 @@ class TrackControl : View, Binder
 		}
 		
 		private var state: State = NormalState()
+		private var requestInvalidateCounter: Int = 0
+		private val requestInvalidateThreshold: Int = 4
 		
 		private val backgroundMuteAnimator: ValueAnimator = ValueAnimator()
 		private val textMuteAnimator: ValueAnimator = ValueAnimator()
@@ -182,7 +184,7 @@ class TrackControl : View, Binder
 					this.trackControl.backgroundMuteColor,
 					this.backgroundMuteOpacity
 				)
-				this.trackControl.invalidate()
+				this.requestInvalidate()
 			}
 		}
 		
@@ -194,7 +196,7 @@ class TrackControl : View, Binder
 					this.trackControl.backgroundSoloColor,
 					this.backgroundSoloOpacity
 				)
-				this.trackControl.invalidate()
+				this.requestInvalidate()
 			}
 		}
 		
@@ -202,7 +204,7 @@ class TrackControl : View, Binder
 		{
 			this.textMuteAnimator.addUpdateListener {
 				this.textMuteColor = it.animatedValue as Int
-				this.trackControl.invalidate()
+				this.requestInvalidate()
 			}
 			this.textMuteAnimator.setIntValues(
 				this.trackControl.unselectedTextColor,
@@ -215,7 +217,7 @@ class TrackControl : View, Binder
 		{
 			this.textSoloAnimator.addUpdateListener {
 				this.textSoloColor = it.animatedValue as Int
-				this.trackControl.invalidate()
+				this.requestInvalidate()
 			}
 			this.textSoloAnimator.setIntValues(
 				this.trackControl.unselectedTextColor,
@@ -237,7 +239,19 @@ class TrackControl : View, Binder
 		fun invalidate()
 		{
 			this.state.changeColor(this)
+		}
+		
+		private fun requestInvalidate()
+		{
+			this.requestInvalidateCounter += 1
+			
+			if(this.requestInvalidateCounter < this.requestInvalidateThreshold)
+			{
+				return
+			}
+			
 			this.trackControl.invalidate()
+			this.requestInvalidateCounter = 0
 		}
 	}
 	
