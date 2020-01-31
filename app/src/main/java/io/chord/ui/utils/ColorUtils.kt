@@ -20,5 +20,17 @@ class ColorUtils
 				colorObject.blue()
 			)
 		}
+		
+		fun toHsv(color: Int): FloatArray
+		{
+			val hsv = floatArrayOf(0f, 0f, 0f)
+			Color.colorToHSV(color, hsv)
+			return hsv
+		}
+		
+		fun fromHsv(color: FloatArray): Int
+		{
+			return Color.HSVToColor(color)
+		}
 	}
 }

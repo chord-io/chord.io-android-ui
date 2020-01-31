@@ -1,21 +1,252 @@
 package io.chord.ui.components
 
+import android.animation.AnimatorSet
+import android.animation.ValueAnimator
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Path
+import android.graphics.*
+import android.graphics.drawable.RippleDrawable
+import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.shapes.RoundRectShape
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.graphics.toRectF
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import io.chord.R
+import io.chord.ui.animations.HsvColorEvaluator
+import io.chord.ui.utils.ColorUtils
+import io.chord.ui.utils.GraphicUtils
+import io.chord.ui.utils.RippleDrawableUtils
 import io.chord.ui.utils.ViewUtils
+import java.util.*
 
-class TrackControl : View
+
+class TrackControl : View, Binder
 {
+	private class StateContext(
+		private val trackControl: TrackControl
+	)
+	{
+		private interface State
+		{
+			fun changeColor(context: StateContext)
+		}
+		
+		private class NormalState : State
+		{
+			override fun changeColor(context: StateContext)
+			{
+				context.backgroundMuteAnimator.setFloatValues(
+					context.backgroundMuteOpacity,
+					0f
+				)
+				context.backgroundSoloAnimator.setFloatValues(
+					context.backgroundSoloOpacity,
+					0f
+				)
+				context.textMuteAnimator.setIntValues(
+					context.textMuteColor,
+					context.trackControl.unselectedTextColor
+				)
+				context.textSoloAnimator.setIntValues(
+					context.textSoloColor,
+					context.trackControl.unselectedTextColor
+				)
+				context.ripple.setColor(RippleDrawableUtils.getColorStateList(
+					context.trackControl.backgroundNormalColor,
+					context.trackControl.backgroundNormalColor
+				))
+				
+				context.animatorSet.start()
+			}
+		}
+		
+		private class MuteState : State
+		{
+			override fun changeColor(context: StateContext)
+			{
+				context.backgroundMuteAnimator.setFloatValues(
+					context.backgroundMuteOpacity,
+					1f
+				)
+				context.backgroundSoloAnimator.setFloatValues(
+					context.backgroundSoloOpacity,
+					0f
+				)
+				context.textMuteAnimator.setIntValues(
+					context.textMuteColor,
+					context.trackControl.selectedTextColor
+				)
+				context.textSoloAnimator.setIntValues(
+					context.textSoloColor,
+					context.trackControl.unselectedTextColor
+				)
+				context.ripple.setColor(RippleDrawableUtils.getColorStateList(
+					context.trackControl.backgroundNormalColor,
+					context.trackControl.backgroundMuteColor
+				))
+				
+				context.animatorSet.start()
+			}
+		}
+		
+		private class SoloState : State
+		{
+			override fun changeColor(context: StateContext)
+			{
+				context.backgroundMuteAnimator.setFloatValues(
+					context.backgroundMuteOpacity,
+					0f
+				)
+				context.backgroundSoloAnimator.setFloatValues(
+					context.backgroundSoloOpacity,
+					1f
+				)
+				context.textMuteAnimator.setIntValues(
+					context.textMuteColor,
+					context.trackControl.unselectedTextColor
+				)
+				context.textSoloAnimator.setIntValues(
+					context.textSoloColor,
+					context.trackControl.selectedTextColor
+				)
+				context.ripple.setColor(RippleDrawableUtils.getColorStateList(
+					context.trackControl.backgroundNormalColor,
+					context.trackControl.backgroundSoloColor
+				))
+				
+				context.animatorSet.start()
+			}
+		}
+		
+		private var state: State = NormalState()
+		
+		private val backgroundMuteAnimator: ValueAnimator = ValueAnimator()
+		private val textMuteAnimator: ValueAnimator = ValueAnimator()
+		private val backgroundSoloAnimator: ValueAnimator = ValueAnimator()
+		private val textSoloAnimator: ValueAnimator = ValueAnimator()
+		val animatorSet: AnimatorSet = AnimatorSet()
+		var backgroundMuteOpacity: Float = 0f
+		var textMuteColor: Int = 0
+		var backgroundSoloOpacity: Float = 0f
+		var textSoloColor: Int = 0
+		val ripple: RippleDrawable
+		
+		init
+		{
+			this.trackControl._backgroundMuteColor = ColorUtils.toTransparent(
+				this.trackControl.backgroundMuteColor,
+				this.backgroundMuteOpacity
+			)
+			this.trackControl._backgroundSoloColor = ColorUtils.toTransparent(
+				this.trackControl.backgroundSoloColor,
+				this.backgroundSoloOpacity
+			)
+			this.textMuteColor = this.trackControl.unselectedTextColor
+			this.textSoloColor = this.trackControl.unselectedTextColor
+			
+			this.initBackgroundMuteAnimator()
+			this.initBackgroundSoloAnimator()
+			this.initTextMuteAnimator()
+			this.initTextSoloAnimator()
+			
+			this.animatorSet.playTogether(
+				this.backgroundMuteAnimator,
+				this.backgroundSoloAnimator,
+				this.textMuteAnimator,
+				this.textSoloAnimator
+			)
+			this.animatorSet.duration = this.trackControl.animationDuration
+			// TODO : set interpolator on another place
+			this.animatorSet.interpolator = FastOutSlowInInterpolator()
+			
+			val radius = FloatArray(8)
+			Arrays.fill(radius, this.trackControl.roundness)
+			val shape = RoundRectShape(radius, null, null)
+			val mask = ShapeDrawable(shape)
+			
+			this.ripple = RippleDrawableUtils.create(
+				this.trackControl.backgroundNormalColor,
+				this.trackControl.backgroundNormalColor,
+				mask
+			)
+			
+			this.trackControl.background = this.ripple
+		}
+		
+		private fun initBackgroundMuteAnimator()
+		{
+			this.backgroundMuteAnimator.addUpdateListener {
+				this.backgroundMuteOpacity = it.animatedValue as Float
+				this.trackControl._backgroundMuteColor = ColorUtils.toTransparent(
+					this.trackControl.backgroundMuteColor,
+					this.backgroundMuteOpacity
+				)
+				this.trackControl.invalidate()
+			}
+		}
+		
+		private fun initBackgroundSoloAnimator()
+		{
+			this.backgroundSoloAnimator.addUpdateListener {
+				this.backgroundSoloOpacity = it.animatedValue as Float
+				this.trackControl._backgroundSoloColor = ColorUtils.toTransparent(
+					this.trackControl.backgroundSoloColor,
+					this.backgroundSoloOpacity
+				)
+				this.trackControl.invalidate()
+			}
+		}
+		
+		private fun initTextMuteAnimator()
+		{
+			this.textMuteAnimator.addUpdateListener {
+				this.textMuteColor = it.animatedValue as Int
+				this.trackControl.invalidate()
+			}
+			this.textMuteAnimator.setIntValues(
+				this.trackControl.unselectedTextColor,
+				this.trackControl.unselectedTextColor
+			)
+			this.textMuteAnimator.setEvaluator(HsvColorEvaluator())
+		}
+		
+		private fun initTextSoloAnimator()
+		{
+			this.textSoloAnimator.addUpdateListener {
+				this.textSoloColor = it.animatedValue as Int
+				this.trackControl.invalidate()
+			}
+			this.textSoloAnimator.setIntValues(
+				this.trackControl.unselectedTextColor,
+				this.trackControl.unselectedTextColor
+			)
+			this.textSoloAnimator.setEvaluator(HsvColorEvaluator())
+		}
+		
+		fun setState(state: TrackControlState)
+		{
+			this.state = when(state)
+			{
+				TrackControlState.Normal -> NormalState()
+				TrackControlState.Mute -> MuteState()
+				TrackControlState.Solo -> SoloState()
+			}
+		}
+		
+		fun invalidate()
+		{
+			this.state.changeColor(this)
+			this.trackControl.invalidate()
+		}
+	}
+	
+	private val controllables: MutableMap<Int, TrackControl> = mutableMapOf()
+	private lateinit var stateContext: StateContext
 	private val painter: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
 
-	private var _state: TrackControlState = TrackControlState.None
+	private var _state: TrackControlState = TrackControlState.Normal
+	private var _animationDuration: Long = -1
 	private var _backgroundNormalColor: Int = -1
 	private var _backgroundMuteColor: Int = -1
 	private var _backgroundSoloColor: Int = -1
@@ -30,49 +261,63 @@ class TrackControl : View
 		get() = this._state
 		set(value) {
 			this._state = value
-			this.invalidate()
+			this.controllables.forEach { _, trackControl ->
+				trackControl.state = value
+			}
+			this.stateContext.setState(value)
+			this.stateContext.invalidate()
+		}
+	
+	var animationDuration: Long
+		get() = this._animationDuration
+		set(value) {
+			this._animationDuration = value
+			this.stateContext.animatorSet.duration = value
 		}
 	
 	var backgroundNormalColor: Int
 		get() = this._backgroundNormalColor
 		set(value) {
 			this._backgroundNormalColor = value
-			this.invalidate()
+			RippleDrawableUtils.setBackgroundColor(
+				this.stateContext.ripple,
+				value
+			)
+			this.stateContext.invalidate()
 		}
 	
 	var backgroundMuteColor: Int
 		get() = this._backgroundMuteColor
 		set(value) {
 			this._backgroundMuteColor = value
-			this.invalidate()
+			this.stateContext.invalidate()
 		}
 	
 	var backgroundSoloColor: Int
 		get() = this._backgroundSoloColor
 		set(value) {
 			this._backgroundSoloColor = value
-			this.invalidate()
+			this.stateContext.invalidate()
 		}
 	
 	var unselectedTextColor: Int
 		get() = this._unselectedTextColor
 		set(value) {
 			this._unselectedTextColor = value
-			this.invalidate()
+			this.stateContext.invalidate()
 		}
 	
 	var selectedTextColor: Int
 		get() = this._selectedTextColor
 		set(value) {
 			this._selectedTextColor = value
-			this.invalidate()
+			this.stateContext.invalidate()
 		}
 	
 	var roundness: Float
 		get() = this._roundness
 		set(value) {
 			this._roundness = value
-			this.invalidate()
 		}
 	
 	var textSize: Float
@@ -137,10 +382,15 @@ class TrackControl : View
 		
 		this._state = typedArray.getInteger(
 			R.styleable.TrackControl_cio_tc_state,
-			TrackControlState.None.state
+			TrackControlState.Normal.state
 		).let {
 			TrackControlState.values()[it]
 		}
+		
+		this._animationDuration = typedArray.getInteger(
+			R.styleable.TrackControl_cio_tc_animationDuration,
+			this.resources.getInteger(R.integer.track_control_animation_duration)
+		).toLong()
 		
 		this._backgroundNormalColor = typedArray.getColor(
 			R.styleable.TrackControl_cio_tc_backgroundNormalColor,
@@ -186,6 +436,31 @@ class TrackControl : View
 		)!!
 
 		typedArray.recycle()
+		
+		this.stateContext = StateContext(this)
+		
+		if(this.id == -1)
+		{
+			this.id = View.generateViewId()
+		}
+		
+		this.isClickable = true
+		this.isFocusable = false
+		this.isFocusableInTouchMode = false
+	}
+	
+	override fun attach(id: Int)
+	{
+		val rootView = ViewUtils.getParentRootView(this)
+		val controllable = rootView.findViewById<TrackControl>(id)
+		controllable.controllables.clear()
+		controllable.state = this.state
+		this.controllables[id] = controllable
+	}
+	
+	override fun detach(id: Int)
+	{
+		this.controllables.remove(id)
 	}
 	
 	override fun onTouchEvent(event: MotionEvent): Boolean
@@ -194,18 +469,20 @@ class TrackControl : View
 		{
 			val position = event.x
 			val halfWidth = this.width / 2f
-			
+			val halfHeight = this.height / 2f
+
 			this.state = when
 			{
 				position <= halfWidth && this.state != TrackControlState.Mute -> TrackControlState.Mute
 				position > halfWidth && this.state != TrackControlState.Solo -> TrackControlState.Solo
-				else -> TrackControlState.None
+				else -> TrackControlState.Normal
 			}
 			
-			return true
+			this.stateContext.ripple.setHotspot(halfWidth, halfHeight)
 		}
 		
-		return super.onTouchEvent(event)
+		super.onTouchEvent(event)
+		return true
 	}
 	
 	override fun onDraw(canvas: Canvas?)
@@ -216,8 +493,9 @@ class TrackControl : View
 	
 	private fun drawMuteButton(canvas: Canvas)
 	{
-		val bounds = canvas.clipBounds.toRectF()
+		this.painter.color = this.backgroundMuteColor
 		
+		val bounds = canvas.clipBounds.toRectF()
 		bounds.set(
 			bounds.left,
 			bounds.top,
@@ -225,39 +503,18 @@ class TrackControl : View
 			bounds.bottom
 		)
 		
-		if(this.state == TrackControlState.Mute)
-		{
-			this.painter.color = this.backgroundMuteColor
-		}
-		else
-		{
-			this.painter.color = this.backgroundNormalColor
-		}
-		
-		val corners = floatArrayOf(
-			this.roundness, this.roundness,
-			0f, 0f,
-			0f, 0f,
-			this.roundness, this.roundness
-		)
-		
-		val path = Path()
-		path.addRoundRect(bounds, corners, Path.Direction.CW)
-		
 		canvas.drawPath(
-			path,
+			GraphicUtils.getRoundRectPath(
+				bounds,
+				this.roundness,
+				0f,
+				0f,
+				this.roundness
+			),
 			this.painter
 		)
 		
-		if(this.state == TrackControlState.Mute)
-		{
-			this.painter.color = this.selectedTextColor
-		}
-		else
-		{
-			this.painter.color = this.unselectedTextColor
-		}
-		
+		this.painter.color = this.stateContext.textMuteColor
 		this.painter.textSize = this.textSize
 		
 		val textPosition = ViewUtils.getTextCentered(
@@ -277,8 +534,9 @@ class TrackControl : View
 	
 	private fun drawSoloButton(canvas: Canvas)
 	{
-		val bounds = canvas.clipBounds.toRectF()
+		this.painter.color = this.backgroundSoloColor
 		
+		val bounds = canvas.clipBounds.toRectF()
 		bounds.set(
 			bounds.left + bounds.width() / 2f,
 			bounds.top,
@@ -286,39 +544,18 @@ class TrackControl : View
 			bounds.bottom
 		)
 		
-		if(this.state == TrackControlState.Solo)
-		{
-			this.painter.color = this.backgroundSoloColor
-		}
-		else
-		{
-			this.painter.color = this.backgroundNormalColor
-		}
-		
-		val corners = floatArrayOf(
-			0f, 0f,
-			this.roundness, this.roundness,
-			this.roundness, this.roundness,
-			0f, 0f
-		)
-		
-		val path = Path()
-		path.addRoundRect(bounds, corners, Path.Direction.CW)
-		
 		canvas.drawPath(
-			path,
+			GraphicUtils.getRoundRectPath(
+				bounds,
+				0f,
+				this.roundness,
+				this.roundness,
+				0f
+			),
 			this.painter
 		)
 		
-		if(this.state == TrackControlState.Solo)
-		{
-			this.painter.color = this.selectedTextColor
-		}
-		else
-		{
-			this.painter.color = this.unselectedTextColor
-		}
-		
+		this.painter.color = this.stateContext.textSoloColor
 		this.painter.textSize = this.textSize
 		
 		val textPosition = ViewUtils.getTextCentered(

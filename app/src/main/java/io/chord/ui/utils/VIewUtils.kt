@@ -17,11 +17,11 @@ class ViewUtils
 {
 	companion object
 	{
-		fun setViewState(view: View, state: Boolean)
+		fun getChildrens(root: View): List<View>
 		{
 			var depth = 0
 			val views: MutableMap<Int, MutableList<View>> = mutableMapOf()
-			views[depth] = mutableListOf(view)
+			views[depth] = mutableListOf(root)
 			
 			while(true)
 			{
@@ -47,9 +47,14 @@ class ViewUtils
 				views[depth] = nextViews
 			}
 			
-			views.flatMap {
+			return views.flatMap {
 				it.value
-			}.forEach {
+			}
+		}
+		
+		fun setViewState(root: View, state: Boolean)
+		{
+			getChildrens(root).forEach {
 				it.isEnabled = state
 			}
 		}
@@ -76,6 +81,12 @@ class ViewUtils
 			}
 
 			return null
+		}
+		
+		inline fun <reified TType: View> getChildOfType(root: View): List<TType>
+		{
+			return getChildrens(root)
+				.filterIsInstance<TType>()
 		}
 		
 		fun getRootView(activity: FragmentActivity): View

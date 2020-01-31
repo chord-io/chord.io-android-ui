@@ -4,10 +4,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import io.chord.R
 import io.chord.clients.models.Track
-import io.chord.ui.components.QuantizeDropDown
-import io.chord.ui.components.ScrollBar
-import io.chord.ui.components.TrackList
-import io.chord.ui.components.ZoomBar
+import io.chord.ui.components.*
+import io.chord.ui.utils.ViewUtils
 import kotlinx.android.synthetic.main.activity_sequencer.*
 
 class SequencerActivity : AppCompatActivity()
@@ -33,25 +31,33 @@ class SequencerActivity : AppCompatActivity()
 		this.findViewById<QuantizeDropDown>(R.id.quantizeDropDown)
 			.attach(R.id.ruler)
 		
-		this.findViewById<TrackList>(R.id.trackList)
+		val trackList = this.findViewById<TrackList>(R.id.trackList)
+		
+		trackList
 			.add(Track("track title too long", 10, mutableListOf()))
 		
-		this.findViewById<TrackList>(R.id.trackList)
+		trackList
 			.add(Track("test2", 10, mutableListOf()))
 		
-		this.findViewById<TrackList>(R.id.trackList)
+		trackList
 			.add(Track("test2", 10, mutableListOf()))
 		
-		this.findViewById<TrackList>(R.id.trackList)
+		trackList
 			.add(Track("test2", 10, mutableListOf()))
 		
-		this.findViewById<TrackList>(R.id.trackList)
+		trackList
 			.add(Track("test2", 10, mutableListOf()))
 		
-		this.findViewById<TrackList>(R.id.trackList)
+		trackList
 			.add(Track("test2", 10, mutableListOf()))
 		
-		this.findViewById<TrackList>(R.id.trackList)
+		trackList
 			.add(Track("test2", 10, mutableListOf()))
+		
+		val trackControlMaster = this.findViewById<TrackControl>(R.id.trackControlMaster)
+		ViewUtils.getChildOfType<TrackControl>(trackList)
+			.forEach {
+				trackControlMaster.attach(it.id)
+			}
 	}
 }

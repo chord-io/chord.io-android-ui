@@ -14,4 +14,6 @@
 
     <!-- TODO: factoryze values -->
     <item name="track_list_zoom_duration" type="integer">500</item>
+
+    <item name="track_control_animation_duration" type="integer">500</item>
 </resources>

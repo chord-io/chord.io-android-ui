@@ -23,6 +23,11 @@ class MathUtils
 			).toInt()
 		}
 		
+		fun linearInterpolation(time: Float, start: Float, end:Float): Float
+		{
+			return start + time * (end - start)
+		}
+		
 		fun isPowerOf(value: Float, base: Int): Boolean
 		{
 			return ceil(log(value, base.toFloat())) == floor(log(value, base.toFloat()))

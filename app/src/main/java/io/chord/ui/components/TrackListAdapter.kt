@@ -75,6 +75,7 @@ class TrackListAdapter(
 				parent,
 				false
 			)
+		
 		val holder = this.getViewHolder(view)
 		this.bindViewHolder(holder, position)
 		this.views.add(holder)

@@ -6,6 +6,7 @@
             <enum name="mute" value="1"/>
             <enum name="solo" value="2"/>
         </attr>
+        <attr name="cio_tc_animationDuration" format="integer"/>
         <attr name="cio_tc_backgroundNormalColor" format="color"/>
         <attr name="cio_tc_backgroundMuteColor" format="color"/>
         <attr name="cio_tc_backgroundSoloColor" format="color"/>
