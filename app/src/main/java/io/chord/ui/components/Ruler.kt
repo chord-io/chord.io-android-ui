@@ -282,8 +282,14 @@ class Ruler : View, Zoomable, Quantifiable
 		)
 		
 		val points = mutableListOf<Float>()
+		var count = this.quantization.count
 		
-		for(i in 0..this.quantization.count)
+		if(this.quantization.mode == QuantizeUtils.QuantizeMode.Dotted)
+		{
+			count -= 1
+		}
+		
+		for(i in 0 until count)
 		{
 			val height = when(i)
 			{

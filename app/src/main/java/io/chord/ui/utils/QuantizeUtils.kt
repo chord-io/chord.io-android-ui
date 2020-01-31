@@ -25,7 +25,7 @@ class QuantizeUtils
 	
 	class Quantization(
 		value: QuantizeValue,
-		mode: QuantizeMode
+		val mode: QuantizeMode
 	)
 	{
 		val value: Float = quantify(value, mode)
