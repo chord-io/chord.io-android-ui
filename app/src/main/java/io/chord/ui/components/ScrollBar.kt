@@ -10,8 +10,8 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
 import android.widget.ScrollView
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import io.chord.R
+import io.chord.ui.animations.FastOutSlowInValueAnimator
 import io.chord.ui.extensions.getParentRootView
 import io.chord.ui.gestures.GestureDetector
 import io.chord.ui.gestures.SimpleOnGestureListener
@@ -276,9 +276,6 @@ class ScrollBar : View, Binder
 				this.scrollBar.setPosition(position)
 				this.scrollBar.invalidate()
 			}
-			
-			// TODO : set interpolator on another place
-			this.scrollBar.positionAnimator.interpolator = FastOutSlowInInterpolator()
 		}
 		
 		override fun onDown(event: MotionEvent): Boolean {
@@ -383,7 +380,7 @@ class ScrollBar : View, Binder
 	}
 	
 	private val controllers: MutableMap<Int, Controller> = mutableMapOf()
-	private val positionAnimator: ValueAnimator = ValueAnimator()
+	private val positionAnimator: ValueAnimator = FastOutSlowInValueAnimator()
 	private val gestureDetector: GestureDetector = GestureDetector(
 		this.context,
 		GestureListener(this)

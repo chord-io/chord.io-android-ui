@@ -8,9 +8,9 @@ import android.graphics.drawable.ShapeDrawable
 import android.util.AttributeSet
 import android.widget.LinearLayout
 import androidx.core.animation.doOnEnd
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import io.chord.R
 import io.chord.clients.models.Track
+import io.chord.ui.animations.FastOutSlowInValueAnimator
 
 class TrackList : LinearLayout, Zoomable
 {
@@ -31,7 +31,7 @@ class TrackList : LinearLayout, Zoomable
 	
 	private var zoomfactor: Float = 0.3f
 	private var factorizedHeight: Float = -1f
-	private var factorAnimator: ValueAnimator = ValueAnimator()
+	private var factorAnimator: ValueAnimator = FastOutSlowInValueAnimator()
 	private val divider: ShapeDrawable = ShapeDrawable()
 	private val adapter: TrackListAdapter = TrackListAdapter(this.context)
 	
@@ -146,8 +146,6 @@ class TrackList : LinearLayout, Zoomable
 		
 		this.adapter.registerDataSetObserver(TrackListDataSetObserver(this))
 		
-		// TODO : set interpolator on another place
-		this.factorAnimator.interpolator = FastOutSlowInInterpolator()
 		this.factorAnimator.addUpdateListener { animator ->
 			val factor = animator.animatedValue as Float
 			this.internalSetZoomFactor(factor)

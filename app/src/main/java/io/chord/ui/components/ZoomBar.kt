@@ -8,8 +8,8 @@ import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.graphics.toRectF
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import io.chord.R
+import io.chord.ui.animations.FastOutSlowInValueAnimator
 import io.chord.ui.extensions.*
 import io.chord.ui.gestures.GestureDetector
 import io.chord.ui.gestures.SimpleOnGestureListener
@@ -85,9 +85,6 @@ class ZoomBar : View, Binder
 				this.zoomBar.position = position
 				this.zoomBar.invalidate()
 			}
-			
-			// TODO : set interpolator on another place
-			this.zoomBar.positionAnimator.interpolator = FastOutSlowInInterpolator()
 		}
 		
 		override fun onDown(event: MotionEvent): Boolean {
@@ -180,9 +177,9 @@ class ZoomBar : View, Binder
 	
 	private val zoomables: MutableMap<Int, Zoomable> = mutableMapOf()
 	
-	private val positionAnimator: ValueAnimator = ValueAnimator()
-	private val focusEnterAnimator: ValueAnimator = ValueAnimator()
-	private val focusExitAnimator: ValueAnimator = ValueAnimator()
+	private val positionAnimator: ValueAnimator = FastOutSlowInValueAnimator()
+	private val focusEnterAnimator: ValueAnimator = FastOutSlowInValueAnimator()
+	private val focusExitAnimator: ValueAnimator = FastOutSlowInValueAnimator()
 	private val gestureDetector: GestureDetector = GestureDetector(
 		this.context,
 		GestureListener(this)

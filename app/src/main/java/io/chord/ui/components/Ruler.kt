@@ -9,8 +9,8 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.core.animation.doOnEnd
 import androidx.core.graphics.toRectF
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import io.chord.R
+import io.chord.ui.animations.FastOutSlowInValueAnimator
 import io.chord.ui.extensions.getOptimalTextSize
 import io.chord.ui.utils.QuantizeUtils
 
@@ -22,7 +22,7 @@ class Ruler : View, Zoomable, Quantifiable
 	private var textHalfPadding: Float = -1f
 	private var zoomfactor: Float = 1f
 	private var factorizedWidth: Float = -1f
-	private var factorAnimator: ValueAnimator = ValueAnimator()
+	private var factorAnimator: ValueAnimator = FastOutSlowInValueAnimator()
 	private var quantization: QuantizeUtils.Quantization = QuantizeUtils.Quantization(
 		QuantizeUtils.QuantizeValue.First,
 		QuantizeUtils.QuantizeMode.Natural
@@ -194,8 +194,6 @@ class Ruler : View, Zoomable, Quantifiable
 		
 		typedArray.recycle()
 		
-		// TODO : set interpolator on another place
-		this.factorAnimator.interpolator = FastOutSlowInInterpolator()
 		this.factorAnimator.addUpdateListener { animator ->
 			val factor = animator.animatedValue as Float
 			this.internalSetZoomFactor(factor)

@@ -12,8 +12,8 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.graphics.toRectF
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import io.chord.R
+import io.chord.ui.animations.FastOutSlowInValueAnimator
 import io.chord.ui.animations.HsvColorEvaluator
 import io.chord.ui.extensions.*
 import io.chord.ui.utils.RippleDrawableUtils
@@ -122,10 +122,10 @@ class TrackControl : View, Binder
 		private var requestInvalidateCounter: Int = 0
 		private val requestInvalidateThreshold: Int = 4
 		
-		private val backgroundMuteAnimator: ValueAnimator = ValueAnimator()
-		private val textMuteAnimator: ValueAnimator = ValueAnimator()
-		private val backgroundSoloAnimator: ValueAnimator = ValueAnimator()
-		private val textSoloAnimator: ValueAnimator = ValueAnimator()
+		private val backgroundMuteAnimator: ValueAnimator = FastOutSlowInValueAnimator()
+		private val textMuteAnimator: ValueAnimator = FastOutSlowInValueAnimator()
+		private val backgroundSoloAnimator: ValueAnimator = FastOutSlowInValueAnimator()
+		private val textSoloAnimator: ValueAnimator = FastOutSlowInValueAnimator()
 		val animatorSet: AnimatorSet = AnimatorSet()
 		var backgroundMuteOpacity: Float = 0f
 		var textMuteColor: Int = 0
@@ -160,8 +160,6 @@ class TrackControl : View, Binder
 				this.textSoloAnimator
 			)
 			this.animatorSet.duration = this.trackControl.animationDuration
-			// TODO : set interpolator on another place
-			this.animatorSet.interpolator = FastOutSlowInInterpolator()
 			
 			val radius = FloatArray(8)
 			Arrays.fill(radius, this.trackControl.roundness)
