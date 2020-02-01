@@ -188,6 +188,9 @@ class ZoomBar : View, Binder
 		GestureListener(this)
 	)
 	private val painter: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
+	private val thumbRoundness: Float = this.resources.getDimension(
+		R.dimen.zoombar_thumb_roundness
+	).dpToPixel()
 	private var position: Float = 0f
 	private var isScrolling: Boolean = false
 	
@@ -415,8 +418,6 @@ class ZoomBar : View, Binder
 		)
 		
 		val theme = this.context.theme
-		
-		// TODO change affection public to private properties
 		
 		this._orientation = typedArray.getInteger(
 			R.styleable.ZoomBar_cio_zb_orientation,
@@ -799,8 +800,7 @@ class ZoomBar : View, Binder
 
 		val thickness = this.thumbThickness
 		val position = this.position
-		// TODO set roundess on measure function
-		val roundness = this.resources.getDimension(R.dimen.zoombar_thumb_roundness).dpToPixel()
+		val roundness = this.thumbRoundness
 
 		if(this.orientation == ViewOrientation.Horizontal)
 		{
