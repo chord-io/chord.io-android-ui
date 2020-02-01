@@ -12,4 +12,11 @@
         <attr name="cio_sb_thumbThickness" format="dimension"/>
         <attr name="cio_sb_thumbRoundness" format="dimension"/>
     </declare-styleable>
+
+    <dimen name="scrollbar_default_thickness">32dp</dimen>
+    <dimen name="scrollbar_track_thickness">4dp</dimen>
+    <dimen name="scrollbar_thumb_thickness">12dp</dimen>
+    <dimen name="scrollbar_thumb_roundness">999dp</dimen>
+
+    <integer name="scrollbar_move_duration">500</integer>
 </resources>

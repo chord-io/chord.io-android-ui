@@ -10,5 +10,13 @@
         <attr name="cio_rl_textMargin" format="dimension"/>
         <attr name="cio_rl_textPadding" format="dimension"/>
     </declare-styleable>
-<!-- TODO move all default values here   -->
+
+    <dimen name="ruler_default_width">200dp</dimen>
+    <dimen name="ruler_tick_thickness">1dp</dimen>
+    <dimen name="ruler_text_size">14sp</dimen>
+    <dimen name="ruler_text_margin">5dp</dimen>
+    <dimen name="ruler_text_padding">8dp</dimen>
+
+    <integer name="ruler_zoom_duration">500</integer>
+    <integer name="ruler_ticks_wieght">75</integer>
 </resources>

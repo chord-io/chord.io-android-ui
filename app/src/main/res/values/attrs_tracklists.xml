@@ -6,4 +6,10 @@
         <attr name="cio_tl_rowHeight" format="dimension"/>
         <attr name="cio_tl_rowPadding" format="dimension"/>
     </declare-styleable>
+
+    <dimen name="track_list_divider_thickness">2dp</dimen>
+    <dimen name="track_list_row_height">96dp</dimen>
+    <dimen name="track_list_row_padding">4dp</dimen>
+
+    <interger name="track_list_zoom_duration">500</interger>
 </resources>

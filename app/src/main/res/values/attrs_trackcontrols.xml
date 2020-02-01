@@ -17,4 +17,12 @@
         <attr name="cio_tc_textMute" format="string"/>
         <attr name="cio_tc_textSolo" format="string"/>
     </declare-styleable>
+
+    <dimen name="track_control_roundness">4dp</dimen>
+    <dimen name="track_control_text_size">14sp</dimen>
+
+    <integer name="track_control_animation_duration">500</integer>
+
+    <string name="track_control_mute">M</string>
+    <string name="track_control_solo">S</string>
 </resources>

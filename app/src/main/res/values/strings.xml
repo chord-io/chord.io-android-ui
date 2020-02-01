@@ -54,17 +54,11 @@
     <string name="signup_email_address">Email address</string>
     <string name="signup_password">Password</string>
 
-    <string name="trackcontrol_mute">M</string>
-    <string name="trackcontrol_solo">S</string>
-
     <string name="section_load_failed">Failed to load, tap to try again.</string>
     <string name="section_empty">Section is empty</string>
 
     <string name="quanize_mode_ternary">Triplet</string>
     <string name="quanize_mode_ternary_short">T</string>
     <string name="quanize_mode_dotted">Dotted</string>
-    <string name="quanize_mode_dotted_short">D</string>
-
-    <string name="mini_button_mute">M</string>
-    <string name="mini_button_solo">S</string>
+    <string name="quanize_mode_dotted_short">.</string>
 </resources>

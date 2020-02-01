@@ -6,4 +6,7 @@
     <attr name="cio_dd_iconSize" format="dimension"/>
     <attr name="cio_dd_textSize" format="dimension"/>
 </declare-styleable>
+
+    <dimen name="dropdown_icon_size">12dp</dimen>
+    <dimen name="dropdown_text_size">8sp</dimen>
 </resources>

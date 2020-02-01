@@ -25,4 +25,21 @@
         <attr name="cio_zb_bubbleTextSize" format="dimension"/>
         <attr name="cio_zb_bubbleInvert" format="boolean"/>
     </declare-styleable>
+
+    <dimen name="zoombar_track_thickness">4dp</dimen>
+    <dimen name="zoombar_ticks_thickness">2dp</dimen>
+    <dimen name="zoombar_ticks_padding">9dp</dimen>
+    <dimen name="zoombar_thumb_thickness">12dp</dimen>
+    <dimen name="zoombar_thumb_roundness">999dp</dimen>
+    <dimen name="zoombar_bubble_thickness">24dp</dimen>
+    <dimen name="zoombar_bubble_roundness">999dp</dimen>
+    <dimen name="zoombar_bubble_padding">24dp</dimen>
+    <dimen name="zoombar_bubble_margin">10dp</dimen>
+    <dimen name="zoombar_bubble_text_size">14sp</dimen>
+
+    <integer name="zoombar_move_duration">500</integer>
+    <integer name="zoombar_focus_enter_duration">250</integer>
+    <integer name="zoombar_focus_exit_duration">1000</integer>
+
+    <float name="zoombar_factor" type="dimen">1.0</float>
 </resources>
