@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="Ruler">
+        <attr name="cio_rl_zoomDuration" format="integer"/>
         <attr name="cio_rl_defaultWidth" format="dimension"/>
         <attr name="cio_rl_ticksColor" format="color"/>
         <attr name="cio_rl_textColor" format="color"/>

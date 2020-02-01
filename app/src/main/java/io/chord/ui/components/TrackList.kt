@@ -35,10 +35,18 @@ class TrackList : LinearLayout, Zoomable
 	private val divider: ShapeDrawable = ShapeDrawable()
 	private val adapter: TrackListAdapter = TrackListAdapter(this.context)
 	
+	private var _zoomDuration: Long = -1
 	private var _dividerColor: Int = -1
 	private var _dividerThickness: Float = -1f
 	private var _rowHeight: Float = -1f
 	private var _rowPadding: Float = -1f
+	
+	var zoomDuration: Long
+		get() = this._zoomDuration
+		set(value) {
+			this._zoomDuration = value
+			this.factorAnimator.duration = value
+		}
 	
 	var dividerColor: Int
 		get() = this._dividerColor
@@ -105,6 +113,11 @@ class TrackList : LinearLayout, Zoomable
 		
 		val theme = this.context.theme
 		
+		this.zoomDuration = typedArray.getInteger(
+			R.styleable.TrackList_cio_tl_zoomDuration,
+			this.resources.getInteger(R.integer.track_list_zoom_duration)
+		).toLong()
+		
 		this.dividerColor = typedArray.getColor(
 			R.styleable.TrackList_cio_tl_dividerColor,
 			this.resources.getColor(R.color.backgroundPrimary, theme)
@@ -133,8 +146,6 @@ class TrackList : LinearLayout, Zoomable
 		
 		// TODO : set interpolator on another place
 		this.factorAnimator.interpolator = FastOutSlowInInterpolator()
-		// TODO : set as an attribute view
-		this.factorAnimator.duration = this.resources.getInteger(R.integer.track_list_zoom_duration).toLong()
 		this.factorAnimator.addUpdateListener { animator ->
 			val factor = animator.animatedValue as Float
 			this.internalSetZoomFactor(factor)

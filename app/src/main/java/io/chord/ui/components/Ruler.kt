@@ -29,6 +29,7 @@ class Ruler : View, Zoomable, Quantifiable
 	)
 	private val painter: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
 	
+	private var _zoomDuration: Long = -1
 	private var _defaultWidth: Float = -1f
 	private var _ticksColor: Int = -1
 	private var _textColor: Int = -1
@@ -37,6 +38,13 @@ class Ruler : View, Zoomable, Quantifiable
 	private var _textSize: Float = -1f
 	private var _textMargin: Float = -1f
 	private var _textPadding: Float = -1f
+	
+	var zoomDuration: Long
+		get() = this._zoomDuration
+		set(value) {
+			this._zoomDuration = value
+			this.factorAnimator.duration = value
+		}
 	
 	var defaultWidth: Float
 		get() = this._defaultWidth
@@ -139,6 +147,11 @@ class Ruler : View, Zoomable, Quantifiable
 		
 		val theme = this.context.theme
 		
+		this.zoomDuration = typedArray.getInteger(
+			R.styleable.Ruler_cio_rl_zoomDuration,
+			this.resources.getInteger(R.integer.ruler_zoom_duration)
+		).toLong()
+		
 		this.defaultWidth = typedArray.getDimension(
 			R.styleable.Ruler_cio_rl_defaultWidth,
 			this.resources.getDimension(R.dimen.ruler_default_width)
@@ -183,8 +196,6 @@ class Ruler : View, Zoomable, Quantifiable
 		
 		// TODO : set interpolator on another place
 		this.factorAnimator.interpolator = FastOutSlowInInterpolator()
-		// TODO : set as an attribute view
-		this.factorAnimator.duration = this.resources.getInteger(R.integer.ruler_zoom_duration).toLong()
 		this.factorAnimator.addUpdateListener { animator ->
 			val factor = animator.animatedValue as Float
 			this.internalSetZoomFactor(factor)
