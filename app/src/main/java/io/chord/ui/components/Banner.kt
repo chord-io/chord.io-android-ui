@@ -130,24 +130,24 @@ class Banner : LinearLayout
 		
 		val theme = this.context.theme
 		
-		this.message = typedArray.getString(
+		this._message = typedArray.getString(
 			R.styleable.Banner_cio_bn_message
 		)!!
 		
-		this.icon = typedArray.getString(
+		this._icon = typedArray.getString(
 			R.styleable.Banner_cio_bn_icon
 		)!!
 		
-		this.color = typedArray.getColor(
+		this._color = typedArray.getColor(
 			R.styleable.Banner_cio_bn_color,
 			this.resources.getColor(R.color.colorAccent, theme)
 		)
 		
-		this.leftButtonText = typedArray.getString(
+		this._leftButtonText = typedArray.getString(
 			R.styleable.Banner_cio_bn_left_button_text
 		)
 		
-		this.rightButtonText = typedArray.getString(
+		this._rightButtonText = typedArray.getString(
 			R.styleable.Banner_cio_bn_right_button_text
 		)
 		

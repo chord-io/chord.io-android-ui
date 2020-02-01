@@ -101,27 +101,27 @@ open class DropDown : LinearLayout
 	}
 	
 	protected open fun init(attrs: AttributeSet?, defStyle: Int) {
-		val rootView = View.inflate(this.context, R.layout.component_dropdown, this)
+		View.inflate(this.context, R.layout.component_dropdown, this)
 		
 		val typedArray = context.obtainStyledAttributes(
 			attrs, R.styleable.DropDown, defStyle, 0
 		)
 		
-		this.label = typedArray.getString(
+		this._label = typedArray.getString(
 			R.styleable.DropDown_cio_dd_label
 		)
 		
-		this.textColor = typedArray.getColor(
+		this._textColor = typedArray.getColor(
 			R.styleable.DropDown_cio_dd_textColor,
 			this.resources.getColor(R.color.textColor, this.context.theme)
 		)
 		
-		this.iconSize = typedArray.getDimension(
+		this._iconSize = typedArray.getDimension(
 			R.styleable.DropDown_cio_dd_iconSize,
 			this.resources.getDimension(R.dimen.dropdown_icon_size)
 		).toInt()
 		
-		this.textSize = typedArray.getDimension(
+		this._textSize = typedArray.getDimension(
 			R.styleable.DropDown_cio_dd_textSize,
 			this.resources.getDimension(R.dimen.dropdown_text_size)
 		).toInt()

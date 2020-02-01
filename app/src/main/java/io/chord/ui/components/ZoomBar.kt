@@ -418,7 +418,7 @@ class ZoomBar : View, Binder
 		
 		// TODO change affection public to private properties
 		
-		this.orientation = typedArray.getInteger(
+		this._orientation = typedArray.getInteger(
 			R.styleable.ZoomBar_cio_zb_orientation,
 			ViewOrientation.Horizontal.orientation
 		).let {
@@ -431,97 +431,97 @@ class ZoomBar : View, Binder
 			factorTypedValue,
 			true
 		)
-		this.factor = typedArray.getFloat(
+		this._factor = typedArray.getFloat(
 			R.styleable.ZoomBar_cio_zb_factor,
 			factorTypedValue.float
 		)
 		
-		this.moveDuration = typedArray.getInteger(
+		this._moveDuration = typedArray.getInteger(
 			R.styleable.ZoomBar_cio_zb_moveDuration,
 			this.resources.getInteger(R.integer.zoombar_move_duration)
 		).toLong()
 		
-		this.focusEnterDuration = typedArray.getInteger(
+		this._focusEnterDuration = typedArray.getInteger(
 			R.styleable.ZoomBar_cio_zb_focusEnterDuration,
 			this.resources.getInteger(R.integer.zoombar_focus_enter_duration)
 		).toLong()
 		
-		this.focusExitDuration = typedArray.getInteger(
+		this._focusExitDuration = typedArray.getInteger(
 			R.styleable.ZoomBar_cio_zb_focusExitDuration,
 			this.resources.getInteger(R.integer.zoombar_focus_exit_duration)
 		).toLong()
 		
-		this.trackColor = typedArray.getColor(
+		this._trackColor = typedArray.getColor(
 			R.styleable.ZoomBar_cio_zb_trackColor,
 			this.resources.getColor(R.color.borderColor, theme)
 		)
 		
-		this.ticksColor = typedArray.getColor(
+		this._ticksColor = typedArray.getColor(
 			R.styleable.ZoomBar_cio_zb_ticksColor,
 			this.resources.getColor(R.color.borderColor, theme)
 		)
 		
-		this.thumbColor = typedArray.getColor(
+		this._thumbColor = typedArray.getColor(
 			R.styleable.ZoomBar_cio_zb_thumbColor,
 			this.resources.getColor(R.color.colorAccent, theme)
 		)
 		
-		this.bubbleBackgroundColor = typedArray.getColor(
+		this._bubbleBackgroundColor = typedArray.getColor(
 			R.styleable.ZoomBar_cio_zb_bubbleBackgroundColor,
 			this.resources.getColor(R.color.colorAccent, theme)
 		)
 		
-		this.bubbleTextColor = typedArray.getColor(
+		this._bubbleTextColor = typedArray.getColor(
 			R.styleable.ZoomBar_cio_zb_bubbleTextColor,
 			this.resources.getColor(R.color.backgroundPrimary, theme)
 		)
 		
-		this.trackThickness = typedArray.getDimension(
+		this._trackThickness = typedArray.getDimension(
 			R.styleable.ZoomBar_cio_zb_trackThickness,
 			this.resources.getDimension(R.dimen.zoombar_track_thickness)
 		)
 		
-		this.ticksThickness = typedArray.getDimension(
+		this._ticksThickness = typedArray.getDimension(
 			R.styleable.ZoomBar_cio_zb_ticksThickness,
 			this.resources.getDimension(R.dimen.zoombar_ticks_thickness)
 		)
 		
-		this.ticksPadding = typedArray.getDimension(
+		this._ticksPadding = typedArray.getDimension(
 			R.styleable.ZoomBar_cio_zb_ticksPadding,
 			this.resources.getDimension(R.dimen.zoombar_ticks_padding)
 		)
 		
-		this.thumbThickness = typedArray.getDimension(
+		this._thumbThickness = typedArray.getDimension(
 			R.styleable.ZoomBar_cio_zb_thumbThickness,
 			this.resources.getDimension(R.dimen.zoombar_thumb_thickness)
 		)
 		
-		this.bubbleThickness = typedArray.getDimension(
+		this._bubbleThickness = typedArray.getDimension(
 			R.styleable.ZoomBar_cio_zb_bubbleThickness,
 			this.resources.getDimension(R.dimen.zoombar_bubble_thickness)
 		)
 		
-		this.bubbleRoundness = typedArray.getDimension(
+		this._bubbleRoundness = typedArray.getDimension(
 			R.styleable.ZoomBar_cio_zb_bubbleRoundness,
 			this.resources.getDimension(R.dimen.zoombar_bubble_roundness)
 		)
 		
-		this.bubblePadding = typedArray.getDimension(
+		this._bubblePadding = typedArray.getDimension(
 			R.styleable.ZoomBar_cio_zb_bubblePadding,
 			this.resources.getDimension(R.dimen.zoombar_bubble_padding)
 		)
 		
-		this.bubbleMargin = typedArray.getDimension(
+		this._bubbleMargin = typedArray.getDimension(
 			R.styleable.ZoomBar_cio_zb_bubbleMargin,
 			this.resources.getDimension(R.dimen.zoombar_bubble_margin)
 		)
 		
-		this.bubbleTextSize = typedArray.getDimension(
+		this._bubbleTextSize = typedArray.getDimension(
 			R.styleable.ZoomBar_cio_zb_bubbleTextSize,
 			this.resources.getDimension(R.dimen.zoombar_bubble_text_size)
 		)
 		
-		this.bubbleInvert = typedArray.getBoolean(
+		this._bubbleInvert = typedArray.getBoolean(
 			R.styleable.ZoomBar_cio_zb_bubbleInvert,
 			false
 		)

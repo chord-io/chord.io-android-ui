@@ -393,6 +393,8 @@ class TrackControl : View, Binder
 			attrs, R.styleable.TrackControl, defStyle, 0
 		)
 		
+		// TODO: split into component that handle one button
+		
 		val theme = this.context.theme
 		
 		this._state = typedArray.getInteger(

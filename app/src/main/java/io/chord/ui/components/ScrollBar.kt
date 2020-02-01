@@ -488,39 +488,39 @@ class ScrollBar : View, Binder
 		
 		val theme = this.context.theme
 		
-		this.orientation = typedArray.getInteger(
+		this._orientation = typedArray.getInteger(
 			R.styleable.ScrollBar_cio_sb_orientation,
 			ViewOrientation.Horizontal.orientation
 		).let {
 			ViewOrientation.values()[it]
 		}
 		
-		this.moveDuration = typedArray.getInteger(
+		this._moveDuration = typedArray.getInteger(
 			R.styleable.ScrollBar_cio_sb_moveDuration,
 			this.resources.getInteger(R.integer.scrollbar_move_duration)
 		).toLong()
 		
-		this.trackColor = typedArray.getColor(
+		this._trackColor = typedArray.getColor(
 			R.styleable.ScrollBar_cio_sb_trackColor,
 			this.resources.getColor(R.color.borderColor, theme)
 		)
 		
-		this.thumbColor = typedArray.getColor(
+		this._thumbColor = typedArray.getColor(
 			R.styleable.ScrollBar_cio_sb_thumbColor,
 			this.resources.getColor(R.color.colorAccent, theme)
 		)
 		
-		this.trackThickness = typedArray.getDimension(
+		this._trackThickness = typedArray.getDimension(
 			R.styleable.ScrollBar_cio_sb_trackThickness,
 			this.resources.getDimension(R.dimen.scrollbar_track_thickness)
 		)
 		
-		this.thumbThickness = typedArray.getDimension(
+		this._thumbThickness = typedArray.getDimension(
 			R.styleable.ScrollBar_cio_sb_thumbThickness,
 			this.resources.getDimension(R.dimen.scrollbar_thumb_thickness)
 		)
 		
-		this.thumbRoundness = typedArray.getDimension(
+		this._thumbRoundness = typedArray.getDimension(
 			R.styleable.ScrollBar_cio_sb_thumbRoundness,
 			this.resources.getDimension(R.dimen.scrollbar_thumb_roundness)
 		)

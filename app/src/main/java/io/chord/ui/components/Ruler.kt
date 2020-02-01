@@ -147,47 +147,47 @@ class Ruler : View, Zoomable, Quantifiable
 		
 		val theme = this.context.theme
 		
-		this.zoomDuration = typedArray.getInteger(
+		this._zoomDuration = typedArray.getInteger(
 			R.styleable.Ruler_cio_rl_zoomDuration,
 			this.resources.getInteger(R.integer.ruler_zoom_duration)
 		).toLong()
 		
-		this.defaultWidth = typedArray.getDimension(
+		this._defaultWidth = typedArray.getDimension(
 			R.styleable.Ruler_cio_rl_defaultWidth,
 			this.resources.getDimension(R.dimen.ruler_default_width)
 		)
 		
-		this.ticksColor = typedArray.getColor(
+		this._ticksColor = typedArray.getColor(
 			R.styleable.Ruler_cio_rl_ticksColor,
 			this.resources.getColor(R.color.textColor, theme)
 		)
 		
-		this.textColor = typedArray.getColor(
+		this._textColor = typedArray.getColor(
 			R.styleable.Ruler_cio_rl_textColor,
 			this.resources.getColor(R.color.textColor, theme)
 		)
 		
-		this.ticksThickness = typedArray.getDimension(
+		this._ticksThickness = typedArray.getDimension(
 			R.styleable.Ruler_cio_rl_ticksThickness,
 			this.resources.getDimension(R.dimen.ruler_tick_thickness)
 		)
 		
-		this.ticksWeight = typedArray.getFloat(
+		this._ticksWeight = typedArray.getFloat(
 			R.styleable.Ruler_cio_rl_ticksWeight,
 			this.resources.getInteger(R.integer.ruler_ticks_wieght) / 100f
 		)
 		
-		this.textSize = typedArray.getDimension(
+		this._textSize = typedArray.getDimension(
 			R.styleable.Ruler_cio_rl_textSize,
 			this.resources.getDimension(R.dimen.ruler_text_size)
 		)
 		
-		this.textMargin = typedArray.getDimension(
+		this._textMargin = typedArray.getDimension(
 			R.styleable.Ruler_cio_rl_textMargin,
 			this.resources.getDimension(R.dimen.ruler_text_margin)
 		)
 		
-		this.textPadding = typedArray.getDimension(
+		this._textPadding = typedArray.getDimension(
 			R.styleable.Ruler_cio_rl_textPadding,
 			this.resources.getDimension(R.dimen.ruler_text_padding)
 		)

@@ -18,23 +18,5 @@ class TrackListItem(
 		this.binding.track = model
 		
 		this.initialNameViewTextSize = this.binding.name.textSize
-		
-//		this.binding.name
-//			.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
-//				val textView = this.binding.name
-//				val textSize = ViewUtils.getMaximumTextSize(
-//					textView.text.toString(),
-//					this.initialNameViewTextSize,
-//					textView.height.toFloat(),
-//					textView.paint
-//				)
-//				textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
-//
-//				val rect = Rect()
-//				textView.paint.getTextBounds(textView.text.toString(), 0, textView.text.length, rect)
-//				Log.i("FFF", ViewUtils.pixelToSp(textSize).toString())
-//				Log.i("FFF", ViewUtils.pixelToDp(textView.height.toFloat()).toString())
-//				Log.i("FFF", ViewUtils.pixelToDp((rect.bottom - rect.top).toFloat()).toString())
-//			}
 	}
 }

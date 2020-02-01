@@ -52,12 +52,14 @@ class TrackList : LinearLayout, Zoomable
 		get() = this._dividerColor
 		set(value) {
 			this._dividerColor = value
+			this.invalidateDividerDrawable()
 		}
 	
 	var dividerThickness: Float
 		get() = this._dividerThickness
 		set(value) {
 			this._dividerThickness = value
+			this.invalidateDividerDrawable()
 		}
 	
 	var rowHeight: Float
@@ -113,27 +115,27 @@ class TrackList : LinearLayout, Zoomable
 		
 		val theme = this.context.theme
 		
-		this.zoomDuration = typedArray.getInteger(
+		this._zoomDuration = typedArray.getInteger(
 			R.styleable.TrackList_cio_tl_zoomDuration,
 			this.resources.getInteger(R.integer.track_list_zoom_duration)
 		).toLong()
 		
-		this.dividerColor = typedArray.getColor(
+		this._dividerColor = typedArray.getColor(
 			R.styleable.TrackList_cio_tl_dividerColor,
 			this.resources.getColor(R.color.backgroundPrimary, theme)
 		)
 		
-		this.dividerThickness = typedArray.getDimension(
+		this._dividerThickness = typedArray.getDimension(
 			R.styleable.TrackList_cio_tl_dividerThickness,
 			this.resources.getDimension(R.dimen.track_list_divider_thickness)
 		)
 		
-		this.rowHeight = typedArray.getDimension(
+		this._rowHeight = typedArray.getDimension(
 			R.styleable.TrackList_cio_tl_rowHeight,
 			this.resources.getDimension(R.dimen.track_list_row_height)
 		)
 		
-		this.rowPadding = typedArray.getDimension(
+		this._rowPadding = typedArray.getDimension(
 			R.styleable.TrackList_cio_tl_rowPadding,
 			this.resources.getDimension(R.dimen.track_list_row_padding)
 		)
