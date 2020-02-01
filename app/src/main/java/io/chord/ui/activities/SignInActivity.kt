@@ -6,21 +6,25 @@ import android.widget.Button
 import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import com.github.razir.progressbutton.attachTextChangeAnimator
+import com.github.razir.progressbutton.bindProgressButton
+import com.github.razir.progressbutton.hideProgress
+import com.github.razir.progressbutton.showProgress
 import io.chord.R
 import io.chord.clients.ClientApi
 import io.chord.clients.apis.AuthenticationApi
 import io.chord.clients.toApiThrowable
-import io.chord.ui.dialogs.FullscreenDialogFragment
-import io.chord.ui.extensions.observe
-import io.chord.ui.extensions.toBanerApiThrowable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import com.github.razir.progressbutton.*
 import io.chord.databinding.ActivitySignInBinding
 import io.chord.databinding.SignUpDialogFormBinding
 import io.chord.services.authentication.storage.SharedPreferencesAuthenticationStorage
 import io.chord.services.authentication.workers.RefreshTokenWorker
+import io.chord.ui.dialogs.FullscreenDialogFragment
+import io.chord.ui.extensions.getRootView
+import io.chord.ui.extensions.observe
+import io.chord.ui.extensions.setViewState
+import io.chord.ui.extensions.toBanerApiThrowable
 import io.chord.ui.models.SignUpDialogFormViewModel
-import io.chord.ui.utils.ViewUtils
+import io.reactivex.android.schedulers.AndroidSchedulers
 import org.koin.android.ext.android.inject
 
 
@@ -35,7 +39,7 @@ class SignInActivity : AppCompatActivity()
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_sign_in)
 		
-		this.binding = DataBindingUtil.bind(ViewUtils.getRootView(this))!!
+		this.binding = DataBindingUtil.bind(this.getRootView())!!
 		
 		this.findViewById<RelativeLayout>(R.id.signup)
 			.setOnClickListener {this.signUp()}
@@ -57,7 +61,7 @@ class SignInActivity : AppCompatActivity()
 				this.binding.signin.showProgress {
 					progressColor = R.color.backgroundPrimary
 				}
-				ViewUtils.setViewState(this.binding.layout, false)
+				this.binding.layout.setViewState(false)
 				this.binding.usernameLayout.isErrorEnabled = false
 				this.binding.passwordLayout.isErrorEnabled = false
 			}
@@ -86,7 +90,7 @@ class SignInActivity : AppCompatActivity()
 					}
 					.doOnPostObservation {
 						this.binding.signin.hideProgress(R.string.signin_signin)
-						ViewUtils.setViewState(this.binding.layout, true)
+						this.binding.layout.setViewState(true)
 					}
 					.observe()
 			}

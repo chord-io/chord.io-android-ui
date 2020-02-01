@@ -27,12 +27,6 @@ class RippleDrawableUtils
 			)
 		}
 		
-		fun setBackgroundColor(ripple: RippleDrawable, color: Int)
-		{
-			val content = ripple.getDrawable(0)
-			content.setColorFilter(color, PorterDuff.Mode.SRC_IN)
-		}
-		
 		fun getColorStateList(
 			normalColor: Int,
 			pressedColor: Int

@@ -5,8 +5,8 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.AdapterView
 import io.chord.R
+import io.chord.ui.extensions.getParentRootView
 import io.chord.ui.utils.QuantizeUtils
-import io.chord.ui.utils.ViewUtils
 import kotlinx.android.synthetic.main.component_dropdown.view.*
 
 class QuantizeDropDown : DropDown, AdapterView.OnItemSelectedListener, Binder
@@ -70,7 +70,7 @@ class QuantizeDropDown : DropDown, AdapterView.OnItemSelectedListener, Binder
 	
 	override fun attach(id: Int)
 	{
-		val rootView = ViewUtils.getParentRootView(this)
+		val rootView = this.getParentRootView()
 		val quantifiable = rootView.findViewById<View>(id)
 		this.quantifiables[id] = quantifiable as Quantifiable
 	}

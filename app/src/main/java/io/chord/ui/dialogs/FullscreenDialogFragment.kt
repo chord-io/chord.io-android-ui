@@ -15,7 +15,7 @@ import com.mikepenz.iconics.utils.colorRes
 import com.mikepenz.iconics.utils.sizeRes
 import io.chord.R
 import io.chord.ui.components.Banner
-import io.chord.ui.utils.ViewUtils
+import io.chord.ui.extensions.setViewState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -71,11 +71,6 @@ open class FullscreenDialogFragment<TBinding: ViewDataBinding>(
 		this.banner = view.findViewById(R.id.banner)
 		
 		val layout = view.findViewById<ViewGroup>(R.id.frameLayout)
-//		this.rootView = inflater.inflate(this.layoutId, layout)
-//		val children = ViewUtils.getDirectChildren(this.rootView)!!.first()
-//		this.dataBinding = DataBindingUtil.bind(children)!!
-//
-//		this.onViewModelBinding?.invoke(this.dataBinding)
 		
 		this.dataBinding = DataBindingUtil.inflate(
 			inflater,
@@ -117,7 +112,7 @@ open class FullscreenDialogFragment<TBinding: ViewDataBinding>(
 		toolbar.title = this.title
 		toolbar.setOnMenuItemClickListener {
 			this.action.setActionView(R.layout.dialog_form_loader)
-			ViewUtils.setViewState(this.rootView as ViewGroup, false)
+			(this.rootView as ViewGroup).setViewState(false)
 			GlobalScope.launch(Dispatchers.IO) {
 				onLayoutUpdatedListener?.invoke(dataBinding)
 			}
@@ -128,7 +123,7 @@ open class FullscreenDialogFragment<TBinding: ViewDataBinding>(
 	fun unvalidate()
 	{
 		this.action.actionView = null
-		ViewUtils.setViewState(this.rootView as ViewGroup, true)
+		(this.rootView as ViewGroup).setViewState(true)
 	}
 	
 	fun validate()

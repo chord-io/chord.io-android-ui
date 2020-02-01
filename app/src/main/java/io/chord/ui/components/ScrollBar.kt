@@ -12,10 +12,10 @@ import android.widget.HorizontalScrollView
 import android.widget.ScrollView
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import io.chord.R
+import io.chord.ui.extensions.getParentRootView
 import io.chord.ui.gestures.GestureDetector
 import io.chord.ui.gestures.SimpleOnGestureListener
 import io.chord.ui.utils.MathUtils
-import io.chord.ui.utils.ViewUtils
 
 class ScrollBar : View, Binder
 {
@@ -73,7 +73,7 @@ class ScrollBar : View, Binder
 		
 		init
 		{
-			val rootView = ViewUtils.getParentRootView(scrollBar)
+			val rootView = this.scrollBar.getParentRootView()
 			this.scrollView = when(val scrollView = rootView.findViewById<View>(id))
 			{
 				is TwoDimensionalScrollView ->

@@ -1,7 +1,8 @@
 package io.chord.ui.animations
 
 import android.animation.TypeEvaluator
-import io.chord.ui.utils.ColorUtils
+import io.chord.ui.extensions.fromHsv
+import io.chord.ui.extensions.toHsv
 import io.chord.ui.utils.MathUtils
 
 class HsvColorEvaluator : TypeEvaluator<Int>
@@ -12,8 +13,8 @@ class HsvColorEvaluator : TypeEvaluator<Int>
 		endValue: Int
 	): Int
 	{
-		val startColor = ColorUtils.toHsv(startValue)
-		val endColor = ColorUtils.toHsv(endValue)
+		val startColor = startValue.toHsv()
+		val endColor = endValue.toHsv()
 		
 		val startH = startColor[0]
 		val endH = endColor[0]
@@ -27,10 +28,10 @@ class HsvColorEvaluator : TypeEvaluator<Int>
 		val endV = endColor[2]
 		val fractionV = MathUtils.linearInterpolation(fraction, startV, endV)
 		
-		return ColorUtils.fromHsv(floatArrayOf(
+		return floatArrayOf(
 			fractionH,
 			fractionS,
 			fractionV
-		))
+		).fromHsv()
 	}
 }

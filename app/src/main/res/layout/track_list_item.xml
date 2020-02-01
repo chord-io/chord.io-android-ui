@@ -20,8 +20,8 @@
             android:layout_width="48dp"
             android:layout_height="24dp"
             android:layout_gravity="center_vertical"
-            app:cio_tc_textMute="@string/trackcontrol_mute"
-            app:cio_tc_textSolo="@string/trackcontrol_solo"
+            app:cio_tc_textMute="@string/track_control_mute"
+            app:cio_tc_textSolo="@string/track_control_solo"
             app:cio_tc_textSize="11sp">
         </io.chord.ui.components.TrackControl>
 

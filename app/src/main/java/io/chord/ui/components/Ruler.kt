@@ -11,9 +11,8 @@ import androidx.core.animation.doOnEnd
 import androidx.core.graphics.toRectF
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import io.chord.R
+import io.chord.ui.extensions.getOptimalTextSize
 import io.chord.ui.utils.QuantizeUtils
-import io.chord.ui.utils.ViewUtils
-
 
 class Ruler : View, Zoomable, Quantifiable
 {
@@ -249,8 +248,7 @@ class Ruler : View, Zoomable, Quantifiable
 		super.onLayout(changed, left, top, right, bottom)
 		
 		this.textPosition = (this.bottom - this.height * (1f - this.ticksWeight)) - this.textPadding
-		this.textSizeOptimum = ViewUtils.getOptimalTextSize(
-			"0123456789",
+		this.textSizeOptimum = "0123456789".getOptimalTextSize(
 			this.textSize,
 			this.textPosition,
 			this.painter

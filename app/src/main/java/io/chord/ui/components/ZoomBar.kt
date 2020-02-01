@@ -10,11 +10,10 @@ import android.view.View
 import androidx.core.graphics.toRectF
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import io.chord.R
+import io.chord.ui.extensions.*
 import io.chord.ui.gestures.GestureDetector
 import io.chord.ui.gestures.SimpleOnGestureListener
-import io.chord.ui.utils.ColorUtils
 import io.chord.ui.utils.MathUtils
-import io.chord.ui.utils.ViewUtils
 
 
 class ZoomBar : View, Binder
@@ -57,15 +56,16 @@ class ZoomBar : View, Binder
 		
 		private fun setOpacity(opacity: Float)
 		{
-			this.zoomBar._bubbleBackgroundColor = ColorUtils.toTransparent(
-				this.zoomBar._bubbleBackgroundColor,
-				opacity
-			)
+			this.zoomBar._bubbleBackgroundColor = this.zoomBar
+				._bubbleBackgroundColor
+				.toTransparent(
+					opacity
+				)
 			
-			this.zoomBar._bubbleTextColor = ColorUtils.toTransparent(
-				this.zoomBar._bubbleTextColor,
-				opacity
-			)
+			this.zoomBar._bubbleTextColor = this.zoomBar
+				._bubbleTextColor.toTransparent(
+					opacity
+				)
 			
 			this.zoomBar.invalidate()
 		}
@@ -535,7 +535,7 @@ class ZoomBar : View, Binder
 	
 	override fun attach(id: Int)
 	{
-		val rootView = ViewUtils.getParentRootView(this)
+		val rootView = this.getParentRootView()
 		val zoomable = rootView.findViewById<View>(id)
 		this.zoomables[id] = zoomable as Zoomable
 		this.dispatchEvent(zoomable)
@@ -781,7 +781,8 @@ class ZoomBar : View, Binder
 
 		val thickness = this.thumbThickness
 		val position = this.position
-		val roundness = ViewUtils.dpToPixel(this.resources.getDimension(R.dimen.zoombar_thumb_roundness))
+		// TODO set roundess on measure function
+		val roundness = this.resources.getDimension(R.dimen.zoombar_thumb_roundness).dpToPixel()
 
 		if(this.orientation == ViewOrientation.Horizontal)
 		{
@@ -824,11 +825,11 @@ class ZoomBar : View, Binder
 		val bounds = Rect(canvas.clipBounds).toRectF()
 		val position = this.position + this.thumbThickness / 2
 		val label = this.factor.toString()
-		val width = (ViewUtils.getTextWidth(label, this.painter) + this.bubblePadding).toInt()
+		val width = (label.getTextBounds(this.painter).width() + this.bubblePadding).toInt()
 		val halfWidth = width / 2f
 		val height = this.bubbleThickness.toInt()
 		val halfHeight = height / 2f
-		val textHeight = ViewUtils.getTextHeight(label, this.painter)
+		val textHeight = label.getTextBounds(this.painter).height()
 
 		if(this._orientation == ViewOrientation.Horizontal)
 		{
@@ -879,8 +880,7 @@ class ZoomBar : View, Binder
 			
 			this.painter.color = this.bubbleTextColor
 
-			val textPosition = ViewUtils.getTextCentered(
-				label,
+			val textPosition = label.getTextCentered(
 				rectBackgroundBubble.centerX().toInt(),
 				0,
 				this.painter
@@ -944,8 +944,7 @@ class ZoomBar : View, Binder
 			
 			this.painter.color = this.bubbleTextColor
 			
-			val textPosition = ViewUtils.getTextCentered(
-				label,
+			val textPosition = label.getTextCentered(
 				rectBackgroundBubble.centerX().toInt(),
 				rectBackgroundBubble.centerY().toInt(),
 				this.painter

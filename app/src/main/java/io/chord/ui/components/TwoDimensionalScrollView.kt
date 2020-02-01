@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import io.chord.R
-import io.chord.ui.utils.ViewUtils
+import io.chord.ui.extensions.getDirectChildren
 
 
 class TwoDimensionalScrollView : LinearLayout
@@ -41,7 +41,7 @@ class TwoDimensionalScrollView : LinearLayout
 	{
 		super.onFinishInflate()
 		
-		val children = ViewUtils.getDirectChildren(this) ?: return
+		val children = this.getDirectChildren() ?: return
 		(children.parent as ViewGroup).removeView(children)
 		val view = View.inflate(context, R.layout.component_two_dimensional_scroll_view, this)
 		this.verticalScrollView = view.findViewById(R.id.vertical_scroll_view)

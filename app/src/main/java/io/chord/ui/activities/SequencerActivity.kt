@@ -1,11 +1,11 @@
 package io.chord.ui.activities
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import io.chord.R
 import io.chord.clients.models.Track
 import io.chord.ui.components.*
-import io.chord.ui.utils.ViewUtils
+import io.chord.ui.extensions.getChildOfType
 import kotlinx.android.synthetic.main.activity_sequencer.*
 
 class SequencerActivity : AppCompatActivity()
@@ -55,7 +55,7 @@ class SequencerActivity : AppCompatActivity()
 			.add(Track("test2", 10, mutableListOf()))
 		
 		val trackControlMaster = this.findViewById<TrackControl>(R.id.trackControlMaster)
-		ViewUtils.getChildOfType<TrackControl>(trackList)
+		trackList.getChildOfType<TrackControl>()
 			.forEach {
 				trackControlMaster.attach(it.id)
 			}

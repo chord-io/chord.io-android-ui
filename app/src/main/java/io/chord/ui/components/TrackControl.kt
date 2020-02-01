@@ -15,10 +15,8 @@ import androidx.core.graphics.toRectF
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import io.chord.R
 import io.chord.ui.animations.HsvColorEvaluator
-import io.chord.ui.utils.ColorUtils
-import io.chord.ui.utils.GraphicUtils
+import io.chord.ui.extensions.*
 import io.chord.ui.utils.RippleDrawableUtils
-import io.chord.ui.utils.ViewUtils
 import java.util.*
 
 
@@ -137,14 +135,16 @@ class TrackControl : View, Binder
 		
 		init
 		{
-			this.trackControl._backgroundMuteColor = ColorUtils.toTransparent(
-				this.trackControl.backgroundMuteColor,
-				this.backgroundMuteOpacity
-			)
-			this.trackControl._backgroundSoloColor = ColorUtils.toTransparent(
-				this.trackControl.backgroundSoloColor,
-				this.backgroundSoloOpacity
-			)
+			this.trackControl._backgroundMuteColor = this.trackControl
+				.backgroundMuteColor
+				.toTransparent(
+					this.backgroundMuteOpacity
+				)
+			this.trackControl._backgroundSoloColor = this.trackControl
+				.backgroundSoloColor
+				.toTransparent(
+					this.backgroundSoloOpacity
+				)
 			this.textMuteColor = this.trackControl.unselectedTextColor
 			this.textSoloColor = this.trackControl.unselectedTextColor
 			
@@ -181,10 +181,11 @@ class TrackControl : View, Binder
 		{
 			this.backgroundMuteAnimator.addUpdateListener {
 				this.backgroundMuteOpacity = it.animatedValue as Float
-				this.trackControl._backgroundMuteColor = ColorUtils.toTransparent(
-					this.trackControl.backgroundMuteColor,
-					this.backgroundMuteOpacity
-				)
+				this.trackControl._backgroundMuteColor = this.trackControl
+					.backgroundMuteColor
+					.toTransparent(
+						this.backgroundMuteOpacity
+					)
 				this.requestInvalidate()
 			}
 		}
@@ -193,10 +194,11 @@ class TrackControl : View, Binder
 		{
 			this.backgroundSoloAnimator.addUpdateListener {
 				this.backgroundSoloOpacity = it.animatedValue as Float
-				this.trackControl._backgroundSoloColor = ColorUtils.toTransparent(
-					this.trackControl.backgroundSoloColor,
-					this.backgroundSoloOpacity
-				)
+				this.trackControl._backgroundSoloColor = this.trackControl
+					.backgroundSoloColor
+					.toTransparent(
+						this.backgroundSoloOpacity
+					)
 				this.requestInvalidate()
 			}
 		}
@@ -294,10 +296,7 @@ class TrackControl : View, Binder
 		get() = this._backgroundNormalColor
 		set(value) {
 			this._backgroundNormalColor = value
-			RippleDrawableUtils.setBackgroundColor(
-				this.stateContext.ripple,
-				value
-			)
+			this.stateContext.ripple.setBackgroundColor(value)
 			this.stateContext.invalidate()
 		}
 	
@@ -333,6 +332,7 @@ class TrackControl : View, Binder
 		get() = this._roundness
 		set(value) {
 			this._roundness = value
+			// TODO set ripple roundness
 		}
 	
 	var textSize: Float
@@ -466,7 +466,7 @@ class TrackControl : View, Binder
 	
 	override fun attach(id: Int)
 	{
-		val rootView = ViewUtils.getParentRootView(this)
+		val rootView = this.getParentRootView()
 		val controllable = rootView.findViewById<TrackControl>(id)
 		controllable.controllables.clear()
 		controllable.state = this.state
@@ -519,8 +519,7 @@ class TrackControl : View, Binder
 		)
 		
 		canvas.drawPath(
-			GraphicUtils.getRoundRectPath(
-				bounds,
+			bounds.round(
 				this.roundness,
 				0f,
 				0f,
@@ -532,8 +531,7 @@ class TrackControl : View, Binder
 		this.painter.color = this.stateContext.textMuteColor
 		this.painter.textSize = this.textSize
 		
-		val textPosition = ViewUtils.getTextCentered(
-			this.textMute,
+		val textPosition = this.textMute.getTextCentered(
 			bounds.centerX().toInt(),
 			bounds.centerY().toInt(),
 			this.painter
@@ -560,8 +558,7 @@ class TrackControl : View, Binder
 		)
 		
 		canvas.drawPath(
-			GraphicUtils.getRoundRectPath(
-				bounds,
+			bounds.round(
 				0f,
 				this.roundness,
 				this.roundness,
@@ -573,8 +570,7 @@ class TrackControl : View, Binder
 		this.painter.color = this.stateContext.textSoloColor
 		this.painter.textSize = this.textSize
 		
-		val textPosition = ViewUtils.getTextCentered(
-			this.textSolo,
+		val textPosition = this.textSolo.getTextCentered(
 			bounds.centerX().toInt(),
 			bounds.centerY().toInt(),
 			this.painter

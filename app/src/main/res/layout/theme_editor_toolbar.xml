@@ -22,8 +22,8 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:cio_tc_textMute="@string/trackcontrol_mute"
-            app:cio_tc_textSolo="@string/trackcontrol_solo">
+            app:cio_tc_textMute="@string/track_control_mute"
+            app:cio_tc_textSolo="@string/track_control_solo">
         </io.chord.ui.components.TrackControl>
 
         <io.chord.ui.components.QuantizeDropDown
