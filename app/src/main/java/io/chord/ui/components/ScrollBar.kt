@@ -62,39 +62,50 @@ class ScrollBar : View, Binder
 		}
 	}
 	
-	private class Controller(
-		id: Int,
-		private val scrollBar: ScrollBar
-	)
+	private class Controller
 	{
+		private val scrollBar: ScrollBar
 		private val scrollView: FrameLayout
 		private var size: Int = 0
 		private var contentSize: Int = 0
 		
-		init
+		constructor(id: Int, scrollBar: ScrollBar)
 		{
+			this.scrollBar = scrollBar
 			val rootView = this.scrollBar.getParentRootView()
-			this.scrollView = when(val scrollView = rootView.findViewById<View>(id))
+			val scrollView = rootView.findViewById<View>(id)
+			this.scrollView = this.initScrollView(scrollView)
+		}
+		
+		constructor(view: View, scrollBar: ScrollBar)
+		{
+			this.scrollBar = scrollBar
+			this.scrollView = this.initScrollView(view)
+		}
+		
+		private fun initScrollView(view: View): FrameLayout
+		{
+			val scrollView = when(view)
 			{
 				is TwoDimensionalScrollView ->
 				{
 					if(scrollBar.orientation == ViewOrientation.Vertical)
 					{
-						scrollView.verticalScrollView
+						view.verticalScrollView
 					} else
 					{
-						scrollView.horizontalScrollView
+						view.horizontalScrollView
 					}
 				}
-				is ScrollView -> scrollView
-				is HorizontalScrollView -> scrollView
+				is ScrollView -> view
+				is HorizontalScrollView -> view
 				else -> throw IllegalStateException("view is not a scrollview")
 			}
 			
-			this.scrollView.isVerticalScrollBarEnabled = false
-			this.scrollView.isHorizontalScrollBarEnabled = false
+			scrollView.isVerticalScrollBarEnabled = false
+			scrollView.isHorizontalScrollBarEnabled = false
 			
-			this.scrollView.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+			scrollView.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
 				val oldContentSize = this.contentSize
 				val oldSize = this.size
 				val contentSize = this.getContentSize()
@@ -114,9 +125,11 @@ class ScrollBar : View, Binder
 				}
 			}
 			
-			this.scrollView.setOnScrollChangeListener { _, _, _, _, _ ->
+			scrollView.setOnScrollChangeListener { _, _, _, _, _ ->
 				this.scrollBar.invalidate()
 			}
+			
+			return scrollView
 		}
 		
 		override fun equals(other: Any?): Boolean
@@ -518,11 +531,34 @@ class ScrollBar : View, Binder
 	override fun attach(id: Int)
 	{
 		this.controllers[id] = Controller(id, this)
+		this.checkScrollBarControllerAreEquals()
+		this.dispatchEvent()
+	}
+	
+	override fun attach(view: View)
+	{
+		this.controllers[view.id] = Controller(view, this)
+		this.checkScrollBarControllerAreEquals()
+		this.dispatchEvent()
+	}
+	
+	override fun attachAll(views: List<View>)
+	{
+		views.forEach {
+			this.controllers[it.id] = Controller(it, this)
+		}
+		this.checkScrollBarControllerAreEquals()
+		this.dispatchEvent()
 	}
 	
 	override fun detach(id: Int)
 	{
 		this.controllers.remove(id)
+	}
+	
+	override fun detachAll()
+	{
+		this.controllers.clear()
 	}
 	
 	private fun checkScrollBarControllerAreEquals()
@@ -609,6 +645,13 @@ class ScrollBar : View, Binder
 		this.checkScrollBarControllerAreEquals()
 		this.controllers.forEach {
 			it.value.setPosition(position)
+		}
+	}
+	
+	private fun dispatchEvent()
+	{
+		this.controllers.forEach {
+			it.value.setPosition(this.position)
 		}
 	}
 	

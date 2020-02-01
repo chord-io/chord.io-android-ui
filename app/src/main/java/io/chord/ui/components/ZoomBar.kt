@@ -537,13 +537,31 @@ class ZoomBar : View, Binder
 	{
 		val rootView = this.getParentRootView()
 		val zoomable = rootView.findViewById<View>(id)
-		this.zoomables[id] = zoomable as Zoomable
+		this.attach(zoomable)
+	}
+	
+	override fun attach(view: View)
+	{
+		val zoomable = view as Zoomable
+		this.zoomables[view.id] = zoomable
 		this.dispatchEvent(zoomable)
+	}
+	
+	override fun attachAll(views: List<View>)
+	{
+		views.forEach {
+			this.attach(it)
+		}
 	}
 	
 	override fun detach(id: Int)
 	{
 		this.zoomables.remove(id)
+	}
+	
+	override fun detachAll()
+	{
+		this.zoomables.clear()
 	}
 	
 	private fun dispatchEvent()

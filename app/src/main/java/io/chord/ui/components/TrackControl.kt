@@ -468,14 +468,32 @@ class TrackControl : View, Binder
 	{
 		val rootView = this.getParentRootView()
 		val controllable = rootView.findViewById<TrackControl>(id)
+		this.attach(controllable)
+	}
+	
+	override fun attach(view: View)
+	{
+		val controllable = view as TrackControl
 		controllable.controllables.clear()
 		controllable.state = this.state
-		this.controllables[id] = controllable
+		this.controllables[controllable.id] = controllable
+	}
+	
+	override fun attachAll(views: List<View>)
+	{
+		views.forEach {
+			this.attach(it)
+		}
 	}
 	
 	override fun detach(id: Int)
 	{
 		this.controllables.remove(id)
+	}
+	
+	override fun detachAll()
+	{
+		this.controllables.clear()
 	}
 	
 	override fun onTouchEvent(event: MotionEvent): Boolean
