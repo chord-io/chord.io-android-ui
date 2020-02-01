@@ -1,6 +1,5 @@
 package io.chord.ui.utils
 
-import android.R
 import android.content.res.ColorStateList
 import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
@@ -41,10 +40,10 @@ class RippleDrawableUtils
 		{
 			return ColorStateList(
 				arrayOf(
-					intArrayOf(R.attr.state_pressed),
-					intArrayOf(R.attr.state_focused),
-					intArrayOf(R.attr.state_activated),
-					intArrayOf(R.attr.state_selected),
+					intArrayOf(android.R.attr.state_pressed),
+					intArrayOf(android.R.attr.state_focused),
+					intArrayOf(android.R.attr.state_activated),
+					intArrayOf(android.R.attr.state_selected),
 					intArrayOf()
 				), intArrayOf(
 					pressedColor,

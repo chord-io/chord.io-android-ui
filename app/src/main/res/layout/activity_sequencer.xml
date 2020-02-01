@@ -26,7 +26,8 @@
             android:layout_row="0"
             android:background="@color/backgroundPrimary"/>
 
-        <LinearLayout
+        <ScrollView
+            android:id="@+id/trackListScrollView"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_columnWeight="0.33"
@@ -34,17 +35,12 @@
             android:layout_column="0"
             android:layout_row="1"
             android:background="@color/backgroundTernary">
-            <ScrollView
-                android:id="@+id/trackListScrollView"
+            <io.chord.ui.components.TrackList
+                android:id="@+id/trackList"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <io.chord.ui.components.TrackList
-                    android:id="@+id/trackList"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:showDividers="middle"/>
-            </ScrollView>
-        </LinearLayout>
+                android:layout_height="wrap_content"
+                android:showDividers="middle"/>
+        </ScrollView>
 
         <io.chord.ui.components.TwoDimensionalScrollView
             android:id="@+id/scrollview"

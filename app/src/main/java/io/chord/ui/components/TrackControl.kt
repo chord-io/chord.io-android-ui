@@ -3,7 +3,8 @@ package io.chord.ui.components
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.content.Context
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.Paint
 import android.graphics.drawable.RippleDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
@@ -275,7 +276,7 @@ class TrackControl : View, Binder
 		get() = this._state
 		set(value) {
 			this._state = value
-			this.controllables.forEach { _, trackControl ->
+			this.controllables.forEach { (_, trackControl) ->
 				trackControl.state = value
 			}
 			this.stateContext.setState(value)
@@ -455,7 +456,7 @@ class TrackControl : View, Binder
 		
 		if(this.id == -1)
 		{
-			this.id = View.generateViewId()
+			this.id = generateViewId()
 		}
 		
 		this.isClickable = true

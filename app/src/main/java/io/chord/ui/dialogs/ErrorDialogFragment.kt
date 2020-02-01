@@ -1,7 +1,9 @@
 package io.chord.ui.dialogs
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -24,14 +26,21 @@ open class ErrorDialogFragment(
 		return this.finalize(builder)
 	}
 
+	@SuppressLint("InflateParams")
 	override fun finalize(builder: MaterialAlertDialogBuilder): AlertDialog
 	{
 		builder.background = ContextCompat.getDrawable(
-			this.activity!!,
+			this.context!!,
 			R.drawable.layout_background_secondary
 		)
 		
-		val titleView = this.activity!!.layoutInflater.inflate(R.layout.dialog_error_title, null)
+		val titleView = LayoutInflater
+			.from(this.context)
+			.inflate(
+				R.layout.dialog_error_title,
+				null,
+				false
+			)
 		titleView.title.text = this.title
 		builder.setCustomTitle(titleView)
 		

@@ -244,7 +244,7 @@ class ProjectListFragment : Fragment(), ClickListener<Project, ProjectViewHolder
         this.client.delete(project.id)
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe {
-                holder.binding!!.loader.visibility = View.VISIBLE
+                holder.binding.loader.visibility = View.VISIBLE
             }
             .doOnComplete {
                 this.viewSection.remove(project)

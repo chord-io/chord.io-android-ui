@@ -4,7 +4,7 @@ import androidx.databinding.BaseObservable
 import io.chord.clients.models.Project
 
 class ProjectListItemViewModel(
-	private val model: Project
+	model: Project
 ) : BaseObservable()
 {
 	var name: String = model.name

@@ -1,7 +1,9 @@
 package io.chord.ui.dialogs.cudc
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import io.chord.R
 import io.chord.ui.dialogs.SimpleDialogFragment
@@ -44,9 +46,16 @@ class CudcSelectOperationDialogFragment(
         return null
     }
     
+    @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog
     {
-        val view = this.activity!!.layoutInflater.inflate(R.layout.cudc_select_operation_dialog_fragment, null)
+        val view = LayoutInflater
+            .from(this.context)
+            .inflate(
+                R.layout.cudc_select_operation_dialog_fragment,
+                null,
+                false
+            )
     
         if(!this.operations.contains(CudcOperation.CREATE))
         {

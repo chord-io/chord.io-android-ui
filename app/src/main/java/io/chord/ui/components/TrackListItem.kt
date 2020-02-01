@@ -1,18 +1,9 @@
 package io.chord.ui.components
 
-import android.content.Context
-import android.graphics.Rect
-import android.util.Log
-import android.util.TypedValue
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.databinding.DataBindingUtil
-import io.chord.R
 import io.chord.databinding.TrackListItemBinding
 import io.chord.ui.models.TrackListItemViewModel
-import io.chord.ui.utils.ViewUtils
 
 class TrackListItem(
 	val view: View

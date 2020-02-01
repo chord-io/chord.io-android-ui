@@ -2,21 +2,13 @@ package io.chord.ui.components
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.database.DataSetObserver
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.LinearLayout
-import androidx.core.view.setPadding
-import androidx.databinding.DataBindingUtil
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.RecyclerView
 import io.chord.R
 import io.chord.clients.models.Track
-import io.chord.databinding.TrackListItemBinding
 import io.chord.ui.models.TrackListItemViewModel
-import io.chord.ui.utils.ViewUtils
 
 class TrackListAdapter(
 	context: Context

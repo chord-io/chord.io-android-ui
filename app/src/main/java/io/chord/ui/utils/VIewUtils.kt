@@ -125,7 +125,7 @@ class ViewUtils
 		fun pixelToDp(value: Float): Float
 		{
 			val metrics = ChordIOApplication.instance.resources.displayMetrics
-			return value / metrics.density;
+			return value / metrics.density
 		}
 		
 		fun spToPixel(value: Float): Float
@@ -137,7 +137,7 @@ class ViewUtils
 		fun pixelToSp(value: Float): Float
 		{
 			val metrics = ChordIOApplication.instance.resources.displayMetrics
-			return value / metrics.scaledDensity;
+			return value / metrics.scaledDensity
 		}
 		
 		fun getTextWidth(text: String, painter: Paint): Int

@@ -3,22 +3,14 @@ package io.chord.ui.components
 import android.animation.ValueAnimator
 import android.content.Context
 import android.database.DataSetObserver
-import android.graphics.ColorFilter
 import android.graphics.PorterDuff
-import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.ScaleDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.util.AttributeSet
-import android.util.Log
-import android.view.View
-import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.animation.doOnEnd
-import androidx.core.view.setPadding
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import io.chord.R
 import io.chord.clients.models.Track
-import io.chord.ui.utils.ViewUtils
 
 class TrackList : LinearLayout, Zoomable
 {
@@ -135,7 +127,7 @@ class TrackList : LinearLayout, Zoomable
 		
 		typedArray.recycle()
 		
-		this.orientation = LinearLayout.VERTICAL
+		this.orientation = VERTICAL
 		
 		this.adapter.registerDataSetObserver(TrackListDataSetObserver(this))
 		

@@ -3,8 +3,7 @@ package io.chord.ui.models
 import androidx.databinding.BaseObservable
 import io.chord.clients.models.*
 
-class SignInFormViewModel(
-) : BaseObservable()
+class SignInFormViewModel : BaseObservable()
 {
 	var username: String = ""
 	

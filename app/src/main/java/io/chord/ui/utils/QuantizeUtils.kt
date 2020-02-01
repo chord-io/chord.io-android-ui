@@ -4,11 +4,11 @@ import kotlin.math.ceil
 
 class QuantizeUtils
 {
-	enum class QuantizeMode(val mode: Int)
+	enum class QuantizeMode
 	{
-		Natural(0),
-		Ternary(1),
-		Dotted(2)
+		Natural,
+		Ternary,
+		Dotted
 	}
 	
 	enum class QuantizeValue(val value: Int)

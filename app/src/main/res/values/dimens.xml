@@ -54,7 +54,6 @@
     <dimen name="scrollbar_thumb_thickness">12dp</dimen>
     <dimen name="scrollbar_thumb_roundness">999dp</dimen>
 
-    <dimen name="zoombar_default_thickness">32dp</dimen>
     <dimen name="zoombar_track_thickness">4dp</dimen>
     <dimen name="zoombar_ticks_thickness">2dp</dimen>
     <dimen name="zoombar_ticks_padding">9dp</dimen>
@@ -74,9 +73,6 @@
 
     <dimen name="dropdown_icon_size">12dp</dimen>
     <dimen name="dropdown_text_size">8sp</dimen>
-
-    <dimen name="mini_button_width">48dp</dimen>
-    <dimen name="mini_button_height">40dp</dimen>
 
     <dimen name="track_control_roundness">4dp</dimen>
     <dimen name="track_control_text_size">14sp</dimen>

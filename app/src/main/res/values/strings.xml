@@ -5,7 +5,7 @@
     <string name="auth_base_url">http://192.168.46.101:8080/auth</string>
     <string name="auth_realm">master</string>
     <string name="auth_client_id">chord.io/</string>
-    <string name="auth_client_secret">b4317383-bf15-4928-8683-3772dcdd08a8</string>
+    <string name="auth_client_secret">b4317383–bf15–4928–8683–3772dcdd08a8</string>
     <string name="auth_admin_username">admin/</string>
     <string name="auth_admin_password">chord.io/</string>
 

@@ -5,10 +5,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.LinearLayout
-import android.widget.ScrollView
-import androidx.databinding.DataBindingUtil
 import io.chord.R
 import io.chord.ui.utils.ViewUtils
 

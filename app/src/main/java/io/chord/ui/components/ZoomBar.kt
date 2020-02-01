@@ -169,7 +169,7 @@ class ZoomBar : View, Binder
 			
 			position = when
 			{
-				position < this.zoomBar._getPaddingLeft() -> this.zoomBar._getPaddingLeft().toFloat()
+				position < this.zoomBar.internalGetPaddingLeft() -> this.zoomBar.internalGetPaddingLeft().toFloat()
 				position > limit -> limit
 				else -> position
 			}
@@ -575,7 +575,7 @@ class ZoomBar : View, Binder
 		return this.getSizeWithoutPadding() - this.getPadding()
 	}
 	
-	private fun _getPaddingLeft(): Int
+	private fun internalGetPaddingLeft(): Int
 	{
 		return if(this.orientation == ViewOrientation.Vertical)
 		{
@@ -587,7 +587,7 @@ class ZoomBar : View, Binder
 		}
 	}
 	
-	private fun _getPaddingRight(): Int
+	private fun internalGetPaddingRight(): Int
 	{
 		return if(this.orientation == ViewOrientation.Vertical)
 		{
@@ -601,12 +601,12 @@ class ZoomBar : View, Binder
 	
 	private fun getLimit(): Float
 	{
-		return this.getSizeWithoutPadding() - this._getPaddingRight() - this._thumbThickness
+		return this.getSizeWithoutPadding() - this.internalGetPaddingRight() - this._thumbThickness
 	}
 	
 	private fun getPadding(): Int
 	{
-		return this._getPaddingLeft() + this._getPaddingRight()
+		return this.internalGetPaddingLeft() + this.internalGetPaddingRight()
 	}
 	
 	private fun getSteps(): List<Float>
@@ -614,7 +614,7 @@ class ZoomBar : View, Binder
 		val steps = mutableListOf<Float>()
 		val limit = this.getLimit()
 		val size = this.getSizeWithoutPadding().toFloat()
-		val paddingLeft = this._getPaddingLeft().toFloat()
+		val paddingLeft = this.internalGetPaddingLeft().toFloat()
 		val stepSize = size / (this.factors.size.toFloat() - 1)
 		
 		steps.add(0f)

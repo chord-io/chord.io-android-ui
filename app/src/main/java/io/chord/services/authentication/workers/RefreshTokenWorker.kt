@@ -2,7 +2,6 @@ package io.chord.services.authentication.workers
 
 import android.content.Context
 import androidx.work.*
-import java.util.concurrent.TimeUnit
 import androidx.work.ExistingPeriodicWorkPolicy.REPLACE
 import io.chord.clients.ClientApi
 import io.chord.clients.apis.AuthenticationApi
@@ -10,11 +9,11 @@ import io.chord.services.authentication.storage.SharedPreferencesAuthenticationS
 import kotlinx.coroutines.runBlocking
 import org.koin.core.KoinComponent
 import org.koin.core.inject
-import java.lang.Exception
+import java.util.concurrent.TimeUnit
 
 class RefreshTokenWorker(
-	private val context: Context,
-	private val parameters: WorkerParameters
+	context: Context,
+	parameters: WorkerParameters
 ) : Worker(context, parameters), KoinComponent
 {
 	companion object {

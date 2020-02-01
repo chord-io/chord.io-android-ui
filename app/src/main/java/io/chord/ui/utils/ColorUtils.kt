@@ -1,8 +1,6 @@
 package io.chord.ui.utils
 
-import android.annotation.TargetApi
 import android.graphics.Color
-import android.os.Build
 
 class ColorUtils
 {

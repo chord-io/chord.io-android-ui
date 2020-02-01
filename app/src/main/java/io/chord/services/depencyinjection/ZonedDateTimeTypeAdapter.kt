@@ -1,7 +1,5 @@
 package io.chord.services.depencyinjection
 
-import android.util.JsonReader
-import com.google.gson.JsonDeserializer
 import com.google.gson.TypeAdapter
 import com.google.gson.stream.JsonWriter
 import org.threeten.bp.ZonedDateTime

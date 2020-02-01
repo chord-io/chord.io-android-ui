@@ -1,8 +1,6 @@
 package io.chord.ui.maths
 
-import io.chord.ui.utils.ViewUtils
 import kotlin.math.abs
-import kotlin.math.sign
 
 class LocalOptimumResolver(
 	private var value: Float,
