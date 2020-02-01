@@ -332,7 +332,8 @@ class TrackControl : View, Binder
 		get() = this._roundness
 		set(value) {
 			this._roundness = value
-			// TODO set ripple roundness
+			this.stateContext.ripple.setRoundness(value)
+			this.stateContext.ripple.invalidateSelf()
 		}
 	
 	var textSize: Float
