@@ -1,16 +1,14 @@
 package io.chord.ui.components
 
-import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.View
-import androidx.core.animation.doOnEnd
 import androidx.core.graphics.toRectF
 import io.chord.R
-import io.chord.ui.animations.FastOutSlowInValueAnimator
+import io.chord.ui.behaviors.ZoomBehavior
 import io.chord.ui.extensions.getOptimalTextSize
 import io.chord.ui.utils.QuantizeUtils
 
@@ -20,9 +18,7 @@ class Ruler : View, Zoomable, Quantifiable
 	private var textSizeOptimum: Float = -1f
 	private var textPosition: Float = -1f
 	private var textHalfPadding: Float = -1f
-	private var zoomfactor: Float = 1f
-	private var factorizedWidth: Float = -1f
-	private var factorAnimator: ValueAnimator = FastOutSlowInValueAnimator()
+	private val zoomBehavior: ZoomBehavior = ZoomBehavior()
 	private var quantization: QuantizeUtils.Quantization = QuantizeUtils.Quantization(
 		QuantizeUtils.QuantizeValue.First,
 		QuantizeUtils.QuantizeMode.Natural
@@ -43,14 +39,19 @@ class Ruler : View, Zoomable, Quantifiable
 		get() = this._zoomDuration
 		set(value) {
 			this._zoomDuration = value
-			this.factorAnimator.duration = value
+			this.zoomBehavior.widthAnimator.duration = value
 		}
 	
 	var defaultWidth: Float
 		get() = this._defaultWidth
 		set(value) {
 			this._defaultWidth = value
-			this.setZoomFactor(ViewOrientation.Horizontal, this.zoomfactor, true)
+			
+			this.setZoomFactor(
+				ViewOrientation.Horizontal,
+				this.zoomBehavior.getFactorWidth(),
+				true
+			)
 		}
 	
 	var ticksColor: Int
@@ -194,39 +195,18 @@ class Ruler : View, Zoomable, Quantifiable
 		
 		typedArray.recycle()
 		
-		this.factorAnimator.addUpdateListener { animator ->
-			val factor = animator.animatedValue as Float
-			this.internalSetZoomFactor(factor)
+		this.zoomBehavior.onEvaluateWidth = this::defaultWidth
+		this.zoomBehavior.onMeasureWidth = {
+			this.requestLayout()
+			this.invalidate()
 		}
-		this.factorAnimator.doOnEnd {
-			val animator = it as ValueAnimator
-			val factor = animator.animatedValue as Float
-			this.internalSetZoomFactor(factor)
-		}
-	}
-	
-	private fun internalSetZoomFactor(factor: Float)
-	{
-		this.zoomfactor = factor
-		this.factorizedWidth = this.defaultWidth * this.zoomfactor
-		this.requestLayout()
-		this.invalidate()
 	}
 	
 	override fun setZoomFactor(orientation: ViewOrientation, factor: Float, animate: Boolean)
 	{
 		if(orientation == ViewOrientation.Horizontal)
 		{
-			when
-			{
-				animate ->
-				{
-					this.factorAnimator.cancel()
-					this.factorAnimator.setFloatValues(this.zoomfactor, factor)
-					this.factorAnimator.start()
-				}
-				else -> this.internalSetZoomFactor(factor)
-			}
+			this.zoomBehavior.setFactorWidth(factor, animate)
 		}
 	}
 	
@@ -241,7 +221,7 @@ class Ruler : View, Zoomable, Quantifiable
 		heightMeasureSpec: Int
 	)
 	{
-		val width = this.factorizedWidth * this.barCount
+		val width = this.zoomBehavior.factorizedWidth * this.barCount
 		val height = MeasureSpec.getSize(heightMeasureSpec)
 		this.setMeasuredDimension(width.toInt(), height)
 	}
@@ -276,8 +256,8 @@ class Ruler : View, Zoomable, Quantifiable
 	private fun drawBar(canvas: Canvas, index: Int)
 	{
 		val label = (index + 1).toString()
-		val left = this.factorizedWidth * index
-		val right = left + this.factorizedWidth
+		val left = this.zoomBehavior.factorizedWidth * index
+		val right = left + this.zoomBehavior.factorizedWidth
 		val halfTickThickness = this.ticksThickness / 2f
 		val bounds = canvas.clipBounds.toRectF()
 		

@@ -1,16 +1,14 @@
 package io.chord.ui.components
 
-import android.animation.ValueAnimator
 import android.content.Context
 import android.database.DataSetObserver
 import android.graphics.PorterDuff
 import android.graphics.drawable.ShapeDrawable
 import android.util.AttributeSet
 import android.widget.LinearLayout
-import androidx.core.animation.doOnEnd
 import io.chord.R
 import io.chord.clients.models.Track
-import io.chord.ui.animations.FastOutSlowInValueAnimator
+import io.chord.ui.behaviors.ZoomBehavior
 
 class TrackList : LinearLayout, Zoomable
 {
@@ -29,9 +27,7 @@ class TrackList : LinearLayout, Zoomable
 		}
 	}
 	
-	private var zoomfactor: Float = 0.3f
-	private var factorizedHeight: Float = -1f
-	private var factorAnimator: ValueAnimator = FastOutSlowInValueAnimator()
+	private val zoomBehavior: ZoomBehavior = ZoomBehavior()
 	private val divider: ShapeDrawable = ShapeDrawable()
 	private val adapter: TrackListAdapter = TrackListAdapter(this.context)
 	
@@ -45,7 +41,7 @@ class TrackList : LinearLayout, Zoomable
 		get() = this._zoomDuration
 		set(value) {
 			this._zoomDuration = value
-			this.factorAnimator.duration = value
+			this.zoomBehavior.heightAnimator.duration = value
 		}
 	
 	var dividerColor: Int
@@ -66,7 +62,11 @@ class TrackList : LinearLayout, Zoomable
 		get() = this._rowHeight
 		set(value) {
 			this._rowHeight = value
-			this.setZoomFactor(ViewOrientation.Vertical, this.zoomfactor, true)
+			this.setZoomFactor(
+				ViewOrientation.Vertical,
+				this.zoomBehavior.getFactorHeight(),
+				true
+			)
 		}
 	
 	var rowPadding: Float
@@ -146,15 +146,8 @@ class TrackList : LinearLayout, Zoomable
 		
 		this.adapter.registerDataSetObserver(TrackListDataSetObserver(this))
 		
-		this.factorAnimator.addUpdateListener { animator ->
-			val factor = animator.animatedValue as Float
-			this.internalSetZoomFactor(factor)
-		}
-		this.factorAnimator.doOnEnd {
-			val animator = it as ValueAnimator
-			val factor = animator.animatedValue as Float
-			this.internalSetZoomFactor(factor)
-		}
+		this.zoomBehavior.onEvaluateHeight = this::rowHeight
+		this.zoomBehavior.onMeasureHeight = this::onMeasureChange
 		
 		this.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
 			this.invalidateDividerDrawable()
@@ -182,7 +175,7 @@ class TrackList : LinearLayout, Zoomable
 	{
 		this.removeAllViews()
 		
-		val height = this.factorizedHeight.toInt()
+		val height = this.zoomBehavior.factorizedHeight.toInt()
 		val padding = this.rowPadding.toInt()
 		val count = this.adapter.count
 		
@@ -199,25 +192,17 @@ class TrackList : LinearLayout, Zoomable
 		}
 	}
 	
-	private fun adjustItemViewDimension(holder: TrackListItem, height: Int, padding: Int)
+	private fun onMeasureChange()
 	{
-		holder.view.setPadding(padding, padding, padding, padding)
-		holder.view.layoutParams.height = height
-	}
-	
-	private fun internalSetZoomFactor(factor: Float)
-	{
-		this.zoomfactor = factor
-		this.factorizedHeight = this.rowHeight * this.zoomfactor
-		
-		val height = this.factorizedHeight.toInt()
-		val padding = this.rowPadding.toInt()
 		val count = this.adapter.count
 		
 		if(count == 0)
 		{
 			return
 		}
+		
+		val height = this.zoomBehavior.factorizedHeight.toInt()
+		val padding = this.rowPadding.toInt()
 		
 		for(index in 0 until count)
 		{
@@ -229,6 +214,12 @@ class TrackList : LinearLayout, Zoomable
 		this.requestLayout()
 	}
 	
+	private fun adjustItemViewDimension(holder: TrackListItem, height: Int, padding: Int)
+	{
+		holder.view.setPadding(padding, padding, padding, padding)
+		holder.view.layoutParams.height = height
+	}
+	
 	override fun setZoomFactor(
 		orientation: ViewOrientation,
 		factor: Float,
@@ -237,18 +228,7 @@ class TrackList : LinearLayout, Zoomable
 	{
 		if(orientation == ViewOrientation.Vertical)
 		{
-			// TODO: factoryze behavior like  factor animator
-			
-			when
-			{
-				animate ->
-				{
-					this.factorAnimator.cancel()
-					this.factorAnimator.setFloatValues(this.zoomfactor, factor)
-					this.factorAnimator.start()
-				}
-				else -> this.internalSetZoomFactor(factor)
-			}
+			this.zoomBehavior.setFactorHeight(factor, animate)
 		}
 	}
 }

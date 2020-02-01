@@ -526,6 +526,8 @@ class ZoomBar : View, Binder
 		
 		typedArray.recycle()
 		
+		this.internalSetFactor(this._factor)
+		
 		this.isFocusable = true
 		this.isFocusableInTouchMode = true
 		this.onFocusChangeListener = FocusListener(this)
