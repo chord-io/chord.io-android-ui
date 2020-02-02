@@ -271,6 +271,8 @@ class ScrollBar : View, Binder
 		
 		init
 		{
+			// TODO extract scroll gesture to a behavior class
+			
 			this.scrollBar.positionAnimator.addUpdateListener {
 				val position = it.animatedValue as Int
 				this.scrollBar.setPosition(position)

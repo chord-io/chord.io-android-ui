@@ -195,6 +195,8 @@ class Ruler : View, Zoomable, Quantifiable
 		
 		typedArray.recycle()
 		
+		this.zoomBehavior.widthAnimator.duration = this.zoomDuration
+		
 		this.zoomBehavior.onEvaluateWidth = this::defaultWidth
 		this.zoomBehavior.onMeasureWidth = {
 			this.requestLayout()

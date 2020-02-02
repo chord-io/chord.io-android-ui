@@ -10,7 +10,14 @@ import android.view.View
 import androidx.core.graphics.toRectF
 import io.chord.R
 import io.chord.ui.animations.FastOutSlowInValueAnimator
-import io.chord.ui.extensions.*
+import io.chord.ui.behaviors.BindBehavior
+import io.chord.ui.behaviors.OrientedBoundBehavior
+import io.chord.ui.behaviors.PropertyBehavior
+import io.chord.ui.behaviors.StepPositionBehavior
+import io.chord.ui.extensions.dpToPixel
+import io.chord.ui.extensions.getTextBounds
+import io.chord.ui.extensions.getTextCentered
+import io.chord.ui.extensions.toTransparent
 import io.chord.ui.gestures.GestureDetector
 import io.chord.ui.gestures.SimpleOnGestureListener
 import io.chord.ui.utils.MathUtils
@@ -18,25 +25,65 @@ import io.chord.ui.utils.MathUtils
 
 class ZoomBar : View, Binder
 {
+	private class ZoomBarBoundBehavior(
+		private val zoomBar: ZoomBar
+	) : OrientedBoundBehavior(zoomBar)
+	{
+		fun getLimit(): Float
+		{
+			return this.getSizeWithoutPadding() -
+					this.getPaddingEnd() -
+					this.zoomBar._thumbThickness
+		}
+		
+		fun getSteps(): List<Float>
+		{
+			val steps = mutableListOf<Float>()
+			val limit = this.getLimit()
+			val size = this.getSizeWithoutPadding().toFloat()
+			val paddingLeft = this.getPaddingStart().toFloat()
+			val stepSize = size / (this.zoomBar.factors.size.toFloat() - 1)
+			
+			steps.add(0f)
+			
+			for(index in 1 until this.zoomBar.factors.size)
+			{
+				val step = index * stepSize
+				steps.add(index, step)
+			}
+			
+			return steps.map {
+				MathUtils.map(
+					it,
+					0f,
+					size,
+					paddingLeft,
+					limit
+				)
+			}
+		}
+	}
+	
 	private class FocusListener(
 		private val zoomBar: ZoomBar
 	) : OnFocusChangeListener
 	{
+		val focusEnterAnimator: ValueAnimator = FastOutSlowInValueAnimator()
+		val focusExitAnimator: ValueAnimator = FastOutSlowInValueAnimator()
+		
 		init
 		{
-			this.zoomBar.focusEnterAnimator.setFloatValues(0f, 1f)
-			this.zoomBar.focusEnterAnimator.addUpdateListener { animator ->
+			this.focusEnterAnimator.setFloatValues(0f, 1f)
+			this.focusEnterAnimator.addUpdateListener { animator ->
 				val opacity = animator.animatedValue as Float
 				this.setOpacity(opacity)
 			}
 			
-			this.zoomBar.focusExitAnimator.setFloatValues(1f, 0f)
-			this.zoomBar.focusExitAnimator.addUpdateListener { animator ->
+			this.focusExitAnimator.setFloatValues(1f, 0f)
+			this.focusExitAnimator.addUpdateListener { animator ->
 				val opacity = animator.animatedValue as Float
 				this.setOpacity(opacity)
 			}
-			
-			this.setOpacity(0f)
 		}
 		
 		override fun onFocusChange(
@@ -46,15 +93,15 @@ class ZoomBar : View, Binder
 		{
 			if(hasFocus)
 			{
-				this.zoomBar.focusEnterAnimator.start()
+				this.focusEnterAnimator.start()
 			}
 			else
 			{
-				this.zoomBar.focusExitAnimator.start()
+				this.focusExitAnimator.start()
 			}
 		}
 		
-		private fun setOpacity(opacity: Float)
+		fun setOpacity(opacity: Float)
 		{
 			this.zoomBar._bubbleBackgroundColor = this.zoomBar
 				._bubbleBackgroundColor
@@ -78,29 +125,29 @@ class ZoomBar : View, Binder
 		private var positionSource: Float = 0f
 		private var positionDestination: Float = 0f
 		
+		var isScrolling: Boolean = false
+		
+		val positionAnimator: ValueAnimator = FastOutSlowInValueAnimator()
+		
 		init
 		{
-			this.zoomBar.positionAnimator.addUpdateListener {
+			this.positionAnimator.addUpdateListener {
 				val position = it.animatedValue as Float
-				this.zoomBar.position = position
+				this.zoomBar.positionBehavior.setPosition(position)
 				this.zoomBar.invalidate()
 			}
 		}
 		
 		override fun onDown(event: MotionEvent): Boolean {
 			this.zoomBar.requestFocus()
+			this.isScrolling = false
 			return true
 		}
 		
 		override fun onUp(event: MotionEvent): Boolean
 		{
 			this.zoomBar.clearFocus()
-			
-			if(this.zoomBar.isScrolling)
-			{
-				this.zoomBar.isScrolling = false
-			}
-			
+			this.isScrolling = false
 			return true
 		}
 		
@@ -110,51 +157,48 @@ class ZoomBar : View, Binder
 			distanceX: Float,
 			distanceY: Float
 		): Boolean {
-			if(!this.zoomBar.isScrolling)
-			{
-				this.zoomBar.isScrolling = true
-			}
-			
-			this.setPosition(event2) { position ->
-				this.zoomBar.setPosition(position)
-			}
+			this.isScrolling = true
+			this.setPosition(event2)
+			this.zoomBar.bindBehavior.requestDispatchEvent()
+			this.zoomBar.invalidate()
 			return true
 		}
 		
 		override fun onDoubleTap(event: MotionEvent): Boolean {
 			this.beginConfigureAnimation()
-			this.zoomBar.factor = this.zoomBar.factors[this.zoomBar.defaultFactorIndex]
+			this.zoomBar.positionBehavior.setIndex(this.zoomBar.defaultFactorIndex)
+			this.zoomBar.bindBehavior.requestDispatchEvent()
 			this.endConfigureAnimation()
 			return true
 		}
 		
 		override fun onSingleTapConfirmed(event: MotionEvent): Boolean {
 			this.beginConfigureAnimation()
-			this.setPosition(event) { position ->
-				this.zoomBar.setPositionWithoutInvalidate(position)
-			}
+			this.setPosition(event)
+			this.zoomBar.bindBehavior.requestDispatchEvent()
 			this.endConfigureAnimation()
 			return true
 		}
 		
 		private fun beginConfigureAnimation()
 		{
-			this.positionSource = this.zoomBar.position
+			this.positionSource = this.zoomBar.positionBehavior.getPosition()
 		}
 		
 		private fun endConfigureAnimation()
 		{
-			this.positionDestination = this.zoomBar.position
-			this.zoomBar.positionAnimator.setFloatValues(
+			this.positionDestination = this.zoomBar.positionBehavior.getPosition()
+			this.positionAnimator.setFloatValues(
 				this.positionSource,
 				this.positionDestination
 			)
-			this.zoomBar.positionAnimator.start()
+			this.positionAnimator.start()
 		}
 		
-		private fun setPosition(event: MotionEvent, setter: (Float) -> Unit)
+		private fun setPosition(event: MotionEvent)
 		{
-			val limit = this.zoomBar.getLimit()
+			val limit = this.zoomBar.boundBehavior.getLimit()
+			
 			var position = if(this.zoomBar.orientation == ViewOrientation.Vertical)
 			{
 				event.y - this.zoomBar.thumbThickness / 2f
@@ -166,30 +210,31 @@ class ZoomBar : View, Binder
 			
 			position = when
 			{
-				position < this.zoomBar.internalGetPaddingLeft() -> this.zoomBar.internalGetPaddingLeft().toFloat()
+				position < this.zoomBar.boundBehavior.getPaddingStart() -> this.zoomBar.boundBehavior.getPaddingStart().toFloat()
 				position > limit -> limit
 				else -> position
 			}
 			
-			setter(position)
+			this.zoomBar.positionBehavior.setPosition(position)
 		}
 	}
 	
 	private val zoomables: MutableMap<Int, Zoomable> = mutableMapOf()
 	
-	private val positionAnimator: ValueAnimator = FastOutSlowInValueAnimator()
-	private val focusEnterAnimator: ValueAnimator = FastOutSlowInValueAnimator()
-	private val focusExitAnimator: ValueAnimator = FastOutSlowInValueAnimator()
+	private val focusListener: FocusListener = FocusListener(this)
+	private val gestureListener: GestureListener = GestureListener(this)
 	private val gestureDetector: GestureDetector = GestureDetector(
 		this.context,
-		GestureListener(this)
+		this.gestureListener
 	)
+	private val bindBehavior = BindBehavior<Zoomable>(this)
+	private val boundBehavior = ZoomBarBoundBehavior(this)
+	private val positionBehavior = StepPositionBehavior()
+	private val factorBehavior = PropertyBehavior(0f)
 	private val painter: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
 	private val thumbRoundness: Float = this.resources.getDimension(
 		R.dimen.zoombar_thumb_roundness
 	).dpToPixel()
-	private var position: Float = 0f
-	private var isScrolling: Boolean = false
 	
 	private val defaultFactorIndex = 5
 	private val factors: List<Float> = listOf(
@@ -234,6 +279,7 @@ class ZoomBar : View, Binder
 		get() = this._orientation
 		set(value) {
 			this._orientation = value
+			this.boundBehavior.setOrienation(this._orientation)
 			this.invalidate()
 		}
 	
@@ -245,30 +291,30 @@ class ZoomBar : View, Binder
 				this.factors
 			)
 			
-			this.internalSetFactor(factor)
+			this.factorBehavior.setValue(this._factor)
 		}
 	
 	var moveDuration: Long
 		get() = this._moveDuration
 		set(value) {
 			this._moveDuration = value
-			this.positionAnimator.duration = value
+			this.gestureListener.positionAnimator.duration = value
 		}
 	
 	var focusEnterDuration: Long
 		get() = this._focusEnterDuration
 		set(value) {
 			this._focusEnterDuration = value
-			this.focusEnterAnimator.startDelay = value
-			this.focusEnterAnimator.duration = value
+			this.focusListener.focusEnterAnimator.startDelay = value
+			this.focusListener.focusEnterAnimator.duration = value
 		}
 	
 	var focusExitDuration: Long
 		get() = this._focusExitDuration
 		set(value) {
 			this._focusExitDuration = value
-			this.focusExitAnimator.startDelay = value
-			this.focusExitAnimator.duration = value
+			this.focusListener.focusExitAnimator.startDelay = value
+			this.focusListener.focusExitAnimator.duration = value
 		}
 	
 	var trackColor: Int
@@ -526,163 +572,56 @@ class ZoomBar : View, Binder
 		
 		typedArray.recycle()
 		
-		this.internalSetFactor(this._factor)
-		
 		this.isFocusable = true
 		this.isFocusableInTouchMode = true
-		this.onFocusChangeListener = FocusListener(this)
+		this.onFocusChangeListener = this.focusListener
+		
+		this.focusEnterDuration = this._focusEnterDuration
+		this.focusExitDuration = this._focusExitDuration
+		this.focusListener.setOpacity(0f)
+		
+		this.bindBehavior.onAttach = {}
+		this.bindBehavior.onDispatchEvent = {
+			it.setZoomFactor(this.orientation, this.factor, !this.gestureListener.isScrolling)
+		}
+		
+		this.boundBehavior.setOrienation(this.orientation)
+		
+		this.positionBehavior.onMeasureSteps = this.boundBehavior::getSteps
+		this.positionBehavior.onPositionChanged = { _, index ->
+			this._factor = this.factors[index]
+		}
+		
+		this.factorBehavior.onValueChanged = { value ->
+			val index = this.factors.indexOf(value)
+			this.positionBehavior.setIndex(index)
+		}
+		this.factorBehavior.setValue(this._factor)
 	}
 	
 	override fun attach(id: Int)
 	{
-		val rootView = this.getParentRootView()
-		val zoomable = rootView.findViewById<View>(id)
-		this.attach(zoomable)
+		this.bindBehavior.attach(id)
 	}
 	
 	override fun attach(view: View)
 	{
-		val zoomable = view as Zoomable
-		this.zoomables[view.id] = zoomable
-		this.dispatchEvent(zoomable)
+		this.bindBehavior.attach(view)
 	}
 	
 	override fun attachAll(views: List<View>)
 	{
-		views.forEach {
-			this.attach(it)
-		}
+		this.bindBehavior.attachAll(views)
 	}
 	
 	override fun detach(id: Int)
 	{
-		this.zoomables.remove(id)
+		this.bindBehavior.detach(id)
 	}
 	
 	override fun detachAll()
 	{
-		this.zoomables.clear()
-	}
-	
-	private fun dispatchEvent()
-	{
-		this.zoomables.forEach { (_, zoomable) ->
-			this.dispatchEvent(zoomable)
-		}
-	}
-	
-	private fun dispatchEvent(zoomable: Zoomable)
-	{
-		zoomable.setZoomFactor(this.orientation, this.factor, !this.isScrolling)
-	}
-	
-	private fun getSizeWithoutPadding(): Int
-	{
-		return if(this.orientation == ViewOrientation.Vertical)
-		{
-			this.height
-		}
-		else
-		{
-			this.width
-		}
-	}
-	
-	private fun getSize(): Int
-	{
-		return this.getSizeWithoutPadding() - this.getPadding()
-	}
-	
-	private fun internalGetPaddingLeft(): Int
-	{
-		return if(this.orientation == ViewOrientation.Vertical)
-		{
-			this.paddingTop
-		}
-		else
-		{
-			this.paddingStart
-		}
-	}
-	
-	private fun internalGetPaddingRight(): Int
-	{
-		return if(this.orientation == ViewOrientation.Vertical)
-		{
-			this.paddingBottom
-		}
-		else
-		{
-			this.paddingEnd
-		}
-	}
-	
-	private fun getLimit(): Float
-	{
-		return this.getSizeWithoutPadding() - this.internalGetPaddingRight() - this._thumbThickness
-	}
-	
-	private fun getPadding(): Int
-	{
-		return this.internalGetPaddingLeft() + this.internalGetPaddingRight()
-	}
-	
-	private fun getSteps(): List<Float>
-	{
-		val steps = mutableListOf<Float>()
-		val limit = this.getLimit()
-		val size = this.getSizeWithoutPadding().toFloat()
-		val paddingLeft = this.internalGetPaddingLeft().toFloat()
-		val stepSize = size / (this.factors.size.toFloat() - 1)
-		
-		steps.add(0f)
-		
-		for(index in 1 until this.factors.size)
-		{
-			val step = index * stepSize
-			steps.add(index, step)
-		}
-		
-		return steps.map {
-			MathUtils.map(
-				it,
-				0f,
-				size,
-				paddingLeft,
-				limit
-			)
-		}
-	}
-	
-	private fun factorToPosition(factor: Float)
-	{
-		val steps = this.getSteps()
-		val index = this.factors.indexOf(factor)
-		this.position = steps[index]
-	}
-	
-	private fun internalSetFactor(factor: Float)
-	{
-		this.factorToPosition(factor)
-		this._factor = factor
-		this.invalidate()
-		this.dispatchEvent()
-	}
-	
-	private fun setPositionWithoutInvalidate(position: Float)
-	{
-		val steps = this.getSteps()
-		val step = MathUtils.nearest(position, steps)
-		val index = steps.indexOf(step)
-		this._factor = this.factors[index]
-		this.position = step
-		this.dispatchEvent()
-	}
-	
-	private fun setPosition(position: Float)
-	{
-		this.setPositionWithoutInvalidate(position)
-		this.invalidate()
+		this.bindBehavior.detachAll()
 	}
 	
 	override fun onTouchEvent(event: MotionEvent): Boolean
@@ -699,9 +638,9 @@ class ZoomBar : View, Binder
 	
 	override fun onDraw(canvas: Canvas?)
 	{
-		if(this.position.isNaN())
+		if(this.positionBehavior.getPosition().isNaN())
 		{
-			this.factorToPosition(this._factor)
+			this.factorBehavior.setValue(this._factor)
 		}
 		
 		this.drawTicks(canvas!!)
@@ -755,7 +694,7 @@ class ZoomBar : View, Binder
 		this.painter.strokeWidth = this.ticksThickness
 		this.painter.strokeCap = Paint.Cap.ROUND
 		
-		val steps = this.getSteps()
+		val steps = this.boundBehavior.getSteps()
 		val bounds = canvas.clipBounds.toRectF()
 		val halfThumbThickness = this.thumbThickness / 2f
 		
@@ -798,7 +737,7 @@ class ZoomBar : View, Binder
 		this.painter.color = this.thumbColor
 
 		val thickness = this.thumbThickness
-		val position = this.position
+		val position = this.positionBehavior.getPosition()
 		val roundness = this.thumbRoundness
 
 		if(this.orientation == ViewOrientation.Horizontal)
@@ -840,7 +779,7 @@ class ZoomBar : View, Binder
 		this.painter.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
 		
 		val bounds = Rect(canvas.clipBounds).toRectF()
-		val position = this.position + this.thumbThickness / 2
+		val position = this.positionBehavior.getPosition() + this.thumbThickness / 2
 		val label = this.factor.toString()
 		val width = (label.getTextBounds(this.painter).width() + this.bubblePadding).toInt()
 		val halfWidth = width / 2f

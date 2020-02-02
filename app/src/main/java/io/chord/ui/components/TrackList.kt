@@ -146,6 +146,8 @@ class TrackList : LinearLayout, Zoomable
 		
 		this.adapter.registerDataSetObserver(TrackListDataSetObserver(this))
 		
+		this.zoomBehavior.heightAnimator.duration = this.zoomDuration
+		
 		this.zoomBehavior.onEvaluateHeight = this::rowHeight
 		this.zoomBehavior.onMeasureHeight = this::onMeasureChange
 		

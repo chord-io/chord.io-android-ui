@@ -26,6 +26,7 @@ class TrackListAdapter(
 		this.setNotifyOnChange(true)
 	}
 	
+	// TODO Generify
 	// TODO recycleviews
 	// TODO make this class generic
 	
