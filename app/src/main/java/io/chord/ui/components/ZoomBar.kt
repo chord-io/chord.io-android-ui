@@ -219,8 +219,6 @@ class ZoomBar : View, Binder
 		}
 	}
 	
-	private val zoomables: MutableMap<Int, Zoomable> = mutableMapOf()
-	
 	private val focusListener: FocusListener = FocusListener(this)
 	private val gestureListener: GestureListener = GestureListener(this)
 	private val gestureDetector: GestureDetector = GestureDetector(
@@ -279,7 +277,7 @@ class ZoomBar : View, Binder
 		get() = this._orientation
 		set(value) {
 			this._orientation = value
-			this.boundBehavior.setOrienation(this._orientation)
+			this.boundBehavior.orientation = this._orientation
 			this.invalidate()
 		}
 	
@@ -585,7 +583,7 @@ class ZoomBar : View, Binder
 			it.setZoomFactor(this.orientation, this.factor, !this.gestureListener.isScrolling)
 		}
 		
-		this.boundBehavior.setOrienation(this.orientation)
+		this.boundBehavior.orientation = this.orientation
 		
 		this.positionBehavior.onMeasureSteps = this.boundBehavior::getSteps
 		this.positionBehavior.onPositionChanged = { _, index ->

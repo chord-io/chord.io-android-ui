@@ -12,6 +12,9 @@ import android.widget.HorizontalScrollView
 import android.widget.ScrollView
 import io.chord.R
 import io.chord.ui.animations.FastOutSlowInValueAnimator
+import io.chord.ui.behaviors.BindBehavior
+import io.chord.ui.behaviors.OrientedBoundBehavior
+import io.chord.ui.behaviors.PropertyBehavior
 import io.chord.ui.extensions.getParentRootView
 import io.chord.ui.gestures.GestureDetector
 import io.chord.ui.gestures.SimpleOnGestureListener
@@ -19,6 +22,126 @@ import io.chord.ui.utils.MathUtils
 
 class ScrollBar : View, Binder
 {
+	private class ScrollBarBoundBehavior(
+		private val scrollBar: ScrollBar
+	): OrientedBoundBehavior(scrollBar)
+	{
+		fun checkScrollBarControllerAreEquals()
+		{
+			if(this.scrollBar.bindBehavior.controls.isEmpty() || this.scrollBar.bindBehavior.controls.size == 1)
+			{
+				return
+			}
+			
+			val result = this.scrollBar.bindBehavior.controls
+				.stream()
+				.distinct()
+			
+			if(result.count() > 1)
+			{
+				throw java.lang.IllegalStateException("all scrollviews must have the same dimension, including content and padding")
+			}
+		}
+		
+		fun getScrollViewContentSize(): Int
+		{
+			this.checkScrollBarControllerAreEquals()
+			return this.scrollBar.bindBehavior.controls.first().boundBehavior.getContentSize()
+		}
+		
+		fun getScrollViewSize(): Int
+		{
+			this.checkScrollBarControllerAreEquals()
+			return this.scrollBar.bindBehavior.controls.first().boundBehavior.getSize()
+		}
+		
+		fun getScrollViewPosition(): Int
+		{
+			this.checkScrollBarControllerAreEquals()
+			return this.scrollBar.bindBehavior.controls.first().boundBehavior.getPosition()
+		}
+		
+		fun getLimitPosition(): Int
+		{
+			val contentSize = this.getScrollViewContentSize()
+			val scrollViewSize = this.getScrollViewSize()
+			
+			return if(contentSize <= scrollViewSize)
+			{
+				scrollViewSize
+			} else
+			{
+				contentSize - scrollViewSize
+			}
+		}
+	}
+	
+	private class ControllerBoundBehavior(
+		private val scrollView: FrameLayout
+	) : OrientedBoundBehavior(scrollView)
+	{
+		private var _size: Int = 0
+		private var _contentSize: Int = 0
+		
+		val lastMeasure: Int
+			get() = this._size
+		
+		val lastContentMeasure: Int
+			get() = this._contentSize
+		
+		override fun getSize(): Int
+		{
+			this._size = super.getSize()
+			return this._size
+		}
+		
+		fun getContentSize(): Int
+		{
+			if(this.scrollView.childCount > 0)
+			{
+				val child = scrollView.getChildAt(0)
+				
+				this._contentSize = if(this.orientation == ViewOrientation.Vertical)
+				{
+					child.height
+				}
+				else
+				{
+					child.width
+				}
+				
+				return this._contentSize
+			}
+			
+			this._contentSize = this.getSizeWithoutPadding()
+			return this._contentSize
+		}
+		
+		fun getPosition(): Int
+		{
+			return if(this.orientation == ViewOrientation.Vertical)
+			{
+				this.scrollView.scrollY
+			}
+			else
+			{
+				this.scrollView.scrollX
+			}
+		}
+		
+		fun setPosition(position: Int)
+		{
+			return if(this.orientation == ViewOrientation.Vertical)
+			{
+				this.scrollView.scrollY = position
+			}
+			else
+			{
+				this.scrollView.scrollX = position
+			}
+		}
+	}
+	
 	private class Thumb(
 		private val scrollBar: ScrollBar
 	)
@@ -28,10 +151,10 @@ class ScrollBar : View, Binder
 		
 		init
 		{
-			val scrollViewContentSize = this.scrollBar.getScrollViewContentSize().toFloat()
-			val scrollViewSize = this.scrollBar.getScrollViewSize().toFloat()
-			val scrollBarSize = this.scrollBar.getSize().toFloat()
-			val scrollViewPosition = this.scrollBar.getScrollViewPosition().toFloat()
+			val scrollViewContentSize = this.scrollBar.boundBehavior.getScrollViewContentSize().toFloat()
+			val scrollViewSize = this.scrollBar.boundBehavior.getScrollViewSize().toFloat()
+			val scrollBarSize = this.scrollBar.boundBehavior.getSize().toFloat()
+			val scrollViewPosition = this.scrollBar.boundBehavior.getScrollViewPosition().toFloat()
 			
 			if(scrollViewContentSize <= scrollViewSize)
 			{
@@ -62,12 +185,11 @@ class ScrollBar : View, Binder
 		}
 	}
 	
-	private class Controller
+	private class Control
 	{
 		private val scrollBar: ScrollBar
 		private val scrollView: FrameLayout
-		private var size: Int = 0
-		private var contentSize: Int = 0
+		val boundBehavior: ControllerBoundBehavior
 		
 		constructor(id: Int, scrollBar: ScrollBar)
 		{
@@ -75,12 +197,16 @@ class ScrollBar : View, Binder
 			val rootView = this.scrollBar.getParentRootView()
 			val scrollView = rootView.findViewById<View>(id)
 			this.scrollView = this.initScrollView(scrollView)
+			this.boundBehavior = ControllerBoundBehavior(this.scrollView)
+			this.boundBehavior.orientation = this.scrollBar.orientation
 		}
 		
 		constructor(view: View, scrollBar: ScrollBar)
 		{
 			this.scrollBar = scrollBar
 			this.scrollView = this.initScrollView(view)
+			this.boundBehavior = ControllerBoundBehavior(this.scrollView)
+			this.boundBehavior.orientation = this.scrollBar.orientation
 		}
 		
 		private fun initScrollView(view: View): FrameLayout
@@ -106,11 +232,11 @@ class ScrollBar : View, Binder
 			scrollView.isHorizontalScrollBarEnabled = false
 			
 			scrollView.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
-				val oldContentSize = this.contentSize
-				val oldSize = this.size
-				val contentSize = this.getContentSize()
-				val size = this.getSize()
-				val position = this.getPosition()
+				val oldContentSize = this.boundBehavior.lastContentMeasure
+				val oldSize = this.boundBehavior.lastMeasure
+				val contentSize = this.boundBehavior.getContentSize()
+				val size = this.boundBehavior.getSize()
+				val position = this.boundBehavior.getPosition()
 				
 				when
 				{
@@ -134,23 +260,23 @@ class ScrollBar : View, Binder
 		
 		override fun equals(other: Any?): Boolean
 		{
-			if(other is Controller)
+			if(other is Control)
 			{
 				when
 				{
-					this.getSizeWithoutPadding() != other.getSizeWithoutPadding() ->
+					this.boundBehavior.getSizeWithoutPadding() != other.boundBehavior.getSizeWithoutPadding() ->
 					{
 						return false
 					}
-					this.getContentSize() != other.getContentSize() ->
+					this.boundBehavior.getContentSize() != other.boundBehavior.getContentSize() ->
 					{
 						return false
 					}
-					this.getPaddingLeft() != other.getPaddingLeft() ->
+					this.boundBehavior.getPaddingStart() != other.boundBehavior.getPaddingStart() ->
 					{
 						return false
 					}
-					this.getPaddingRight() != other.getPaddingRight() ->
+					this.boundBehavior.getPaddingEnd() != other.boundBehavior.getPaddingEnd() ->
 					{
 						return false
 					}
@@ -166,99 +292,11 @@ class ScrollBar : View, Binder
 		override fun hashCode(): Int
 		{
 			return (
-					this.getSizeWithoutPadding() +
-							this.getContentSize() +
-							this.getPaddingLeft() +
-							this.getPaddingRight()
+					this.boundBehavior.getSizeWithoutPadding() +
+							this.boundBehavior.getContentSize() +
+							this.boundBehavior.getPaddingStart() +
+							this.boundBehavior.getPaddingEnd()
 					).hashCode()
-		}
-		
-		fun getContentSize(): Int
-		{
-			if(this.scrollView.childCount > 0)
-			{
-				val child = scrollView.getChildAt(0)
-				
-				this.contentSize = if(this.scrollBar.orientation == ViewOrientation.Vertical)
-				{
-					child.height
-				}
-				else
-				{
-					child.width
-				}
-				
-				return this.contentSize
-			}
-			
-			this.contentSize = this.getSizeWithoutPadding()
-			return this.contentSize
-		}
-		
-		fun getSizeWithoutPadding(): Int
-		{
-			return if(this.scrollBar.orientation == ViewOrientation.Vertical)
-			{
-				this.scrollView.height
-			}
-			else
-			{
-				this.scrollView.width
-			}
-		}
-		
-		fun getSize(): Int
-		{
-			this.size = this.getSizeWithoutPadding() - this.getPaddingLeft() - this.getPaddingRight()
-			return this.size
-		}
-		
-		fun getPaddingLeft(): Int
-		{
-			return if(this.scrollBar.orientation == ViewOrientation.Vertical)
-			{
-				this.scrollView.paddingTop
-			}
-			else
-			{
-				this.scrollView.paddingStart
-			}
-		}
-		
-		fun getPaddingRight(): Int
-		{
-			return if(this.scrollBar.orientation == ViewOrientation.Vertical)
-			{
-				this.scrollView.paddingBottom
-			}
-			else
-			{
-				this.scrollView.paddingEnd
-			}
-		}
-		
-		fun getPosition(): Int
-		{
-			return if(this.scrollBar.orientation == ViewOrientation.Vertical)
-			{
-				this.scrollView.scrollY
-			}
-			else
-			{
-				this.scrollView.scrollX
-			}
-		}
-		
-		fun setPosition(position: Int)
-		{
-			return if(this.scrollBar.orientation == ViewOrientation.Vertical)
-			{
-				this.scrollView.scrollY = position
-			}
-			else
-			{
-				this.scrollView.scrollX = position
-			}
 		}
 	}
 	
@@ -269,13 +307,15 @@ class ScrollBar : View, Binder
 		private var positionSource: Int = 0
 		private var positionDestination: Int = 0
 		
+		val positionAnimator: ValueAnimator = FastOutSlowInValueAnimator()
+		
 		init
 		{
 			// TODO extract scroll gesture to a behavior class
 			
-			this.scrollBar.positionAnimator.addUpdateListener {
+			this.positionAnimator.addUpdateListener {
 				val position = it.animatedValue as Int
-				this.scrollBar.setPosition(position)
+				this.scrollBar.positionBehavior.setValue(position)
 				this.scrollBar.invalidate()
 			}
 		}
@@ -298,18 +338,18 @@ class ScrollBar : View, Binder
 			distanceY: Float
 		): Boolean {
 			this.setPosition(event2)
-			this.scrollBar.setPosition(this.scrollBar.position)
+			this.scrollBar.positionBehavior.setValue(this.scrollBar.positionBehavior.getValue())
 			return true
 		}
 		
 		override fun onDoubleTap(event: MotionEvent): Boolean {
-			val limit = this.scrollBar.getLimitPosition()
-			val position = this.scrollBar.position
+			val limit = this.scrollBar.boundBehavior.getLimitPosition()
+			val position = this.scrollBar.positionBehavior.getValue()
 			val ratio = MathUtils.ratio(position, limit)
 			val invertedPosition = ((1 - ratio) * limit).toInt()
 			
 			this.beginConfigureAnimation()
-			this.scrollBar.position = invertedPosition
+			this.scrollBar.positionBehavior.setValue(invertedPosition)
 			this.endConfigureAnimation()
 			return true
 		}
@@ -323,18 +363,19 @@ class ScrollBar : View, Binder
 		
 		override fun onLongPress(event: MotionEvent)
 		{
-			val limit = this.scrollBar.getLimitPosition()
+			val limit = this.scrollBar.boundBehavior.getLimitPosition()
 			val halfLimit = limit / 2f
+			val position = this.scrollBar.positionBehavior.getValue()
 			
 			this.beginConfigureAnimation()
 			
-			if(this.scrollBar.position <= halfLimit)
+			if(position <= halfLimit)
 			{
-				this.scrollBar.position = limit
+				this.scrollBar.positionBehavior.setValue(limit)
 			}
 			else
 			{
-				this.scrollBar.position = 0
+				this.scrollBar.positionBehavior.setValue(0)
 			}
 			
 			this.endConfigureAnimation()
@@ -342,17 +383,17 @@ class ScrollBar : View, Binder
 		
 		private fun beginConfigureAnimation()
 		{
-			this.positionSource = this.scrollBar.position
+			this.positionSource = this.scrollBar.positionBehavior.getValue()
 		}
 		
 		private fun endConfigureAnimation()
 		{
-			this.positionDestination = this.scrollBar.position
-			this.scrollBar.positionAnimator.setIntValues(
+			this.positionDestination = this.scrollBar.positionBehavior.getValue()
+			this.positionAnimator.setIntValues(
 				this.positionSource,
 				this.positionDestination
 			)
-			this.scrollBar.positionAnimator.start()
+			this.positionAnimator.start()
 		}
 		
 		private fun setPosition(event: MotionEvent)
@@ -366,9 +407,9 @@ class ScrollBar : View, Binder
 				event.x
 			}
 			
-			val scrollBarSize = this.scrollBar.getSizeWithoutPadding()
-			val scrollContentSize = this.scrollBar.getScrollViewContentSize()
-			val scrollViewSize = this.scrollBar.getScrollViewSize()
+			val scrollBarSize = this.scrollBar.boundBehavior.getSizeWithoutPadding()
+			val scrollContentSize = this.scrollBar.boundBehavior.getScrollViewContentSize()
+			val scrollViewSize = this.scrollBar.boundBehavior.getScrollViewSize()
 			val scaledPosition = MathUtils.map(
 				position.toInt(),
 				0,
@@ -377,18 +418,19 @@ class ScrollBar : View, Binder
 				scrollContentSize - scrollViewSize
 			)
 			
-			this.scrollBar.position = scaledPosition
+			this.scrollBar.positionBehavior.setValue(scaledPosition)
 		}
 	}
 	
-	private val controllers: MutableMap<Int, Controller> = mutableMapOf()
-	private val positionAnimator: ValueAnimator = FastOutSlowInValueAnimator()
+	private val bindBehavior: BindBehavior<Control> = BindBehavior(this)
+	private val boundBehavior = ScrollBarBoundBehavior(this)
+	private val positionBehavior = PropertyBehavior(0)
+	private val gestureListener: GestureListener = GestureListener(this)
 	private val gestureDetector: GestureDetector = GestureDetector(
 		this.context,
-		GestureListener(this)
+		this.gestureListener
 	)
 	private val painter: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
-	private var position: Int = 0
 	
 	private var _orientation: ViewOrientation = ViewOrientation.Horizontal
 	private var _moveDuration: Long = -1
@@ -402,6 +444,10 @@ class ScrollBar : View, Binder
 		get() = this._orientation
 		set(value) {
 			this._orientation = value
+			this.boundBehavior.orientation = this._orientation
+			this.bindBehavior.controls.forEach {
+				it.boundBehavior.orientation = this._orientation
+			}
 			this.invalidate()
 		}
 	
@@ -409,7 +455,7 @@ class ScrollBar : View, Binder
 		get() = this._moveDuration
 		set(value) {
 			this._moveDuration = value
-			this.positionAnimator.duration = value
+			this.gestureListener.positionAnimator.duration = value
 		}
 	
 	var trackColor: Int
@@ -525,133 +571,51 @@ class ScrollBar : View, Binder
 		)
 		
 		typedArray.recycle()
+		
+		this.gestureListener.positionAnimator.duration = this.moveDuration
+		
+		this.boundBehavior.orientation = this._orientation
+		
+		this.bindBehavior.onAttach = {
+			this.boundBehavior.checkScrollBarControllerAreEquals()
+		}
+		this.bindBehavior.onDispatchEvent = {
+			it.boundBehavior.setPosition(this.positionBehavior.getValue())
+		}
+		
+		this.positionBehavior.onValueChanged = {
+			this.bindBehavior.requestDispatchEvent()
+		}
 	}
 	
 	override fun attach(id: Int)
 	{
-		this.controllers[id] = Controller(id, this)
-		this.checkScrollBarControllerAreEquals()
-		this.dispatchEvent()
+		val control = Control(id, this)
+		this.bindBehavior.attach(id, control)
 	}
 	
 	override fun attach(view: View)
 	{
-		this.controllers[view.id] = Controller(view, this)
-		this.checkScrollBarControllerAreEquals()
-		this.dispatchEvent()
+		val control = Control(view, this)
+		this.bindBehavior.attach(id, control)
 	}
 	
 	override fun attachAll(views: List<View>)
 	{
 		views.forEach {
-			this.controllers[it.id] = Controller(it, this)
+			val control = Control(it, this)
+			this.bindBehavior.attach(it.id, control)
 		}
-		this.checkScrollBarControllerAreEquals()
-		this.dispatchEvent()
 	}
 	
 	override fun detach(id: Int)
 	{
-		this.controllers.remove(id)
+		this.bindBehavior.detach(id)
 	}
 	
 	override fun detachAll()
 	{
-		this.controllers.clear()
-	}
-	
-	private fun checkScrollBarControllerAreEquals()
-	{
-		if(this.controllers.isEmpty() || this.controllers.size == 1)
-		{
-			return
-		}
-		
-		val result = this.controllers
-			.values
-			.stream()
-			.distinct()
-		
-		if(result.count() > 1)
-		{
-			throw java.lang.IllegalStateException("all scrollviews must have the same dimension, including content and padding")
-		}
-	}
-	
-	private fun getScrollViewContentSize(): Int
-	{
-		this.checkScrollBarControllerAreEquals()
-		return this.controllers.values.first().getContentSize()
-	}
-	
-	private fun getScrollViewSize(): Int
-	{
-		this.checkScrollBarControllerAreEquals()
-		return this.controllers.values.first().getSize()
-	}
-	
-	private fun getScrollViewPosition(): Int
-	{
-		this.checkScrollBarControllerAreEquals()
-		return this.controllers.values.first().getPosition()
-	}
-	
-	private fun getSizeWithoutPadding(): Int
-	{
-		return if(this.orientation == ViewOrientation.Vertical)
-		{
-			this.height
-		}
-		else
-		{
-			this.width
-		}
-	}
-	
-	private fun getSize(): Int
-	{
-		return this.getSizeWithoutPadding() - this.getPadding()
-	}
-	
-	private fun getPadding(): Int
-	{
-		return if(this.orientation == ViewOrientation.Vertical)
-		{
-			this.paddingTop + this.paddingBottom
-		}
-		else
-		{
-			this.paddingStart + this.paddingEnd
-		}
-	}
-	
-	private fun getLimitPosition(): Int
-	{
-		val contentSize = this.getScrollViewContentSize()
-		val scrollViewSize = this.getScrollViewSize()
-		
-		return if(contentSize <= scrollViewSize)
-		{
-			scrollViewSize
-		} else
-		{
-			contentSize - scrollViewSize
-		}
-	}
-	
-	private fun setPosition(position: Int)
-	{
-		this.checkScrollBarControllerAreEquals()
-		this.controllers.forEach {
-			it.value.setPosition(position)
-		}
-	}
-	
-	private fun dispatchEvent()
-	{
-		this.controllers.forEach {
-			it.value.setPosition(this.position)
-		}
+		this.bindBehavior.detachAll()
 	}
 	
 	override fun onTouchEvent(event: MotionEvent): Boolean
@@ -683,8 +647,7 @@ class ScrollBar : View, Binder
 			scrollViewContentSize - scrollViewSize
 		)
 		
-		this.position = scaledPosition
-		this.setPosition(scaledPosition)
+		this.positionBehavior.setValue(scaledPosition)
 		
 		this.invalidate()
 	}
@@ -693,7 +656,7 @@ class ScrollBar : View, Binder
 	{
 		this.drawTrack(canvas!!)
 		
-		if(this.controllers.isNotEmpty())
+		if(this.bindBehavior.controls.isNotEmpty())
 		{
 			this.drawThumb(canvas)
 		}

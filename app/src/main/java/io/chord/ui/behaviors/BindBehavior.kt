@@ -8,15 +8,18 @@ class BindBehavior<T>(
 	private val controller: View
 ) : Binder
 {
-	private var controls: MutableMap<Int, T> = mutableMapOf()
+	private var _controls: MutableMap<Int, T> = mutableMapOf()
 	
 	// TODO change to nullable type and check if is null
 	lateinit var onAttach: ((T) -> Unit)
 	lateinit var onDispatchEvent: ((T) -> Unit)
 	
+	val controls: MutableList<T>
+		get() = this._controls.values.toMutableList()
+	
 	private fun checkIfAlreadyAttached(id: Int)
 	{
-		if(this.controls.containsKey(id))
+		if(this._controls.containsKey(id))
 		{
 			throw IllegalStateException("view is already attached")
 		}
@@ -34,10 +37,13 @@ class BindBehavior<T>(
 	override fun attach(view: View)
 	{
 		this.checkIfAlreadyAttached(view.id)
-		
 		val control: T = view as? T ?: throw TypeCastException("cannot cast to class type")
-		
-		this.controls[view.id] = control
+		this.attach(view.id, control)
+	}
+	
+	fun attach(id: Int, control: T)
+	{
+		this._controls[id] = control
 		this.onAttach(control)
 		this.dispatchEvent(control)
 	}
@@ -51,12 +57,12 @@ class BindBehavior<T>(
 	
 	override fun detach(id: Int)
 	{
-		this.controls.remove(id)
+		this._controls.remove(id)
 	}
 	
 	override fun detachAll()
 	{
-		this.controls.clear()
+		this._controls.clear()
 	}
 	
 	fun requestDispatchEvent()
@@ -66,7 +72,7 @@ class BindBehavior<T>(
 	
 	private fun dispatchEvent()
 	{
-		this.controls.forEach { (_, control) ->
+		this._controls.forEach { (_, control) ->
 			this.dispatchEvent(control)
 		}
 	}

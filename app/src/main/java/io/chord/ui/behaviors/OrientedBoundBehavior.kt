@@ -7,21 +7,17 @@ open class OrientedBoundBehavior(
 	private val view: View
 )
 {
-	private lateinit var orientation: ViewOrientation
+	private lateinit var _orientation: ViewOrientation
 	
-	fun getOrientation(): ViewOrientation
-	{
-		return this.orientation
-	}
+	var orientation: ViewOrientation
+		get() = this._orientation
+		set(value) {
+			this._orientation = value
+		}
 	
-	fun setOrienation(orientation: ViewOrientation)
+	open fun getSizeWithoutPadding(): Int
 	{
-		this.orientation = orientation
-	}
-	
-	fun getSizeWithoutPadding(): Int
-	{
-		return if(this.orientation == ViewOrientation.Vertical)
+		return if(this._orientation == ViewOrientation.Vertical)
 		{
 			this.view.height
 		}
@@ -31,14 +27,14 @@ open class OrientedBoundBehavior(
 		}
 	}
 	
-	fun getSize(): Int
+	open fun getSize(): Int
 	{
 		return this.getSizeWithoutPadding() - this.getPadding()
 	}
 	
 	fun getPaddingStart(): Int
 	{
-		return if(this.orientation == ViewOrientation.Vertical)
+		return if(this._orientation == ViewOrientation.Vertical)
 		{
 			this.view.paddingTop
 		}
@@ -50,7 +46,7 @@ open class OrientedBoundBehavior(
 	
 	fun getPaddingEnd(): Int
 	{
-		return if(this.orientation == ViewOrientation.Vertical)
+		return if(this._orientation == ViewOrientation.Vertical)
 		{
 			this.view.paddingBottom
 		}
@@ -64,6 +60,4 @@ open class OrientedBoundBehavior(
 	{
 		return this.getPaddingStart() + this.getPaddingEnd()
 	}
-	
-	
 }
