@@ -107,21 +107,21 @@ open class DropDown : LinearLayout
 			attrs, R.styleable.DropDown, defStyle, 0
 		)
 		
-		this._label = typedArray.getString(
+		this.label = typedArray.getString(
 			R.styleable.DropDown_cio_dd_label
 		)
 		
-		this._textColor = typedArray.getColor(
+		this.textColor = typedArray.getColor(
 			R.styleable.DropDown_cio_dd_textColor,
 			this.resources.getColor(R.color.textColor, this.context.theme)
 		)
 		
-		this._iconSize = typedArray.getDimension(
+		this.iconSize = typedArray.getDimension(
 			R.styleable.DropDown_cio_dd_iconSize,
 			this.resources.getDimension(R.dimen.dropdown_icon_size)
 		).toInt()
 		
-		this._textSize = typedArray.getDimension(
+		this.textSize = typedArray.getDimension(
 			R.styleable.DropDown_cio_dd_textSize,
 			this.resources.getDimension(R.dimen.dropdown_text_size)
 		).toInt()

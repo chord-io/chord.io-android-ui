@@ -104,7 +104,7 @@
                 android:layout_weight="0.4"
                 app:cio_zb_orientation="vertical"
                 app:cio_zb_ticksThickness="0dp"
-                app:cio_zb_bubbleMargin="20dp"
+                app:cio_zb_bubbleMargin="30dp"
                 app:cio_zb_factor="0.3"/>
         </LinearLayout>
 

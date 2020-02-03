@@ -9,6 +9,4 @@ interface Binder
 	fun attachAll(views: List<View>)
 	fun detach(id: Int)
 	fun detachAll()
-	
-	// TODO: implement master/slave pattern
 }
