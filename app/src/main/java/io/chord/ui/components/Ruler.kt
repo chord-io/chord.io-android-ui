@@ -8,21 +8,19 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.core.graphics.toRectF
 import io.chord.R
-import io.chord.ui.behaviors.ZoomBehavior
+import io.chord.ui.behaviors.*
 import io.chord.ui.extensions.getOptimalTextSize
 import io.chord.ui.utils.QuantizeUtils
 
-class Ruler : View, Zoomable, Quantifiable
+class Ruler : View, Zoomable, Quantifiable, Bindable
 {
 	private var barCount: Int = 10
 	private var textSizeOptimum: Float = -1f
 	private var textPosition: Float = -1f
 	private var textHalfPadding: Float = -1f
 	private val zoomBehavior: ZoomBehavior = ZoomBehavior()
-	private var quantization: QuantizeUtils.Quantization = QuantizeUtils.Quantization(
-		QuantizeUtils.QuantizeValue.First,
-		QuantizeUtils.QuantizeMode.Natural
-	)
+	private val bindableBehavior = BindableBehavior(this)
+	private val quantizeBehavior = QuantizeBehavior()
 	private val painter: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
 	
 	private var _zoomDuration: Long = -1
@@ -46,7 +44,7 @@ class Ruler : View, Zoomable, Quantifiable
 		get() = this._defaultWidth
 		set(value) {
 			this._defaultWidth = value
-			
+			this.quantizeBehavior.segmentLength = value
 			this.setZoomFactor(
 				ViewOrientation.Horizontal,
 				this.zoomBehavior.getFactorWidth(),
@@ -72,6 +70,7 @@ class Ruler : View, Zoomable, Quantifiable
 		get() = this._ticksThickness
 		set(value) {
 			this._ticksThickness = value
+			this.quantizeBehavior.offset = value / 2f
 			this.invalidate()
 		}
 	
@@ -199,9 +198,29 @@ class Ruler : View, Zoomable, Quantifiable
 		
 		this.zoomBehavior.onEvaluateWidth = this::defaultWidth
 		this.zoomBehavior.onMeasureWidth = {
+			this.quantizeBehavior.segmentLength = this.zoomBehavior.factorizedWidth
 			this.requestLayout()
 			this.invalidate()
 		}
+		
+		this.quantizeBehavior.segmentCount = this.barCount
+		this.quantizeBehavior.segmentLength = this.defaultWidth
+		this.quantizeBehavior.offset = this._ticksThickness / 2f
+	}
+	
+	override fun attach(controller: BindBehavior<Bindable>)
+	{
+		this.bindableBehavior.attach(controller)
+	}
+	
+	override fun selfAttach()
+	{
+		this.bindableBehavior.selfAttach()
+	}
+	
+	override fun selfDetach()
+	{
+		this.bindableBehavior.selfDetach()
 	}
 	
 	override fun setZoomFactor(orientation: ViewOrientation, factor: Float, animate: Boolean)
@@ -214,7 +233,8 @@ class Ruler : View, Zoomable, Quantifiable
 	
 	override fun setQuantization(quantization: QuantizeUtils.Quantization)
 	{
-		this.quantization = quantization
+		this.quantizeBehavior.quantization = quantization
+		this.requestLayout()
 		this.invalidate()
 	}
 	
@@ -223,6 +243,7 @@ class Ruler : View, Zoomable, Quantifiable
 		heightMeasureSpec: Int
 	)
 	{
+		this.quantizeBehavior.generate()
 		val width = this.zoomBehavior.factorizedWidth * this.barCount
 		val height = MeasureSpec.getSize(heightMeasureSpec)
 		this.setMeasuredDimension(width.toInt(), height)
@@ -247,65 +268,49 @@ class Ruler : View, Zoomable, Quantifiable
 		this.textHalfPadding = this.textPadding / 2f
 	}
 	
-	override fun onDraw(canvas: Canvas?)
+	override fun onDraw(canvas: Canvas)
 	{
-		for(i in 0 until this.barCount)
-		{
-			this.drawBar(canvas!!, i)
-		}
-	}
-	
-	private fun drawBar(canvas: Canvas, index: Int)
-	{
-		val label = (index + 1).toString()
-		val left = this.zoomBehavior.factorizedWidth * index
-		val right = left + this.zoomBehavior.factorizedWidth
-		val halfTickThickness = this.ticksThickness / 2f
-		val bounds = canvas.clipBounds.toRectF()
-		
-		bounds.set(
-			left,
-			bounds.top,
-			right,
-			bounds.bottom
-		)
-		
 		val points = mutableListOf<Float>()
-		var count = this.quantization.count
 		
-		if(this.quantization.mode == QuantizeUtils.QuantizeMode.Dotted)
+		for(i in 0 until this.quantizeBehavior.segmentCount)
 		{
-			count -= 1
-		}
-		
-		for(i in 0 until count)
-		{
-			val height = when(i)
-			{
-				0 -> bounds.top
-				else -> bounds.height() * this.ticksWeight
-			}
-			
-			val x = bounds.width() * (i * this.quantization.value) + halfTickThickness
-			
-			points.add(bounds.left + x)
-			points.add(height)
-			points.add(bounds.left + x)
-			points.add(bounds.bottom)
+			this.drawBar(canvas, points, i)
 		}
 		
 		this.painter.color = this.ticksColor
 		this.painter.strokeWidth = this.ticksThickness
 		
 		canvas.drawLines(points.toFloatArray(), this.painter)
+	}
+	
+	private fun drawBar(canvas: Canvas, pointsToDraw: MutableList<Float>, index: Int)
+	{
+		val label = (index + 1).toString()
+		val points = this.quantizeBehavior.points[index]
+		val bounds = canvas.clipBounds.toRectF()
+		
+		points.indices.forEach { i ->
+			val height = when(i)
+			{
+				0 -> bounds.top
+				else -> bounds.height() * this.ticksWeight
+			}
+			
+			val x = points[i]
+			
+			pointsToDraw.add(x)
+			pointsToDraw.add(height)
+			pointsToDraw.add(x)
+			pointsToDraw.add(bounds.bottom)
+		}
 		
 		this.painter.color = this.textColor
 		this.painter.textSize = this.textSizeOptimum
 		this.painter.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-		
+
 		canvas.drawText(
 			label,
-			bounds.left + this.textMargin,
+			points.first() + this.textMargin,
 			textPosition + this.textHalfPadding,
 			this.painter
 		)

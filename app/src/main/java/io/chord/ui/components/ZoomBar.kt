@@ -631,14 +631,14 @@ class ZoomBar : View, Binder
 		}
 	}
 	
-	override fun onDraw(canvas: Canvas?)
+	override fun onDraw(canvas: Canvas)
 	{
 		if(this.positionBehavior.getPosition().isNaN())
 		{
 			this.factorBehavior.setValue(this._factor)
 		}
 		
-		this.drawTicks(canvas!!)
+		this.drawTicks(canvas)
 		this.drawTrack(canvas)
 		this.drawThumb(canvas)
 		this.drawBubble(canvas)

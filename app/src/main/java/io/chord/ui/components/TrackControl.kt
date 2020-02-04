@@ -537,9 +537,9 @@ class TrackControl : View, Binder, Bindable
 		return true
 	}
 	
-	override fun onDraw(canvas: Canvas?)
+	override fun onDraw(canvas: Canvas)
 	{
-		this.drawMuteButton(canvas!!)
+		this.drawMuteButton(canvas)
 		this.drawSoloButton(canvas)
 	}
 	

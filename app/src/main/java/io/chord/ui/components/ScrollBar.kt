@@ -666,9 +666,9 @@ class ScrollBar : View, Binder
 		this.invalidate()
 	}
 	
-	override fun onDraw(canvas: Canvas?)
+	override fun onDraw(canvas: Canvas)
 	{
-		this.drawTrack(canvas!!)
+		this.drawTrack(canvas)
 		
 		if(this.bindBehavior.controls.isNotEmpty())
 		{
