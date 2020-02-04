@@ -6,11 +6,18 @@ import android.graphics.PorterDuff
 import android.graphics.drawable.ShapeDrawable
 import android.util.AttributeSet
 import android.widget.LinearLayout
+import androidx.appcompat.app.AppCompatActivity
 import io.chord.R
 import io.chord.clients.models.Track
+import io.chord.databinding.ProjectDialogFormBinding
 import io.chord.ui.behaviors.ZoomBehavior
+import io.chord.ui.dialogs.cudc.CudcFormOperationDialogFragment
+import io.chord.ui.dialogs.cudc.CudcOperation
+import io.chord.ui.dialogs.cudc.CudcOperationInformation
+import io.chord.ui.dialogs.cudc.CudcSelectOperationDialogFragment
+import java.util.*
 
-class TrackList : LinearLayout, Zoomable
+class TrackList : LinearLayout, Zoomable, TrackListClickListener
 {
 	private class TrackListDataSetObserver(
 		private val trackList: TrackList
@@ -29,7 +36,7 @@ class TrackList : LinearLayout, Zoomable
 	
 	private val zoomBehavior: ZoomBehavior = ZoomBehavior()
 	private val divider: ShapeDrawable = ShapeDrawable()
-	private val adapter: TrackListAdapter = TrackListAdapter(this.context)
+	private val adapter: TrackListAdapter = TrackListAdapter(this.context, this)
 	
 	private var _zoomDuration: Long = -1
 	private var _dividerColor: Int = -1
@@ -233,4 +240,66 @@ class TrackList : LinearLayout, Zoomable
 			this.zoomBehavior.setFactorHeight(factor, animate)
 		}
 	}
+	
+	override fun onItemClicked(item: TrackListItem)
+	{
+	}
+	
+	override fun onItemLongClicked(item: TrackListItem): Boolean
+	{
+		// TODO Factorize cudc workflow
+		
+		val fragmentManager = (this.context as AppCompatActivity).supportFragmentManager
+		val dialogFragment =
+			CudcSelectOperationDialogFragment(
+				EnumSet.of(
+					CudcOperation.UPDATE,
+					CudcOperation.DELETE,
+					CudcOperation.CLONE
+				)
+			)
+		
+		dialogFragment.onDeleteSelectedListener = { this.delete(item) }
+		dialogFragment.onUpdateSelectedListener = { this.update(item) }
+		dialogFragment.onCloneSelectedListener = { this.clone(item) }
+		
+		dialogFragment.show(fragmentManager, "fragment_track_list_cudc_dialog")
+		return true
+	}
+	
+	private fun delete(item: TrackListItem)
+	{
+		this.adapter.remove(item.binding.track!!.model)
+	}
+	
+	private fun update(item: TrackListItem)
+	{
+		val fragmentManager = (this.context as AppCompatActivity).supportFragmentManager
+		val dialogFragment =
+			CudcFormOperationDialogFragment<ProjectDialogFormBinding>(
+				CudcOperationInformation(
+					CudcOperation.UPDATE,
+					this.resources.getString(R.string.track_list_entity_name)
+				),
+				R.layout.project_dialog_form
+			)
+		
+		dialogFragment.onViewModelBinding = {
+//			it.application = ChordIOApplication.instance
+//			it.project = ProjectDialogFormViewModel(project)
+		}
+		
+		dialogFragment.onLayoutUpdatedListener = {
+//			this.adapter.update(item.binding.track.model)
+		}
+		
+		dialogFragment.show(fragmentManager, "fragment_track_list_update_form")
+	}
+	
+	private fun clone(item: TrackListItem)
+	{
+		val trackToClone = item.binding.track!!.model.copy()
+		
+	}
+	
 }

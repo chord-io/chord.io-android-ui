@@ -9,14 +9,20 @@ class TrackListItem(
 	val view: View
 )
 {
-	private lateinit var binding: TrackListItemBinding
+	lateinit var binding: TrackListItemBinding
 	private var initialNameViewTextSize: Float = 0f
 	
-	fun bind(model: TrackListItemViewModel)
+	fun bind(model: TrackListItemViewModel, listener: TrackListClickListener)
 	{
 		this.binding = DataBindingUtil.bind(this.view)!!
 		this.binding.track = model
 		
-		this.initialNameViewTextSize = this.binding.name.textSize
+		this.binding.layout.setOnClickListener {
+			listener.onItemClicked(this)
+		}
+		
+		this.binding.layout.setOnLongClickListener {
+			listener.onItemLongClicked(this)
+		}
 	}
 }

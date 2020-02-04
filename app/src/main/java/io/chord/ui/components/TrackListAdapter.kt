@@ -11,7 +11,8 @@ import io.chord.clients.models.Track
 import io.chord.ui.models.TrackListItemViewModel
 
 class TrackListAdapter(
-	context: Context
+	context: Context,
+	private val listener: TrackListClickListener
 ) : ArrayAdapter<Track>(
 	context,
 	0,
@@ -24,6 +25,25 @@ class TrackListAdapter(
 	init
 	{
 		this.setNotifyOnChange(true)
+	}
+	
+	fun update(item: Track)
+	{
+		val result = this.views
+			.stream()
+			.filter {
+				it.binding.track!!.model == item
+			}
+			.findFirst()
+			
+		if(!result.isPresent)
+		{
+			throw IllegalStateException("item does not exist")
+		}
+		
+		val holder = result.get()
+		holder.binding.track!!.model = item
+		holder.binding.notifyChange()
 	}
 	
 	// TODO Generify
@@ -51,7 +71,7 @@ class TrackListAdapter(
 	
 	fun bindViewHolder(holder: TrackListItem, position: Int)
 	{
-		holder.bind(TrackListItemViewModel(this.getItem(position)!!))
+		holder.bind(TrackListItemViewModel(this.getItem(position)!!), this.listener)
 	}
 	
 	@SuppressLint("ViewHolder")
@@ -61,6 +81,8 @@ class TrackListAdapter(
 		parent: ViewGroup
 	): View
 	{
+		// TODO check if a recycled view is available
+		
 		val view = LayoutInflater
 			.from(this.context)
 			.inflate(

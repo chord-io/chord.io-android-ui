@@ -25,6 +25,13 @@ class BindBehavior<T>(
 		}
 	}
 	
+	private fun removeNullReferences()
+	{
+		this.controls.removeIf {
+			it == null
+		}
+	}
+	
 	override fun attach(id: Int)
 	{
 		this.checkIfAlreadyAttached(id)
@@ -72,6 +79,7 @@ class BindBehavior<T>(
 	
 	private fun dispatchEvent()
 	{
+		this.removeNullReferences()
 		this._controls.forEach { (_, control) ->
 			this.dispatchEvent(control)
 		}

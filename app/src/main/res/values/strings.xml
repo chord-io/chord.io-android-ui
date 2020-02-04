@@ -38,6 +38,7 @@
     <string name="project_dialog_form_tempo">Tempo</string>
     <string name="project_dialog_form_private">Private</string>
 
+    <string name="track_list_entity_name">Track</string>
     <string name="track_list_header">Tracks</string>
     <string name="track_list_item_information">channel %1$s</string>
 

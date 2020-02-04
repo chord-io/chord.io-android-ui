@@ -4,7 +4,7 @@ import androidx.databinding.BaseObservable
 import io.chord.clients.models.Track
 
 class TrackListItemViewModel(
-	model: Track
+	var model: Track
 ) : BaseObservable()
 {
 	var name: String = model.name
