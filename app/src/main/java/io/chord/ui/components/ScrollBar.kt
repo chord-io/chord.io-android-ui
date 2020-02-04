@@ -12,9 +12,7 @@ import android.widget.HorizontalScrollView
 import android.widget.ScrollView
 import io.chord.R
 import io.chord.ui.animations.FastOutSlowInValueAnimator
-import io.chord.ui.behaviors.BindBehavior
-import io.chord.ui.behaviors.OrientedBoundBehavior
-import io.chord.ui.behaviors.PropertyBehavior
+import io.chord.ui.behaviors.*
 import io.chord.ui.extensions.getParentRootView
 import io.chord.ui.gestures.GestureDetector
 import io.chord.ui.gestures.SimpleOnGestureListener
@@ -185,10 +183,11 @@ class ScrollBar : View, Binder
 		}
 	}
 	
-	private class Control
+	private class Control : Bindable
 	{
 		private val scrollBar: ScrollBar
 		private val scrollView: FrameLayout
+		private val bindableBehavior = BindableBehavior(this)
 		val boundBehavior: ControllerBoundBehavior
 		
 		constructor(id: Int, scrollBar: ScrollBar)
@@ -207,6 +206,21 @@ class ScrollBar : View, Binder
 			this.scrollView = this.initScrollView(view)
 			this.boundBehavior = ControllerBoundBehavior(this.scrollView)
 			this.boundBehavior.orientation = this.scrollBar.orientation
+		}
+		
+		override fun attach(controller: BindBehavior<Bindable>)
+		{
+			this.bindableBehavior.attach(controller)
+		}
+		
+		override fun selfAttach()
+		{
+			this.bindableBehavior.selfAttach()
+		}
+		
+		override fun selfDetach()
+		{
+			this.bindableBehavior.selfDetach()
 		}
 		
 		private fun initScrollView(view: View): FrameLayout
@@ -597,7 +611,7 @@ class ScrollBar : View, Binder
 	override fun attach(view: View)
 	{
 		val control = Control(view, this)
-		this.bindBehavior.attach(id, control)
+		this.bindBehavior.attach(view.id, control)
 	}
 	
 	override fun attachAll(views: List<View>)

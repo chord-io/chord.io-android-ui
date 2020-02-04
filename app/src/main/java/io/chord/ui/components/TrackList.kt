@@ -10,6 +10,9 @@ import androidx.appcompat.app.AppCompatActivity
 import io.chord.R
 import io.chord.clients.models.Track
 import io.chord.databinding.ProjectDialogFormBinding
+import io.chord.ui.behaviors.BindBehavior
+import io.chord.ui.behaviors.Bindable
+import io.chord.ui.behaviors.BindableBehavior
 import io.chord.ui.behaviors.ZoomBehavior
 import io.chord.ui.dialogs.cudc.CudcFormOperationDialogFragment
 import io.chord.ui.dialogs.cudc.CudcOperation
@@ -35,6 +38,7 @@ class TrackList : LinearLayout, Zoomable, TrackListClickListener
 	}
 	
 	private val zoomBehavior: ZoomBehavior = ZoomBehavior()
+	private val bindableBehavior = BindableBehavior(this)
 	private val divider: ShapeDrawable = ShapeDrawable()
 	private val adapter: TrackListAdapter = TrackListAdapter(this.context, this)
 	
@@ -163,6 +167,21 @@ class TrackList : LinearLayout, Zoomable, TrackListClickListener
 		}
 	}
 	
+	override fun attach(controller: BindBehavior<Bindable>)
+	{
+		this.bindableBehavior.attach(controller)
+	}
+	
+	override fun selfAttach()
+	{
+		this.bindableBehavior.selfAttach()
+	}
+	
+	override fun selfDetach()
+	{
+		this.bindableBehavior.selfDetach()
+	}
+	
 	fun add(track: Track)
 	{
 		this.adapter.add(track)
@@ -182,6 +201,7 @@ class TrackList : LinearLayout, Zoomable, TrackListClickListener
 	
 	private fun populateLayout()
 	{
+		this.adapter.recycleViews()
 		this.removeAllViews()
 		
 		val height = this.zoomBehavior.factorizedHeight.toInt()
@@ -198,6 +218,8 @@ class TrackList : LinearLayout, Zoomable, TrackListClickListener
 			val holder = this.adapter.getViewHolder(view)
 			this.adjustItemViewDimension(holder, height, padding)
 			this.addView(view)
+			val lll = view.parent
+			val mmm = ""
 		}
 	}
 	

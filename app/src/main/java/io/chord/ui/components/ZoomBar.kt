@@ -10,10 +10,7 @@ import android.view.View
 import androidx.core.graphics.toRectF
 import io.chord.R
 import io.chord.ui.animations.FastOutSlowInValueAnimator
-import io.chord.ui.behaviors.BindBehavior
-import io.chord.ui.behaviors.OrientedBoundBehavior
-import io.chord.ui.behaviors.PropertyBehavior
-import io.chord.ui.behaviors.StepPositionBehavior
+import io.chord.ui.behaviors.*
 import io.chord.ui.extensions.dpToPixel
 import io.chord.ui.extensions.getTextBounds
 import io.chord.ui.extensions.getTextCentered

@@ -3,6 +3,7 @@ package io.chord.ui.components
 import android.view.View
 import androidx.databinding.DataBindingUtil
 import io.chord.databinding.TrackListItemBinding
+import io.chord.ui.extensions.getChildOfType
 import io.chord.ui.models.TrackListItemViewModel
 
 class TrackListItem(
@@ -10,7 +11,6 @@ class TrackListItem(
 )
 {
 	lateinit var binding: TrackListItemBinding
-	private var initialNameViewTextSize: Float = 0f
 	
 	fun bind(model: TrackListItemViewModel, listener: TrackListClickListener)
 	{
@@ -24,5 +24,20 @@ class TrackListItem(
 		this.binding.layout.setOnLongClickListener {
 			listener.onItemLongClicked(this)
 		}
+		
+		this.binding
+			.layout
+			.getChildOfType<TrackControl>()
+			.first()
+			.selfAttach()
+	}
+	
+	fun unbind()
+	{
+		this.binding
+			.layout
+			.getChildOfType<TrackControl>()
+			.first()
+			.selfDetach()
 	}
 }

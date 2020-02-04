@@ -1,11 +1,10 @@
 package io.chord.ui.behaviors
 
 import android.view.View
-import io.chord.ui.components.Binder
 import io.chord.ui.extensions.getParentRootView
 
-class BindBehavior<T>(
-	private val controller: View
+class BindBehavior<T: Bindable> (
+	private val controller: Binder
 ) : Binder
 {
 	private var _controls: MutableMap<Int, T> = mutableMapOf()
@@ -25,18 +24,10 @@ class BindBehavior<T>(
 		}
 	}
 	
-	private fun removeNullReferences()
-	{
-		this.controls.removeIf {
-			it == null
-		}
-	}
-	
 	override fun attach(id: Int)
 	{
 		this.checkIfAlreadyAttached(id)
-		
-		val rootView = this.controller.getParentRootView()
+		val rootView = (this.controller as View).getParentRootView()
 		val control = rootView.findViewById<View>(id)
 		this.attach(control)
 	}
@@ -48,10 +39,17 @@ class BindBehavior<T>(
 		this.attach(view.id, control)
 	}
 	
+	fun attach(control: T)
+	{
+		val id = (control as View).id
+		this.attach(id, control)
+	}
+	
 	fun attach(id: Int, control: T)
 	{
 		this._controls[id] = control
 		this.onAttach(control)
+		control.attach(this as BindBehavior<Bindable>)
 		this.dispatchEvent(control)
 	}
 	
@@ -64,12 +62,26 @@ class BindBehavior<T>(
 	
 	override fun detach(id: Int)
 	{
-		this._controls.remove(id)
+		val control = this._controls.remove(id)!!
+		this.detach(control)
+	}
+	
+	fun detach(control: T)
+	{
+		val index = this._controls
+			.filterValues {
+				it == control
+			}
+			.keys
+			.first()
+		this._controls.remove(index)
 	}
 	
 	override fun detachAll()
 	{
-		this._controls.clear()
+		this._controls.forEach {
+			this.detach(it.value)
+		}
 	}
 	
 	fun requestDispatchEvent()
@@ -79,7 +91,6 @@ class BindBehavior<T>(
 	
 	private fun dispatchEvent()
 	{
-		this.removeNullReferences()
 		this._controls.forEach { (_, control) ->
 			this.dispatchEvent(control)
 		}

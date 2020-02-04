@@ -15,12 +15,16 @@ import androidx.core.graphics.toRectF
 import io.chord.R
 import io.chord.ui.animations.FastOutSlowInValueAnimator
 import io.chord.ui.animations.HsvColorEvaluator
+import io.chord.ui.behaviors.BindBehavior
+import io.chord.ui.behaviors.Bindable
+import io.chord.ui.behaviors.BindableBehavior
+import io.chord.ui.behaviors.Binder
 import io.chord.ui.extensions.*
 import io.chord.ui.utils.RippleDrawableUtils
 import java.util.*
 
 
-class TrackControl : View, Binder
+class TrackControl : View, Binder, Bindable
 {
 	private class StateContext(
 		private val trackControl: TrackControl
@@ -256,8 +260,9 @@ class TrackControl : View, Binder
 		}
 	}
 	
-	private val controllables: MutableMap<Int, TrackControl> = mutableMapOf()
 	private lateinit var stateContext: StateContext
+	private val bindBehavior = BindBehavior<TrackControl>(this)
+	private val bindableBehavior = BindableBehavior(this)
 	private val painter: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
 
 	private var _state: TrackControlState = TrackControlState.Normal
@@ -276,9 +281,7 @@ class TrackControl : View, Binder
 		get() = this._state
 		set(value) {
 			this._state = value
-			this.controllables.forEach { (_, trackControl) ->
-				trackControl.state = value
-			}
+			this.bindBehavior.requestDispatchEvent()
 			this.stateContext.setState(value)
 			this.stateContext.invalidate()
 		}
@@ -453,6 +456,10 @@ class TrackControl : View, Binder
 
 		typedArray.recycle()
 		
+		this.isClickable = true
+		this.isFocusable = false
+		this.isFocusableInTouchMode = false
+		
 		this.stateContext = StateContext(this)
 		
 		if(this.id == -1)
@@ -460,41 +467,52 @@ class TrackControl : View, Binder
 			this.id = generateViewId()
 		}
 		
-		this.isClickable = true
-		this.isFocusable = false
-		this.isFocusableInTouchMode = false
+		this.bindBehavior.onAttach = {
+			it.detachAll()
+		}
+		this.bindBehavior.onDispatchEvent = {
+			it.state = this.state
+		}
+	}
+	
+	override fun attach(controller: BindBehavior<Bindable>)
+	{
+		this.bindableBehavior.attach(controller)
+	}
+	
+	override fun selfAttach()
+	{
+		this.bindableBehavior.selfAttach()
+	}
+	
+	override fun selfDetach()
+	{
+		this.bindableBehavior.selfDetach()
 	}
 	
 	override fun attach(id: Int)
 	{
-		val rootView = this.getParentRootView()
-		val controllable = rootView.findViewById<TrackControl>(id)
-		this.attach(controllable)
+		this.bindBehavior.attach(id)
 	}
 	
 	override fun attach(view: View)
 	{
-		val controllable = view as TrackControl
-		controllable.controllables.clear()
-		controllable.state = this.state
-		this.controllables[controllable.id] = controllable
+		this.bindBehavior.attach(view)
 	}
 	
 	override fun attachAll(views: List<View>)
 	{
-		views.forEach {
-			this.attach(it)
-		}
+		this.bindBehavior.attachAll(views)
 	}
 	
 	override fun detach(id: Int)
 	{
-		this.controllables.remove(id)
+		this.bindBehavior.detach(id)
 	}
 	
 	override fun detachAll()
 	{
-		this.controllables.clear()
+		this.bindBehavior.detachAll()
 	}
 	
 	override fun onTouchEvent(event: MotionEvent): Boolean

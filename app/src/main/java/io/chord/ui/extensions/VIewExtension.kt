@@ -2,6 +2,7 @@ package io.chord.ui.extensions
 
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewParent
 import androidx.core.view.forEach
 import androidx.fragment.app.FragmentActivity
 
@@ -38,6 +39,7 @@ fun View.getChildrens(): List<View>
 	return views.flatMap {
 		it.value
 	}
+	.distinct()
 }
 
 fun View.setViewState(state: Boolean)
@@ -102,4 +104,29 @@ fun View.getParentRootView(): View
 	}
 	
 	return lastParent as View
+}
+
+inline fun <reified TType: View> View.getDirectParentOfType(): TType?
+{
+	var parent: ViewParent?
+	
+	while(true)
+	{
+		parent = this.parent
+		
+		if(parent != null && parent is TType)
+		{
+			return parent
+		}
+		else if(parent != null && parent !is TType)
+		{
+			continue
+		}
+		else
+		{
+			break
+		}
+	}
+	
+	return null
 }

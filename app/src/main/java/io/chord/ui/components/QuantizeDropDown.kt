@@ -5,11 +5,13 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.AdapterView
 import io.chord.R
+import io.chord.ui.behaviors.Binder
 import io.chord.ui.extensions.getParentRootView
 import io.chord.ui.utils.QuantizeUtils
 import kotlinx.android.synthetic.main.component_dropdown.view.*
 
-class QuantizeDropDown : DropDown, AdapterView.OnItemSelectedListener, Binder
+class QuantizeDropDown : DropDown, AdapterView.OnItemSelectedListener,
+	Binder
 {
 	private lateinit var adapter: QuantizeDropDownAdapter
 	private val quantifiables: MutableMap<Int, Quantifiable> = mutableMapOf()

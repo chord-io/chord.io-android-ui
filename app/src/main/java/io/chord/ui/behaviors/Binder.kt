@@ -1,4 +1,4 @@
-package io.chord.ui.components
+package io.chord.ui.behaviors
 
 import android.view.View
 
