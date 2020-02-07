@@ -41,6 +41,8 @@
     <string name="track_list_entity_name">Track</string>
     <string name="track_list_header">Tracks</string>
     <string name="track_list_item_information">channel %1$s</string>
+    <string name="track_list_dialog_form_name">Name</string>
+    <string name="track_list_dialog_form_channel">Channel</string>
 
     <string name="signin_username">Username</string>
     <string name="signin_password">Password</string>

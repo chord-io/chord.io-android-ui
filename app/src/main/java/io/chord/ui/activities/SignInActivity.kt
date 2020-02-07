@@ -23,6 +23,7 @@ import io.chord.ui.extensions.getRootView
 import io.chord.ui.extensions.observe
 import io.chord.ui.extensions.setViewState
 import io.chord.ui.extensions.toBanerApiThrowable
+import io.chord.ui.models.SignInFormViewModel
 import io.chord.ui.models.SignUpDialogFormViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.koin.android.ext.android.inject
@@ -40,6 +41,7 @@ class SignInActivity : AppCompatActivity()
 		setContentView(R.layout.activity_sign_in)
 		
 		this.binding = DataBindingUtil.bind(this.getRootView())!!
+		this.binding.user = SignInFormViewModel()
 		
 		this.findViewById<RelativeLayout>(R.id.signup)
 			.setOnClickListener {this.signUp()}
@@ -143,7 +145,7 @@ class SignInActivity : AppCompatActivity()
 								.observe()
 						}
 						.doOnPostObservation {
-							dialogFragment.unvalidate()
+							dialogFragment.invalidate()
 						}
 						.observe()
 				}

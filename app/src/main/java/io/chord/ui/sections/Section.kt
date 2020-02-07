@@ -32,6 +32,7 @@ class Section<TItem, THolder: ViewHolderBase<TItem, THolder>>: Section
 			.build()
 	)
 	{
+		this.state = State.EMPTY
 		this.holderFactory = holderFactory
 		this.clickListener = clickListener
 	}
@@ -50,6 +51,7 @@ class Section<TItem, THolder: ViewHolderBase<TItem, THolder>>: Section
 			.build()
 	)
 	{
+		this.state = State.EMPTY
 		this.holderFactory = holderFactory
 		this.clickListener = clickListener
 	}

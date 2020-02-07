@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import io.chord.R
 import io.chord.clients.models.Track
 import io.chord.ui.components.*
-import io.chord.ui.extensions.getChildOfType
 import kotlinx.android.synthetic.main.activity_sequencer.*
 
 class SequencerActivity : AppCompatActivity()
@@ -31,7 +30,9 @@ class SequencerActivity : AppCompatActivity()
 		this.findViewById<QuantizeDropDown>(R.id.quantizeDropDown)
 			.attach(R.id.ruler)
 		
+		val trackControlMaster = this.findViewById<TrackControl>(R.id.trackControlMaster)
 		val trackList = this.findViewById<TrackList>(R.id.trackList)
+		trackList.trackControlMaster = trackControlMaster
 		
 		trackList
 			.add(Track("track title too long", 10, mutableListOf()))
@@ -53,11 +54,5 @@ class SequencerActivity : AppCompatActivity()
 		
 		trackList
 			.add(Track("test2", 10, mutableListOf()))
-		
-		val trackControlMaster = this.findViewById<TrackControl>(R.id.trackControlMaster)
-		trackList.getChildOfType<TrackControl>()
-			.forEach {
-				trackControlMaster.attach(it.id)
-			}
 	}
 }

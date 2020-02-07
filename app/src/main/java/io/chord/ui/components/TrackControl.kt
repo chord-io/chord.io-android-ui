@@ -467,6 +467,8 @@ class TrackControl : View, Binder, Bindable
 			this.id = generateViewId()
 		}
 		
+		this.state = this._state
+		
 		this.bindBehavior.onAttach = {
 			it.detachAll()
 		}

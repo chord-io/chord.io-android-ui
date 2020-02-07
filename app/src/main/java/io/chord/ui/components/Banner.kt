@@ -132,11 +132,11 @@ class Banner : LinearLayout
 		
 		this._message = typedArray.getString(
 			R.styleable.Banner_cio_bn_message
-		)!!
+		) ?: ""
 		
 		this._icon = typedArray.getString(
 			R.styleable.Banner_cio_bn_icon
-		)!!
+		) ?: ""
 		
 		this._color = typedArray.getColor(
 			R.styleable.Banner_cio_bn_color,

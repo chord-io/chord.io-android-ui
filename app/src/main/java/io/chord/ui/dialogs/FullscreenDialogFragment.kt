@@ -16,9 +16,6 @@ import com.mikepenz.iconics.utils.sizeRes
 import io.chord.R
 import io.chord.ui.components.Banner
 import io.chord.ui.extensions.setViewState
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 
 open class FullscreenDialogFragment<TBinding: ViewDataBinding>(
@@ -113,14 +110,12 @@ open class FullscreenDialogFragment<TBinding: ViewDataBinding>(
 		toolbar.setOnMenuItemClickListener {
 			this.action.setActionView(R.layout.dialog_form_loader)
 			(this.rootView as ViewGroup).setViewState(false)
-			GlobalScope.launch(Dispatchers.IO) {
-				onLayoutUpdatedListener?.invoke(dataBinding)
-			}
+			this.onLayoutUpdatedListener?.invoke(dataBinding)
 			true
 		}
 	}
 	
-	fun unvalidate()
+	fun invalidate()
 	{
 		this.action.actionView = null
 		(this.rootView as ViewGroup).setViewState(true)

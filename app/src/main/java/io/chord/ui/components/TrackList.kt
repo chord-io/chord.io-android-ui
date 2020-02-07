@@ -9,7 +9,7 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import io.chord.R
 import io.chord.clients.models.Track
-import io.chord.databinding.ProjectDialogFormBinding
+import io.chord.databinding.TrackListDialogFormBinding
 import io.chord.ui.behaviors.BindBehavior
 import io.chord.ui.behaviors.Bindable
 import io.chord.ui.behaviors.BindableBehavior
@@ -18,6 +18,7 @@ import io.chord.ui.dialogs.cudc.CudcFormOperationDialogFragment
 import io.chord.ui.dialogs.cudc.CudcOperation
 import io.chord.ui.dialogs.cudc.CudcOperationInformation
 import io.chord.ui.dialogs.cudc.CudcSelectOperationDialogFragment
+import io.chord.ui.models.TrackDialogFormViewModel
 import java.util.*
 
 class TrackList : LinearLayout, Zoomable, TrackListClickListener
@@ -40,7 +41,17 @@ class TrackList : LinearLayout, Zoomable, TrackListClickListener
 	private val zoomBehavior: ZoomBehavior = ZoomBehavior()
 	private val bindableBehavior = BindableBehavior(this)
 	private val divider: ShapeDrawable = ShapeDrawable()
-	private val adapter: TrackListAdapter = TrackListAdapter(this.context, this)
+	private val adapter: TrackListAdapter = TrackListAdapter(
+		this.context,
+		{
+			val holder = TrackListItem(it)
+			holder.trackControlMaster = this.trackControlMaster
+			holder
+		},
+		this
+	)
+	
+	lateinit var trackControlMaster: TrackControl
 	
 	private var _zoomDuration: Long = -1
 	private var _dividerColor: Int = -1
@@ -216,10 +227,9 @@ class TrackList : LinearLayout, Zoomable, TrackListClickListener
 				this
 			)
 			val holder = this.adapter.getViewHolder(view)
+			holder.trackControlMaster = this.trackControlMaster
 			this.adjustItemViewDimension(holder, height, padding)
 			this.addView(view)
-			val lll = view.parent
-			val mmm = ""
 		}
 	}
 	
@@ -291,28 +301,29 @@ class TrackList : LinearLayout, Zoomable, TrackListClickListener
 	
 	private fun delete(item: TrackListItem)
 	{
-		this.adapter.remove(item.binding.track!!.model)
+		this.adapter.remove(item.model)
 	}
 	
 	private fun update(item: TrackListItem)
 	{
 		val fragmentManager = (this.context as AppCompatActivity).supportFragmentManager
 		val dialogFragment =
-			CudcFormOperationDialogFragment<ProjectDialogFormBinding>(
+			CudcFormOperationDialogFragment<TrackListDialogFormBinding>(
 				CudcOperationInformation(
 					CudcOperation.UPDATE,
 					this.resources.getString(R.string.track_list_entity_name)
 				),
-				R.layout.project_dialog_form
+				R.layout.track_list_dialog_form
 			)
 		
 		dialogFragment.onViewModelBinding = {
-//			it.application = ChordIOApplication.instance
-//			it.project = ProjectDialogFormViewModel(project)
+			it.track = TrackDialogFormViewModel(item.model)
 		}
 		
 		dialogFragment.onLayoutUpdatedListener = {
-//			this.adapter.update(item.binding.track.model)
+			val track = it.track!!.toModel()
+			this.adapter.update(track)
+			dialogFragment.validate()
 		}
 		
 		dialogFragment.show(fragmentManager, "fragment_track_list_update_form")
@@ -320,8 +331,41 @@ class TrackList : LinearLayout, Zoomable, TrackListClickListener
 	
 	private fun clone(item: TrackListItem)
 	{
-		val trackToClone = item.binding.track!!.model.copy()
+		val trackToClone = item.model.copy()
 		
+		val fragmentManager = (this.context as AppCompatActivity).supportFragmentManager
+		val dialogFragment =
+			CudcFormOperationDialogFragment<TrackListDialogFormBinding>(
+				CudcOperationInformation(
+					CudcOperation.UPDATE,
+					this.resources.getString(R.string.track_list_entity_name)
+				),
+				R.layout.track_list_dialog_form
+			)
+		
+		dialogFragment.onViewModelBinding = { binding ->
+			binding.track = TrackDialogFormViewModel(trackToClone)
+		}
+		
+		dialogFragment.onLayoutUpdatedListener = { binding ->
+			val track = binding.track!!.toModel()
+			val count = this.adapter.items.count {
+				it.name == track.name
+			}
+			
+			if(count == 0)
+			{
+				this.adapter.add(track)
+				dialogFragment.validate()
+			}
+			else
+			{
+				binding.nameLayout.isErrorEnabled = true
+				binding.nameLayout.error = "Name track already exist"
+				dialogFragment.invalidate()
+			}
+		}
+		
+		dialogFragment.show(fragmentManager, "fragment_track_list_clone_form")
 	}
-	
 }

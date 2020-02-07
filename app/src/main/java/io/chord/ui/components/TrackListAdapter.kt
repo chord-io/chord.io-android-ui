@@ -13,6 +13,7 @@ import io.chord.ui.models.TrackListItemViewModel
 
 class TrackListAdapter(
 	context: Context,
+	private val viewHolderFactory: ((View) -> TrackListItem),
 	private val listener: TrackListClickListener
 ) : ArrayAdapter<Track>(
 	context,
@@ -20,8 +21,12 @@ class TrackListAdapter(
 	mutableListOf()
 )
 {
-	private val views: MutableList<TrackListItem> = mutableListOf()
-	private val recycledViews: MutableList<TrackListItem> = mutableListOf()
+	private val _items: MutableList<Track> = mutableListOf()
+	private val _holders: MutableList<TrackListItem> = mutableListOf()
+	private val _recycledHolders: MutableList<TrackListItem> = mutableListOf()
+	
+	val items: List<Track>
+		get() = this._items.toList()
 	
 	init
 	{
@@ -36,15 +41,16 @@ class TrackListAdapter(
 	
 	private fun recycleView(holder: TrackListItem)
 	{
+		holder.unbind()
 		val parent = holder.view.getDirectParentOfType<ViewGroup>()
 		parent!!.removeView(holder.view)
-		this.views.remove(holder)
-		this.recycledViews.add(holder)
+		this._holders.remove(holder)
+		this._recycledHolders.add(holder)
 	}
 	
 	fun recycleViews()
 	{
-		this.views.map {
+		this._holders.map {
 			it.view
 		}
 		.forEach {
@@ -52,19 +58,51 @@ class TrackListAdapter(
 		}
 	}
 	
-	override fun remove(item: Track)
+	override fun add(item: Track)
 	{
-		val holder = this.getViewHolder(item)
-		holder.unbind()
-		this.recycleView(holder)
-		super.remove(item)
+		this._items.add(item)
+		super.add(item)
+	}
+	
+	override fun addAll(vararg items: Track)
+	{
+		this._items.addAll(items)
+		super.addAll(*items)
+	}
+	
+	override fun addAll(collection: MutableCollection<out Track>)
+	{
+		this._items.addAll(collection)
+		super.addAll(collection)
+	}
+	
+	override fun insert(
+		item: Track,
+		index: Int
+	)
+	{
+		this._items.add(index, item)
+		super.insert(item, index)
 	}
 	
 	fun update(item: Track)
 	{
 		val holder = this.getViewHolder(item)
-		holder.binding.track!!.model = item
-		holder.binding.notifyChange()
+		holder.model = item
+	}
+	
+	override fun remove(item: Track)
+	{
+		val holder = this.getViewHolder(item)
+		this.recycleView(holder)
+		this._items.remove(item)
+		super.remove(item)
+	}
+	
+	override fun clear()
+	{
+		this._items.clear()
+		super.clear()
 	}
 	
 	// TODO Generify
@@ -73,10 +111,10 @@ class TrackListAdapter(
 	
 	private fun getViewHolder(item: Track): TrackListItem
 	{
-		val result = this.views
+		val result = this._holders
 			.stream()
 			.filter {
-				it.binding.track!!.model == item
+				it.model == item
 			}
 			.findFirst()
 		
@@ -92,7 +130,7 @@ class TrackListAdapter(
 		view: View
 	): TrackListItem
 	{
-		val result = this.views
+		val result = this._holders
 			.stream()
 			.filter {
 				it.view == view
@@ -104,7 +142,7 @@ class TrackListAdapter(
 			return result.get()
 		}
 		
-		return TrackListItem(view)
+		return this.viewHolderFactory(view)
 	}
 	
 	fun bindViewHolder(holder: TrackListItem, position: Int)
@@ -119,11 +157,11 @@ class TrackListAdapter(
 		parent: ViewGroup
 	): View
 	{
-		if(this.recycledViews.size > 0)
+		if(this._recycledHolders.size > 0)
 		{
-			val holder = this.recycledViews.removeAt(0)
+			val holder = this._recycledHolders.removeAt(0)
 			this.bindViewHolder(holder, position)
-			this.views.add(holder)
+			this._holders.add(holder)
 			return holder.view
 		}
 		else
@@ -138,7 +176,7 @@ class TrackListAdapter(
 			
 			val holder = this.getViewHolder(view)
 			this.bindViewHolder(holder, position)
-			this.views.add(holder)
+			this._holders.add(holder)
 			return view
 		}
 	}

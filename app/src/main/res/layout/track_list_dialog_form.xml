@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="application"
+            type="io.chord.ui.ChordIOApplication" />
+        <variable
+            name="track"
+            type="io.chord.ui.models.TrackDialogFormViewModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/nameLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            style="@style/TextInputLayout"
+            android:theme="@style/TextInputLayout"
+            android:hint="@string/track_list_dialog_form_name">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:inputType="text"
+                android:textSize="16sp"
+                android:text="@={track.name}"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".20"
+                android:gravity="center_vertical"
+                android:text="@string/track_list_dialog_form_channel"
+                android:textSize="16sp" />
+
+            <SeekBar
+                android:id="@+id/channel"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".70"
+                android:layout_gravity="fill_horizontal|center_vertical"
+                android:padding="0dp"
+                android:progress="@={track.channel}"
+                android:onProgressChanged="@{track.onValueChanged}"
+                android:max="16"
+                android:min="1" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".10"
+                android:gravity="end|center_vertical"
+                android:text="@{track.channel}"
+                android:textColor="@color/colorAccent" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>

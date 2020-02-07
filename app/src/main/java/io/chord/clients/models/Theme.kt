@@ -11,10 +11,12 @@ import com.squareup.moshi.Json
 /**
  * 
  * @property name 
- * @property chords 
+ * @property trackIndex 
+ * @property sequences 
  */
 data class Theme (
         @Json(name = "name") @field:Json(name = "name") var name: String,
-        @Json(name = "chords") @field:Json(name = "chords") var chords: List<Chord>
+        @Json(name = "track_index") @field:Json(name = "track_index") var trackIndex: Int,
+        @Json(name = "sequences") @field:Json(name = "sequences") var sequences: List<Sequence>
 )
 

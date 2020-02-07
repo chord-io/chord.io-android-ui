@@ -9,11 +9,11 @@ class ProjectDialogFormViewModel(
 	private val model: Project?
 ) : BaseObservable()
 {
-	var name: String = model?.name ?: ""
+	var name: String = this.model?.name ?: ""
 	
-	var tempo: Int = model?.tempo ?: 120
+	var tempo: Int = this.model?.tempo ?: 120
 	
-	var private: Boolean = model?.isPrivate ?: false
+	var private: Boolean = this.model?.isPrivate ?: false
 	
 	fun toDto(): ProjectDto
 	{

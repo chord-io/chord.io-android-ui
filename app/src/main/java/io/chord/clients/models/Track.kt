@@ -11,12 +11,10 @@ import com.squareup.moshi.Json
 /**
  * 
  * @property name 
- * @property channel 
- * @property themes 
+ * @property color 
  */
 data class Track (
         @Json(name = "name") @field:Json(name = "name") var name: String,
-        @Json(name = "channel") @field:Json(name = "channel") var channel: Int,
-        @Json(name = "themes") @field:Json(name = "themes") var themes: List<Theme>
+        @Json(name = "color") @field:Json(name = "color") var color: Int
 )
 

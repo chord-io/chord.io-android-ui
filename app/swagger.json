@@ -1164,6 +1164,516 @@
         }
       }
     },
+    "/api/drum-maps": {
+      "post": {
+        "tags": [
+          "DrumMaps"
+        ],
+        "operationId": "Create",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/DrumMapDto"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/DrumMap"
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ValidationProblemDetails"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ]
+      }
+    },
+    "/api/drum-maps/{id}": {
+      "put": {
+        "tags": [
+          "DrumMaps"
+        ],
+        "operationId": "Update",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/DrumMapDto"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ValidationProblemDetails"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "DrumMaps"
+        ],
+        "operationId": "Delete",
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ]
+      }
+    },
+    "/api/drum-maps/by-id/{id}": {
+      "get": {
+        "tags": [
+          "DrumMaps"
+        ],
+        "operationId": "GetById",
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Fingering"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ]
+      }
+    },
+    "/api/drum-maps/all/by-author": {
+      "get": {
+        "tags": [
+          "DrumMaps"
+        ],
+        "operationId": "GetAll",
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/DrumMap"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ]
+      }
+    },
+    "/api/fingerings": {
+      "post": {
+        "tags": [
+          "Fingerings"
+        ],
+        "operationId": "Create",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/FingeringDto"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Fingering"
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ValidationProblemDetails"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ]
+      }
+    },
+    "/api/fingerings/{id}": {
+      "put": {
+        "tags": [
+          "Fingerings"
+        ],
+        "operationId": "Update",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/FingeringDto"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ValidationProblemDetails"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Fingerings"
+        ],
+        "operationId": "Delete",
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ]
+      }
+    },
+    "/api/fingerings/by-id/{id}": {
+      "get": {
+        "tags": [
+          "Fingerings"
+        ],
+        "operationId": "GetById",
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Fingering"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ]
+      }
+    },
+    "/api/fingerings/all/by-author": {
+      "get": {
+        "tags": [
+          "Fingerings"
+        ],
+        "operationId": "GetAllByAuthor",
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Fingering"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ]
+      }
+    },
     "/api/projects": {
       "post": {
         "tags": [
@@ -1808,33 +2318,60 @@
         }
       }
     },
-    "ChordLength": {
+    "DrumMapDto": {
       "required": [
-        "bar",
-        "end",
-        "start"
+        "id",
+        "map",
+        "name"
       ],
       "type": "object",
       "properties": {
-        "bar": {
-          "format": "int32",
-          "maximum": 4294967295,
-          "minimum": 0,
-          "type": "integer"
+        "id": {
+          "type": "string"
         },
-        "start": {
-          "format": "double",
-          "maximum": 1,
-          "minimum": 0,
-          "type": "number"
+        "name": {
+          "maxLength": 30,
+          "minLength": 5,
+          "type": "string"
         },
-        "end": {
-          "format": "double",
-          "maximum": 1,
-          "minimum": 0,
-          "type": "number"
+        "map": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
         }
       }
+    },
+    "DrumMap": {
+      "required": [
+        "id",
+        "map",
+        "name"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 30,
+          "minLength": 5,
+          "type": "string"
+        },
+        "map": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "FingeringType": {
+      "enum": [
+        "Chord",
+        "Drum"
+      ],
+      "type": "string"
     },
     "FingeringEntry": {
       "required": [
@@ -1864,7 +2401,215 @@
         }
       }
     },
-    "Chord": {
+    "Fingering": {
+      "required": [
+        "edited_from",
+        "entries",
+        "evaluations",
+        "id",
+        "name",
+        "tags",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "edited_from": {
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 30,
+          "minLength": 5,
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/FingeringType"
+        },
+        "tags": {
+          "maxLength": 10,
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "evaluations": {
+          "type": "object",
+          "additionalProperties": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "entries": {
+          "maxLength": 50,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FingeringEntry"
+          }
+        }
+      }
+    },
+    "FingeringDto": {
+      "required": [
+        "edited_from",
+        "entries",
+        "evaluations",
+        "name",
+        "tags",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "edited_from": {
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 30,
+          "minLength": 5,
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/FingeringType"
+        },
+        "tags": {
+          "maxLength": 10,
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "evaluations": {
+          "type": "object",
+          "additionalProperties": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "entries": {
+          "maxLength": 50,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FingeringEntry"
+          }
+        }
+      }
+    },
+    "DrumTrack": {
+      "required": [
+        "channel",
+        "color",
+        "drum_map",
+        "name"
+      ],
+      "type": "object",
+      "properties": {
+        "drum_map": {
+          "maxLength": 24,
+          "minLength": 0,
+          "type": "string"
+        },
+        "channel": {
+          "format": "int32",
+          "maximum": 16,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "name": {
+          "maxLength": 30,
+          "minLength": 5,
+          "type": "string"
+        },
+        "color": {
+          "format": "int32",
+          "type": "integer"
+        }
+      }
+    },
+    "MidiTrack": {
+      "required": [
+        "channel",
+        "color",
+        "name"
+      ],
+      "type": "object",
+      "properties": {
+        "channel": {
+          "format": "int32",
+          "maximum": 16,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "name": {
+          "maxLength": 30,
+          "minLength": 5,
+          "type": "string"
+        },
+        "color": {
+          "format": "int32",
+          "type": "integer"
+        }
+      }
+    },
+    "Track": {
+      "required": [
+        "color",
+        "name"
+      ],
+      "type": "object",
+      "properties": {
+        "name": {
+          "maxLength": 30,
+          "minLength": 5,
+          "type": "string"
+        },
+        "color": {
+          "format": "int32",
+          "type": "integer"
+        }
+      }
+    },
+    "SequenceLength": {
+      "required": [
+        "bar",
+        "end",
+        "start"
+      ],
+      "type": "object",
+      "properties": {
+        "bar": {
+          "format": "int32",
+          "maximum": 4294967295,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "start": {
+          "format": "double",
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        "end": {
+          "format": "double",
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        }
+      }
+    },
+    "InnerFingering": {
+      "type": "object",
+      "properties": {
+        "entries": {
+          "maxLength": 50,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FingeringEntry"
+          }
+        }
+      }
+    },
+    "ChordSequence": {
       "required": [
         "fingering",
         "intervals",
@@ -1886,43 +2631,60 @@
             "type": "string"
           }
         },
-        "length": {
-          "$ref": "#/definitions/ChordLength"
-        },
         "fingering": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/FingeringEntry"
-          }
+          "$ref": "#/definitions/InnerFingering"
+        },
+        "length": {
+          "$ref": "#/definitions/SequenceLength"
+        }
+      }
+    },
+    "DrumSequence": {
+      "required": [
+        "fingering",
+        "length"
+      ],
+      "type": "object",
+      "properties": {
+        "fingering": {
+          "$ref": "#/definitions/InnerFingering"
+        },
+        "length": {
+          "$ref": "#/definitions/SequenceLength"
+        }
+      }
+    },
+    "MidiSequence": {
+      "required": [
+        "fingering",
+        "length"
+      ],
+      "type": "object",
+      "properties": {
+        "fingering": {
+          "$ref": "#/definitions/InnerFingering"
+        },
+        "length": {
+          "$ref": "#/definitions/SequenceLength"
+        }
+      }
+    },
+    "Sequence": {
+      "required": [
+        "length"
+      ],
+      "type": "object",
+      "properties": {
+        "length": {
+          "$ref": "#/definitions/SequenceLength"
         }
       }
     },
     "Theme": {
       "required": [
-        "chords",
-        "name"
-      ],
-      "type": "object",
-      "properties": {
-        "name": {
-          "maxLength": 30,
-          "minLength": 5,
-          "type": "string"
-        },
-        "chords": {
-          "maxLength": 50,
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Chord"
-          }
-        }
-      }
-    },
-    "Track": {
-      "required": [
-        "channel",
         "name",
-        "themes"
+        "sequences",
+        "track_index"
       ],
       "type": "object",
       "properties": {
@@ -1931,18 +2693,14 @@
           "minLength": 5,
           "type": "string"
         },
-        "channel": {
+        "track_index": {
           "format": "int32",
-          "maximum": 16,
-          "minimum": 1,
           "type": "integer"
         },
-        "themes": {
+        "sequences": {
           "maxLength": 50,
           "type": "array",
-          "items": {
-            "$ref": "#/definitions/Theme"
-          }
+          "items": { }
         }
       }
     },
@@ -1951,6 +2709,7 @@
         "is_private",
         "name",
         "tempo",
+        "themes",
         "tracks"
       ],
       "type": "object",
@@ -1972,8 +2731,13 @@
         "tracks": {
           "maxLength": 16,
           "type": "array",
+          "items": { }
+        },
+        "themes": {
+          "maxLength": 50,
+          "type": "array",
           "items": {
-            "$ref": "#/definitions/Track"
+            "$ref": "#/definitions/Theme"
           }
         }
       }
@@ -1984,6 +2748,7 @@
         "is_private",
         "name",
         "tempo",
+        "themes",
         "tracks"
       ],
       "type": "object",
@@ -2008,8 +2773,13 @@
         "tracks": {
           "maxLength": 16,
           "type": "array",
+          "items": { }
+        },
+        "themes": {
+          "maxLength": 50,
+          "type": "array",
           "items": {
-            "$ref": "#/definitions/Track"
+            "$ref": "#/definitions/Theme"
           }
         }
       }

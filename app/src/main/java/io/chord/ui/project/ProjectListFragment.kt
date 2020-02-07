@@ -19,7 +19,10 @@ import io.chord.databinding.ProjectDialogFormBinding
 import io.chord.services.managers.Manager
 import io.chord.ui.ChordIOApplication
 import io.chord.ui.activities.SequencerActivity
-import io.chord.ui.dialogs.cudc.*
+import io.chord.ui.dialogs.cudc.CudcFormOperationDialogFragment
+import io.chord.ui.dialogs.cudc.CudcOperation
+import io.chord.ui.dialogs.cudc.CudcOperationInformation
+import io.chord.ui.dialogs.cudc.CudcSelectOperationDialogFragment
 import io.chord.ui.extensions.observe
 import io.chord.ui.extensions.toBanerApiThrowable
 import io.chord.ui.models.ProjectDialogFormViewModel
@@ -165,7 +168,7 @@ class ProjectListFragment : Fragment(), ClickListener<Project, ProjectViewHolder
                                 .observe()
                         }
                         .doOnPostObservation {
-                            dialogFragment.unvalidate()
+                            dialogFragment.invalidate()
                             binding.author.isEnabled = false
                         }
                         .observe()
@@ -228,7 +231,7 @@ class ProjectListFragment : Fragment(), ClickListener<Project, ProjectViewHolder
                                 .observe()
                         }
                         .doOnPostObservation {
-                            dialogFragment.unvalidate()
+                            dialogFragment.invalidate()
                             binding.author.isEnabled = false
                         }
                         .observe()
@@ -303,7 +306,7 @@ class ProjectListFragment : Fragment(), ClickListener<Project, ProjectViewHolder
                                 .observe()
                         }
                         .doOnPostObservation {
-                            dialogFragment.unvalidate()
+                            dialogFragment.invalidate()
                             binding.author.isEnabled = false
                         }
                         .observe()

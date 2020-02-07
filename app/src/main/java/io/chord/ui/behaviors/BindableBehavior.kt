@@ -22,6 +22,11 @@ class BindableBehavior(
 	
 	override fun attach(controller: BindBehavior<Bindable>)
 	{
+		if(this._controllers.contains(controller))
+		{
+			return
+		}
+		
 		this._controllers.add(controller)
 	}
 }
