@@ -2,6 +2,7 @@ package io.chord.ui.models
 
 import androidx.databinding.BaseObservable
 import io.chord.clients.models.Project
+import io.chord.clients.models.Visibility
 
 class ProjectListItemViewModel(
 	model: Project
@@ -11,7 +12,7 @@ class ProjectListItemViewModel(
 	
 	var tempo: Int = model.tempo
 	
-	var private: Boolean = model.isPrivate
+	var visibility: Visibility = model.visibility
 	
 	var tracks: Int = model.tracks.size
 }

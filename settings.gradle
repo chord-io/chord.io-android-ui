@@ -1,2 +1,2 @@
-include ':app', ':lib', ':service'
+include ':app', ':generators', ':generators'
 rootProject.name='chord.io'

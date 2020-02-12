@@ -19,16 +19,21 @@
     <string name="main_activity_title">Home</string>
     <string name="main_activity_menu_profile">Profile</string>
 
-    <string name="cudc_dialog_title">Select an operation</string>
-    <string name="cudc_dialog_positive_button">Continue</string>
-    <string name="cudc_dialog_negative_button">Cancel</string>
-    <string name="cudc_dialog_create">Create</string>
-    <string name="cudc_dialog_update">Update</string>
-    <string name="cudc_dialog_delete">Delete</string>
-    <string name="cudc_dialog_clone">Clone</string>
+    <string name="dialog_positive_button">Got it</string>
+    <string name="dialog_negative_button">Cancel</string>
 
-    <string name="error_dialog_title">An error occurred</string>
-    <string name="error_dialog_positive_button">Got it</string>
+    <string name="cudc_operation_dialog_title">Select an operation</string>
+    <string name="cudc_operation_dialog_positive_button">Continue</string>
+    <string name="cudc_operation_dialog_negative_button">Cancel</string>
+    <string name="cudc_operation_dialog_create">Create</string>
+    <string name="cudc_operation_dialog_update">Update</string>
+    <string name="cudc_operation_dialog_delete">Delete</string>
+    <string name="cudc_operation_dialog_clone">Clone</string>
+
+    <string name="track_type_dialog_title">Select a track type</string>
+    <string name="track_type_dialog_positive_button">Continue</string>
+    <string name="track_type_dialog_negative_button">Cancel</string>
+    <string name="track_type_dialog_midi_track">Midi</string>
 
     <string name="project_entity_name">Project</string>
     <string name="project_list_header">Projects</string>

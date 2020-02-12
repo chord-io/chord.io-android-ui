@@ -3,8 +3,12 @@ package io.chord.ui.activities
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import io.chord.R
-import io.chord.clients.models.Track
-import io.chord.ui.components.*
+import io.chord.clients.models.MidiTrack
+import io.chord.ui.components.QuantizeDropDown
+import io.chord.ui.components.ScrollBar
+import io.chord.ui.components.TrackControl
+import io.chord.ui.components.TrackList
+import io.chord.ui.components.ZoomBar
 import kotlinx.android.synthetic.main.activity_sequencer.*
 
 class SequencerActivity : AppCompatActivity()
@@ -35,24 +39,24 @@ class SequencerActivity : AppCompatActivity()
 		trackList.trackControlMaster = trackControlMaster
 		
 		trackList
-			.add(Track("track title too long", 10, mutableListOf()))
+			.add(MidiTrack("track title too long", 10,10))
 		
 		trackList
-			.add(Track("test2", 10, mutableListOf()))
+			.add(MidiTrack("test2", 10,10))
 		
 		trackList
-			.add(Track("test2", 10, mutableListOf()))
+			.add(MidiTrack("test2", 10,10))
 		
 		trackList
-			.add(Track("test2", 10, mutableListOf()))
+			.add(MidiTrack("test2", 10,10))
 		
 		trackList
-			.add(Track("test2", 10, mutableListOf()))
+			.add(MidiTrack("test2", 10,10))
 		
 		trackList
-			.add(Track("test2", 10, mutableListOf()))
+			.add(MidiTrack("test2", 10,10))
 		
 		trackList
-			.add(Track("test2", 10, mutableListOf()))
+			.add(MidiTrack("test2", 10,10))
 	}
 }

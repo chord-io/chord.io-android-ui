@@ -6,7 +6,7 @@
             type="io.chord.ui.ChordIOApplication" />
         <variable
             name="project"
-            type="io.chord.ui.models.ProjectDialogFormViewModel" />
+            type="io.chord.ui.models.ProjectViewModel" />
     </data>
 
     <LinearLayout
@@ -17,7 +17,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/nameLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="@dimen/fullscreen_dialog_field_height"
             style="@style/TextInputLayout"
             android:theme="@style/TextInputLayout"
             android:hint="@string/project_dialog_form_name">
@@ -35,7 +35,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/authorLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="@dimen/fullscreen_dialog_field_height"
             style="@style/TextInputLayout"
             android:theme="@style/TextInputLayout"
             android:hint="@string/project_dialog_form_author">
@@ -53,7 +53,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="@dimen/fullscreen_dialog_field_height"
             android:orientation="horizontal">
 
             <TextView
@@ -88,7 +88,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="@dimen/fullscreen_dialog_field_height"
             android:orientation="horizontal">
 
             <TextView
@@ -105,7 +105,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="end"
                 android:layout_weight=".80"
-                android:checked="@={project.private}"/>
+                android:onCheckedChanged="@{(button, on) -> project.onVisibilityChanged(on)}"/>
         </LinearLayout>
     </LinearLayout>
 </layout>

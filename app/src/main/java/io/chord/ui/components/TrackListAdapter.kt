@@ -13,8 +13,7 @@ import io.chord.ui.models.TrackListItemViewModel
 
 class TrackListAdapter(
 	context: Context,
-	private val viewHolderFactory: ((View) -> TrackListItem),
-	private val listener: TrackListClickListener
+	private val viewHolderFactory: ((View) -> TrackListItemViewHolder)
 ) : ArrayAdapter<Track>(
 	context,
 	0,
@@ -22,8 +21,10 @@ class TrackListAdapter(
 )
 {
 	private val _items: MutableList<Track> = mutableListOf()
-	private val _holders: MutableList<TrackListItem> = mutableListOf()
-	private val _recycledHolders: MutableList<TrackListItem> = mutableListOf()
+	private val _holders: MutableList<TrackListItemViewHolder> = mutableListOf()
+	private val _recycledHolders: MutableList<TrackListItemViewHolder> = mutableListOf()
+	
+	lateinit var listener: TrackListClickListener
 	
 	val items: List<Track>
 		get() = this._items.toList()
@@ -39,7 +40,7 @@ class TrackListAdapter(
 		this.recycleView(holder)
 	}
 	
-	private fun recycleView(holder: TrackListItem)
+	private fun recycleView(holder: TrackListItemViewHolder)
 	{
 		holder.unbind()
 		val parent = holder.view.getDirectParentOfType<ViewGroup>()
@@ -66,7 +67,7 @@ class TrackListAdapter(
 	
 	override fun addAll(vararg items: Track)
 	{
-		this._items.addAll(items)
+		this._items.addAll(items.toList())
 		super.addAll(*items)
 	}
 	
@@ -109,7 +110,7 @@ class TrackListAdapter(
 	// TODO recycleviews
 	// TODO make this class generic
 	
-	private fun getViewHolder(item: Track): TrackListItem
+	private fun getViewHolder(item: Track): TrackListItemViewHolder
 	{
 		val result = this._holders
 			.stream()
@@ -128,7 +129,7 @@ class TrackListAdapter(
 	
 	fun getViewHolder(
 		view: View
-	): TrackListItem
+	): TrackListItemViewHolder
 	{
 		val result = this._holders
 			.stream()
@@ -145,7 +146,7 @@ class TrackListAdapter(
 		return this.viewHolderFactory(view)
 	}
 	
-	fun bindViewHolder(holder: TrackListItem, position: Int)
+	fun bindViewHolder(holder: TrackListItemViewHolder, position: Int)
 	{
 		holder.bind(TrackListItemViewModel(this.getItem(position)!!), this.listener)
 	}

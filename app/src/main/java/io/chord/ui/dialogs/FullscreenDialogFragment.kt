@@ -27,11 +27,14 @@ open class FullscreenDialogFragment<TBinding: ViewDataBinding>(
 	private lateinit var toolbar: Toolbar
 	private lateinit var rootView: View
 	private lateinit var action: MenuItem
-	lateinit var banner: Banner
+	private lateinit var _banner: Banner
 	
-	var onLayoutCreatedListener: ((dataBinding: TBinding) -> Unit)? = null
-	var onLayoutUpdatedListener: ((dataBinding: TBinding) -> Unit)? = null
-	var onViewModelBinding: ((dataBinding: TBinding) -> Unit)? = null
+	lateinit var onCreate: ((dataBinding: TBinding) -> Unit)
+	lateinit var onValidate: ((dataBinding: TBinding) -> Unit)
+	lateinit var onBind: ((dataBinding: TBinding) -> Unit)
+	
+	val banner: Banner
+		get() = this._banner
 	
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
@@ -65,7 +68,7 @@ open class FullscreenDialogFragment<TBinding: ViewDataBinding>(
 		
 		val view = inflater.inflate(R.layout.dialog_fullscreen, container)
 		this.toolbar = view.findViewById(R.id.toolbar)
-		this.banner = view.findViewById(R.id.banner)
+		this._banner = view.findViewById(R.id.banner)
 		
 		val layout = view.findViewById<ViewGroup>(R.id.frameLayout)
 		
@@ -75,7 +78,7 @@ open class FullscreenDialogFragment<TBinding: ViewDataBinding>(
 			layout,
 			true
 		)
-		this.onViewModelBinding?.invoke(this.dataBinding)
+		this.onBind.invoke(this.dataBinding)
 		this.rootView = this.dataBinding.root
 		
 		return view
@@ -88,7 +91,7 @@ open class FullscreenDialogFragment<TBinding: ViewDataBinding>(
 	{
 		super.onViewCreated(view, savedInstanceState)
 		
-		this.onLayoutCreatedListener?.invoke(this.dataBinding)
+		this.onCreate.invoke(this.dataBinding)
 		
 		val activity = this.activity!!
 		
@@ -110,7 +113,7 @@ open class FullscreenDialogFragment<TBinding: ViewDataBinding>(
 		toolbar.setOnMenuItemClickListener {
 			this.action.setActionView(R.layout.dialog_form_loader)
 			(this.rootView as ViewGroup).setViewState(false)
-			this.onLayoutUpdatedListener?.invoke(dataBinding)
+			this.onValidate.invoke(dataBinding)
 			true
 		}
 	}

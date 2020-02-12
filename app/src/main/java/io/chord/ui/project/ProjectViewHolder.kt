@@ -7,6 +7,7 @@ import com.mikepenz.iconics.typeface.library.fontawesome.FontAwesome
 import com.mikepenz.iconics.utils.colorRes
 import io.chord.R
 import io.chord.clients.models.Project
+import io.chord.clients.models.Visibility
 import io.chord.databinding.ProjectListItemBinding
 import io.chord.ui.ChordIOApplication
 import io.chord.ui.sections.ClickListener
@@ -20,7 +21,7 @@ class ProjectViewHolder(
     
     override fun bind(item: Project, clickListener: ClickListener<Project, ProjectViewHolder>)
     {
-        val visibilityIcon = if(item.isPrivate) FontAwesome.Icon.faw_eye_slash else FontAwesome.Icon.faw_eye
+        val visibilityIcon = if(item.visibility == Visibility.Private) FontAwesome.Icon.faw_eye_slash else FontAwesome.Icon.faw_eye
         
         binding.apply {
             this.icon.icon = IconicsDrawable(itemView.context)

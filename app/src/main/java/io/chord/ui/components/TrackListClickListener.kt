@@ -2,7 +2,7 @@ package io.chord.ui.components
 
 interface TrackListClickListener
 {
-    fun onItemClicked(item: TrackListItem)
+    fun onItemClicked(item: TrackListItemViewHolder)
     
-    fun onItemLongClicked(item: TrackListItem): Boolean
+    fun onItemLongClicked(item: TrackListItemViewHolder): Boolean
 }

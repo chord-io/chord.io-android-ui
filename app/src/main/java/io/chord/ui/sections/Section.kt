@@ -97,6 +97,11 @@ class Section<TItem, THolder: ViewHolderBase<TItem, THolder>>: Section
 	{
 		this.changeState(State.FAILED)
 	}
+
+	fun getDataSet(): List<TItem>
+	{
+		return this.dataset.toList()
+	}
 	
 	fun setDataset(dataset: List<TItem>)
 	{
@@ -116,7 +121,6 @@ class Section<TItem, THolder: ViewHolderBase<TItem, THolder>>: Section
 	fun setAdapter(adapter: SectionedRecyclerViewAdapter)
 	{
 		this.adapter = adapter.getAdapterForSection(this)
-		this.setStateLoading()
 	}
 	
 	fun add(item: TItem)

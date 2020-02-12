@@ -13,14 +13,15 @@ import com.github.razir.progressbutton.showProgress
 import io.chord.R
 import io.chord.clients.ClientApi
 import io.chord.clients.apis.AuthenticationApi
+import io.chord.clients.doOnSuccess
+import io.chord.clients.observe
 import io.chord.clients.toApiThrowable
 import io.chord.databinding.ActivitySignInBinding
 import io.chord.databinding.SignUpDialogFormBinding
 import io.chord.services.authentication.storage.SharedPreferencesAuthenticationStorage
 import io.chord.services.authentication.workers.RefreshTokenWorker
-import io.chord.ui.dialogs.FullscreenDialogFragment
+import io.chord.ui.dialogs.customs.FormDialog
 import io.chord.ui.extensions.getRootView
-import io.chord.ui.extensions.observe
 import io.chord.ui.extensions.setViewState
 import io.chord.ui.extensions.toBanerApiThrowable
 import io.chord.ui.models.SignInFormViewModel
@@ -101,33 +102,33 @@ class SignInActivity : AppCompatActivity()
 	
 	private fun signUp()
 	{
-		val fragmentManager = this.supportFragmentManager
-		val dialogFragment = FullscreenDialogFragment<SignUpDialogFormBinding>(
-			R.layout.sign_up_dialog_form,
-			this.getString(R.string.signup_dialog_title)
+		val dialog = FormDialog<SignUpDialogFormBinding>(
+			this,
+			this.getString(R.string.signup_dialog_title),
+			R.layout.sign_up_dialog_form
 		)
 		
-		dialogFragment.onViewModelBinding = {
+		dialog.onBind = {
 			it.user = SignUpDialogFormViewModel()
 		}
 		
-		dialogFragment.onLayoutUpdatedListener = { binding: SignUpDialogFormBinding ->
+		dialog.onValidate = {binding: SignUpDialogFormBinding ->
 			val userToCreate = binding.user!!.toDto()
 
 			this.client.signUp(userToCreate)
 				.observeOn(AndroidSchedulers.mainThread())
 				.doOnSubscribe {
-					dialogFragment.banner.dismiss()
+					dialog.fragment.banner.dismiss()
 					binding.usernameLayout.isErrorEnabled = false
 					binding.emailLayout.isErrorEnabled = false
 					binding.passwordLayout.isErrorEnabled = false
 				}
 				.doOnSuccess {
-					dialogFragment.validate()
+					dialog.fragment.validate()
 				}
 				.doOnError { throwable ->
 					throwable
-						.toBanerApiThrowable(dialogFragment.banner)
+						.toBanerApiThrowable(dialog.fragment.banner)
 						.doOnValidationError { mapper ->
 							mapper
 								.map("Username") { error ->
@@ -145,13 +146,13 @@ class SignInActivity : AppCompatActivity()
 								.observe()
 						}
 						.doOnPostObservation {
-							dialogFragment.invalidate()
+							dialog.fragment.invalidate()
 						}
 						.observe()
 				}
 				.observe()
 		}
 
-		dialogFragment.show(fragmentManager, "fragment_signup_form")
+		dialog.show()
 	}
 }

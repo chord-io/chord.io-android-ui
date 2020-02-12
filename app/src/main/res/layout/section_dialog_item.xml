@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="item"
+            type="io.chord.ui.dialogs.sections.SectionDialogItem" />
+    </data>
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <com.mikepenz.iconics.view.IconicsImageView
+            android:id="@+id/icon"
+            android:layout_width="@dimen/section_dialog_layout_size"
+            android:layout_height="@dimen/section_dialog_layout_size"
+            app:iiv_color="@color/colorAccent"
+            app:iiv_size="@dimen/section_dialog_icon_size" />
+        <RadioButton
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/section_dialog_layout_size"
+            android:layout_toRightOf="@id/icon"
+            android:layoutDirection="rtl"
+            android:text="@{item.name}"
+            android:textAlignment="textStart"
+            android:textSize="@dimen/section_dialog_text_size" />
+    </RelativeLayout>
+</layout>

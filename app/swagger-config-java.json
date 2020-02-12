@@ -1,0 +1,13 @@
+{
+  "invokerPackage": "io.chord.clients",
+  "sourceFolder": "./",
+  "booleanGetterPrefix": "get",
+  "apiPackage": "io.chord.clients.apis",
+  "modelPackage": "io.chord.clients.models",
+  "groupId": "io.chord.clients",
+  "library": "retrofit2",
+  "dateLibrary": "threetenbp",
+  "useRxJava2": "true",
+  "java8": "true",
+  "strictSpecBehavior": "true"
+}

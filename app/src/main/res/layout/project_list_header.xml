@@ -5,7 +5,7 @@
     android:orientation="horizontal"
     android:paddingStart="@dimen/list_item_padding_left"
     android:paddingEnd="@dimen/list_item_padding_right"
-    android:background="@drawable/section_header">
+    android:background="@drawable/section_header_color_accent">
 
     <TextView
         android:id="@+id/name"

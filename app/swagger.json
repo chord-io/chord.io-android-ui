@@ -1,5 +1,5 @@
 {
-  "swagger": "2.0",
+  "openapi": "3.0.1",
   "info": {
     "title": "chord.io",
     "version": "1.0"
@@ -11,20 +11,47 @@
           "ArithmeticInterval"
         ],
         "operationId": "GetLookUpTable",
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
         "responses": {
           "200": {
             "description": "Success",
-            "schema": {
-              "type": "object",
-              "additionalProperties": {
-                "type": "object",
-                "additionalProperties": {
-                  "$ref": "#/definitions/IntervalQuality"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "$ref": "#/components/schemas/IntervalQuality"
+                    },
+                    "nullable": true
+                  },
+                  "nullable": true
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "$ref": "#/components/schemas/IntervalQuality"
+                    },
+                    "nullable": true
+                  },
+                  "nullable": true
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "$ref": "#/components/schemas/IntervalQuality"
+                    },
+                    "nullable": true
+                  },
+                  "nullable": true
                 }
               }
             }
@@ -38,37 +65,69 @@
           "ArithmeticInterval"
         ],
         "operationId": "FromDegreeAndQuality",
-        "consumes": [
-          "application/json-patch+json",
-          "application/json",
-          "text/json",
-          "application/*+json"
-        ],
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "schema": {
-              "$ref": "#/definitions/DegreeAndQualityIntervalDto"
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DegreeAndQualityIntervalDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DegreeAndQualityIntervalDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DegreeAndQualityIntervalDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DegreeAndQualityIntervalDto"
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "Success",
-            "schema": {
-              "$ref": "#/definitions/IntervalDto"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntervalDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntervalDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntervalDto"
+                }
+              }
             }
           },
           "400": {
             "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/ValidationProblemDetails"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
             }
           }
         }
@@ -80,37 +139,69 @@
           "ArithmeticInterval"
         ],
         "operationId": "FromSemitonesAndQuality",
-        "consumes": [
-          "application/json-patch+json",
-          "application/json",
-          "text/json",
-          "application/*+json"
-        ],
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "schema": {
-              "$ref": "#/definitions/SemitonesAndQualityIntervalDto"
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SemitonesAndQualityIntervalDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SemitonesAndQualityIntervalDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SemitonesAndQualityIntervalDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SemitonesAndQualityIntervalDto"
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "Success",
-            "schema": {
-              "$ref": "#/definitions/IntervalDto"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntervalDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntervalDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntervalDto"
+                }
+              }
             }
           },
           "400": {
             "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/ValidationProblemDetails"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
             }
           }
         }
@@ -122,37 +213,69 @@
           "ArithmeticInterval"
         ],
         "operationId": "FromDegreeAndSemitones",
-        "consumes": [
-          "application/json-patch+json",
-          "application/json",
-          "text/json",
-          "application/*+json"
-        ],
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "schema": {
-              "$ref": "#/definitions/DegreeAndSemitonesIntervalDto"
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DegreeAndSemitonesIntervalDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DegreeAndSemitonesIntervalDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DegreeAndSemitonesIntervalDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DegreeAndSemitonesIntervalDto"
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "Success",
-            "schema": {
-              "$ref": "#/definitions/IntervalDto"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntervalDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntervalDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntervalDto"
+                }
+              }
             }
           },
           "400": {
             "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/ValidationProblemDetails"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
             }
           }
         }
@@ -164,37 +287,69 @@
           "ArithmeticInterval"
         ],
         "operationId": "FromNotes",
-        "consumes": [
-          "application/json-patch+json",
-          "application/json",
-          "text/json",
-          "application/*+json"
-        ],
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "schema": {
-              "$ref": "#/definitions/NotePairDto"
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotePairDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotePairDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotePairDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotePairDto"
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "Success",
-            "schema": {
-              "$ref": "#/definitions/IntervalDto"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntervalDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntervalDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntervalDto"
+                }
+              }
             }
           },
           "400": {
             "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/ValidationProblemDetails"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
             }
           }
         }
@@ -206,30 +361,56 @@
           "ArithmeticInterval"
         ],
         "operationId": "FromString",
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
         "parameters": [
           {
-            "in": "path",
             "name": "interval",
+            "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "Success",
-            "schema": {
-              "$ref": "#/definitions/IntervalDto"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntervalDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntervalDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntervalDto"
+                }
+              }
             }
           },
           "400": {
             "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/ValidationProblemDetails"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
             }
           }
         }
@@ -241,42 +422,82 @@
           "ArithmeticInterval"
         ],
         "operationId": "ToString",
-        "consumes": [
-          "application/json-patch+json",
-          "application/json",
-          "text/json",
-          "application/*+json"
-        ],
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
         "parameters": [
           {
-            "in": "path",
             "name": "format",
-            "required": true
-          },
-          {
-            "in": "body",
-            "name": "body",
+            "in": "path",
+            "required": true,
             "schema": {
-              "$ref": "#/definitions/IntervalDto"
+              "$ref": "#/components/schemas/IntervalFormat"
             }
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/IntervalDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IntervalDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IntervalDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/IntervalDto"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Success",
-            "schema": {
-              "type": "string"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              }
             }
           },
           "400": {
             "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/ValidationProblemDetails"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
             }
           }
         }
@@ -288,31 +509,56 @@
           "ArithmeticInterval"
         ],
         "operationId": "FromIntegral",
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
         "parameters": [
           {
-            "in": "path",
             "name": "index",
+            "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int32"
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "Success",
-            "schema": {
-              "$ref": "#/definitions/IntervalDto"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntervalDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntervalDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntervalDto"
+                }
+              }
             }
           },
           "400": {
             "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/ValidationProblemDetails"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
             }
           }
         }
@@ -324,38 +570,72 @@
           "ArithmeticInterval"
         ],
         "operationId": "ToIntegral",
-        "consumes": [
-          "application/json-patch+json",
-          "application/json",
-          "text/json",
-          "application/*+json"
-        ],
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "schema": {
-              "$ref": "#/definitions/IntervalDto"
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/IntervalDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IntervalDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IntervalDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/IntervalDto"
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "Success",
-            "schema": {
-              "format": "int32",
-              "type": "integer"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
             }
           },
           "400": {
             "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/ValidationProblemDetails"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
             }
           }
         }
@@ -367,37 +647,69 @@
           "ArithmeticInterval"
         ],
         "operationId": "Invert",
-        "consumes": [
-          "application/json-patch+json",
-          "application/json",
-          "text/json",
-          "application/*+json"
-        ],
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "schema": {
-              "$ref": "#/definitions/IntervalDto"
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/IntervalDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IntervalDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IntervalDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/IntervalDto"
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "Success",
-            "schema": {
-              "$ref": "#/definitions/IntervalDto"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntervalDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntervalDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntervalDto"
+                }
+              }
             }
           },
           "400": {
             "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/ValidationProblemDetails"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
             }
           }
         }
@@ -409,43 +721,80 @@
           "ArithmeticInterval"
         ],
         "operationId": "ToNote",
-        "consumes": [
-          "application/json-patch+json",
-          "application/json",
-          "text/json",
-          "application/*+json"
-        ],
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
         "parameters": [
           {
-            "in": "path",
             "name": "root",
+            "in": "path",
             "required": true,
-            "type": "string"
-          },
-          {
-            "in": "body",
-            "name": "body",
             "schema": {
-              "$ref": "#/definitions/IntervalDto"
+              "type": "string",
+              "nullable": true
             }
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/IntervalDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IntervalDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IntervalDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/IntervalDto"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Success",
-            "schema": {
-              "$ref": "#/definitions/NoteDto"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDto"
+                }
+              }
             }
           },
           "400": {
             "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/ValidationProblemDetails"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
             }
           }
         }
@@ -457,37 +806,69 @@
           "ArithmeticNote"
         ],
         "operationId": "Create",
-        "consumes": [
-          "application/json-patch+json",
-          "application/json",
-          "text/json",
-          "application/*+json"
-        ],
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "schema": {
-              "$ref": "#/definitions/NoteDto"
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "Success",
-            "schema": {
-              "$ref": "#/definitions/NoteDto"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDto"
+                }
+              }
             }
           },
           "400": {
             "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/ValidationProblemDetails"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
             }
           }
         }
@@ -499,30 +880,56 @@
           "ArithmeticNote"
         ],
         "operationId": "FromString",
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
         "parameters": [
           {
-            "in": "path",
             "name": "note",
+            "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "Success",
-            "schema": {
-              "$ref": "#/definitions/NoteDto"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDto"
+                }
+              }
             }
           },
           "400": {
             "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/ValidationProblemDetails"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
             }
           }
         }
@@ -534,37 +941,72 @@
           "ArithmeticNote"
         ],
         "operationId": "ToString",
-        "consumes": [
-          "application/json-patch+json",
-          "application/json",
-          "text/json",
-          "application/*+json"
-        ],
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "schema": {
-              "$ref": "#/definitions/NoteDto"
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "Success",
-            "schema": {
-              "type": "string"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              }
             }
           },
           "400": {
             "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/ValidationProblemDetails"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
             }
           }
         }
@@ -576,31 +1018,56 @@
           "ArithmeticNote"
         ],
         "operationId": "FromMidi",
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
         "parameters": [
           {
-            "in": "path",
             "name": "index",
+            "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int32"
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "Success",
-            "schema": {
-              "$ref": "#/definitions/NoteDto"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDto"
+                }
+              }
             }
           },
           "400": {
             "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/ValidationProblemDetails"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
             }
           }
         }
@@ -612,38 +1079,72 @@
           "ArithmeticNote"
         ],
         "operationId": "ToMidi",
-        "consumes": [
-          "application/json-patch+json",
-          "application/json",
-          "text/json",
-          "application/*+json"
-        ],
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "schema": {
-              "$ref": "#/definitions/NoteDto"
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "Success",
-            "schema": {
-              "format": "int32",
-              "type": "integer"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
             }
           },
           "400": {
             "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/ValidationProblemDetails"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
             }
           }
         }
@@ -655,31 +1156,56 @@
           "ArithmeticNote"
         ],
         "operationId": "FromIntegral",
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
         "parameters": [
           {
-            "in": "path",
             "name": "index",
+            "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int32"
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "Success",
-            "schema": {
-              "$ref": "#/definitions/NoteDto"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDto"
+                }
+              }
             }
           },
           "400": {
             "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/ValidationProblemDetails"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
             }
           }
         }
@@ -691,38 +1217,72 @@
           "ArithmeticNote"
         ],
         "operationId": "ToIntegral",
-        "consumes": [
-          "application/json-patch+json",
-          "application/json",
-          "text/json",
-          "application/*+json"
-        ],
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "schema": {
-              "$ref": "#/definitions/NoteDto"
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "Success",
-            "schema": {
-              "format": "int32",
-              "type": "integer"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
             }
           },
           "400": {
             "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/ValidationProblemDetails"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
             }
           }
         }
@@ -734,44 +1294,80 @@
           "ArithmeticNote"
         ],
         "operationId": "GetInterval",
-        "consumes": [
-          "application/json-patch+json",
-          "application/json",
-          "text/json",
-          "application/*+json"
-        ],
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
         "parameters": [
           {
-            "in": "path",
             "name": "degree",
+            "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
-            "in": "body",
-            "name": "body",
             "schema": {
-              "$ref": "#/definitions/NoteDto"
+              "type": "integer",
+              "format": "int32"
             }
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Success",
-            "schema": {
-              "$ref": "#/definitions/NoteDto"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDto"
+                }
+              }
             }
           },
           "400": {
             "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/ValidationProblemDetails"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
             }
           }
         }
@@ -783,44 +1379,80 @@
           "ArithmeticNote"
         ],
         "operationId": "ShiftToRight",
-        "consumes": [
-          "application/json-patch+json",
-          "application/json",
-          "text/json",
-          "application/*+json"
-        ],
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
         "parameters": [
           {
-            "in": "path",
             "name": "distance",
+            "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
-            "in": "body",
-            "name": "body",
             "schema": {
-              "$ref": "#/definitions/NoteDto"
+              "type": "integer",
+              "format": "int32"
             }
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Success",
-            "schema": {
-              "$ref": "#/definitions/NoteDto"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDto"
+                }
+              }
             }
           },
           "400": {
             "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/ValidationProblemDetails"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
             }
           }
         }
@@ -832,44 +1464,80 @@
           "ArithmeticNote"
         ],
         "operationId": "ShiftToLeft",
-        "consumes": [
-          "application/json-patch+json",
-          "application/json",
-          "text/json",
-          "application/*+json"
-        ],
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
         "parameters": [
           {
-            "in": "path",
             "name": "distance",
+            "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
-            "in": "body",
-            "name": "body",
             "schema": {
-              "$ref": "#/definitions/NoteDto"
+              "type": "integer",
+              "format": "int32"
             }
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Success",
-            "schema": {
-              "$ref": "#/definitions/NoteDto"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDto"
+                }
+              }
             }
           },
           "400": {
             "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/ValidationProblemDetails"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
             }
           }
         }
@@ -881,44 +1549,80 @@
           "ArithmeticNote"
         ],
         "operationId": "AlterUpward",
-        "consumes": [
-          "application/json-patch+json",
-          "application/json",
-          "text/json",
-          "application/*+json"
-        ],
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
         "parameters": [
           {
-            "in": "path",
             "name": "semitones",
+            "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
-            "in": "body",
-            "name": "body",
             "schema": {
-              "$ref": "#/definitions/NoteDto"
+              "type": "integer",
+              "format": "int32"
             }
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Success",
-            "schema": {
-              "$ref": "#/definitions/NoteDto"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDto"
+                }
+              }
             }
           },
           "400": {
             "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/ValidationProblemDetails"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
             }
           }
         }
@@ -930,44 +1634,80 @@
           "ArithmeticNote"
         ],
         "operationId": "AlterDownward",
-        "consumes": [
-          "application/json-patch+json",
-          "application/json",
-          "text/json",
-          "application/*+json"
-        ],
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
         "parameters": [
           {
-            "in": "path",
             "name": "semitones",
+            "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
-            "in": "body",
-            "name": "body",
             "schema": {
-              "$ref": "#/definitions/NoteDto"
+              "type": "integer",
+              "format": "int32"
             }
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Success",
-            "schema": {
-              "$ref": "#/definitions/NoteDto"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDto"
+                }
+              }
             }
           },
           "400": {
             "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/ValidationProblemDetails"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
             }
           }
         }
@@ -979,37 +1719,69 @@
           "ArithmeticNote"
         ],
         "operationId": "Simplify",
-        "consumes": [
-          "application/json-patch+json",
-          "application/json",
-          "text/json",
-          "application/*+json"
-        ],
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "schema": {
-              "$ref": "#/definitions/NoteDto"
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDto"
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "Success",
-            "schema": {
-              "$ref": "#/definitions/NoteDto"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDto"
+                }
+              }
             }
           },
           "400": {
             "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/ValidationProblemDetails"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
             }
           }
         }
@@ -1021,37 +1793,69 @@
           "Authentication"
         ],
         "operationId": "SignIn",
-        "consumes": [
-          "application/json-patch+json",
-          "application/json",
-          "text/json",
-          "application/*+json"
-        ],
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "schema": {
-              "$ref": "#/definitions/SignInDto"
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignInDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignInDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignInDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignInDto"
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "Success",
-            "schema": {
-              "$ref": "#/definitions/Authentication"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Authentication"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Authentication"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Authentication"
+                }
+              }
             }
           },
           "400": {
             "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/ValidationProblemDetails"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
             }
           }
         }
@@ -1063,43 +1867,92 @@
           "Authentication"
         ],
         "operationId": "SignUp",
-        "consumes": [
-          "application/json-patch+json",
-          "application/json",
-          "text/json",
-          "application/*+json"
-        ],
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "schema": {
-              "$ref": "#/definitions/UserDto"
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserDto"
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "Success",
-            "schema": {
-              "$ref": "#/definitions/User"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
             }
           },
           "404": {
             "description": "Not Found",
-            "schema": {
-              "type": "string"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              }
             }
           },
           "400": {
             "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/ValidationProblemDetails"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
             }
           }
         }
@@ -1111,16 +1964,14 @@
           "Authentication"
         ],
         "operationId": "SignOut",
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
         "parameters": [
           {
-            "in": "header",
             "name": "refresh_token",
-            "type": "string"
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
           }
         ],
         "responses": {
@@ -1129,8 +1980,22 @@
           },
           "400": {
             "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/ValidationProblemDetails"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
             }
           }
         }
@@ -1142,23 +2007,35 @@
           "Authentication"
         ],
         "operationId": "Refresh",
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
         "parameters": [
           {
-            "in": "header",
             "name": "refresh_token",
-            "type": "string"
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "Success",
-            "schema": {
-              "$ref": "#/definitions/Authentication"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Authentication"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Authentication"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Authentication"
+                }
+              }
             }
           }
         }
@@ -1170,43 +2047,92 @@
           "DrumMaps"
         ],
         "operationId": "Create",
-        "consumes": [
-          "application/json-patch+json",
-          "application/json",
-          "text/json",
-          "application/*+json"
-        ],
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "schema": {
-              "$ref": "#/definitions/DrumMapDto"
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DrumMapDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DrumMapDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DrumMapDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DrumMapDto"
+              }
             }
           }
-        ],
+        },
         "responses": {
           "201": {
             "description": "Success",
-            "schema": {
-              "$ref": "#/definitions/DrumMap"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DrumMap"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DrumMap"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DrumMap"
+                }
+              }
             }
           },
           "409": {
             "description": "Conflict",
-            "schema": {
-              "type": "string"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              }
             }
           },
           "400": {
             "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/ValidationProblemDetails"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
             }
           },
           "401": {
@@ -1229,46 +2155,86 @@
           "DrumMaps"
         ],
         "operationId": "Update",
-        "consumes": [
-          "application/json-patch+json",
-          "application/json",
-          "text/json",
-          "application/*+json"
-        ],
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
         "parameters": [
           {
-            "in": "path",
             "name": "id",
+            "in": "path",
             "required": true,
-            "type": "string"
-          },
-          {
-            "in": "body",
-            "name": "body",
             "schema": {
-              "$ref": "#/definitions/DrumMapDto"
+              "type": "string",
+              "nullable": true
             }
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DrumMapDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DrumMapDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DrumMapDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DrumMapDto"
+              }
+            }
+          }
+        },
         "responses": {
           "204": {
             "description": "Success"
           },
           "404": {
             "description": "Not Found",
-            "schema": {
-              "type": "string"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              }
             }
           },
           "400": {
             "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/ValidationProblemDetails"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
             }
           },
           "401": {
@@ -1289,17 +2255,15 @@
           "DrumMaps"
         ],
         "operationId": "Delete",
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
         "parameters": [
           {
-            "in": "path",
             "name": "id",
+            "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
           }
         ],
         "responses": {
@@ -1308,14 +2272,48 @@
           },
           "403": {
             "description": "Forbidden",
-            "schema": {
-              "type": "string"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              }
             }
           },
           "404": {
             "description": "Not Found",
-            "schema": {
-              "type": "string"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              }
             }
           },
           "401": {
@@ -1335,36 +2333,82 @@
           "DrumMaps"
         ],
         "operationId": "GetById",
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
         "parameters": [
           {
-            "in": "path",
             "name": "id",
+            "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "Success",
-            "schema": {
-              "$ref": "#/definitions/Fingering"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fingering"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fingering"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fingering"
+                }
+              }
             }
           },
           "403": {
             "description": "Forbidden",
-            "schema": {
-              "type": "string"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              }
             }
           },
           "404": {
             "description": "Not Found",
-            "schema": {
-              "type": "string"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              }
             }
           },
           "401": {
@@ -1384,25 +2428,60 @@
           "DrumMaps"
         ],
         "operationId": "GetAll",
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
         "responses": {
           "200": {
             "description": "Success",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/DrumMap"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DrumMap"
+                  },
+                  "nullable": true
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DrumMap"
+                  },
+                  "nullable": true
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DrumMap"
+                  },
+                  "nullable": true
+                }
               }
             }
           },
           "404": {
             "description": "Not Found",
-            "schema": {
-              "type": "string"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              }
             }
           },
           "401": {
@@ -1425,43 +2504,92 @@
           "Fingerings"
         ],
         "operationId": "Create",
-        "consumes": [
-          "application/json-patch+json",
-          "application/json",
-          "text/json",
-          "application/*+json"
-        ],
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "schema": {
-              "$ref": "#/definitions/FingeringDto"
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/FingeringDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FingeringDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FingeringDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/FingeringDto"
+              }
             }
           }
-        ],
+        },
         "responses": {
           "201": {
             "description": "Success",
-            "schema": {
-              "$ref": "#/definitions/Fingering"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fingering"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fingering"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fingering"
+                }
+              }
             }
           },
           "409": {
             "description": "Conflict",
-            "schema": {
-              "type": "string"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              }
             }
           },
           "400": {
             "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/ValidationProblemDetails"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
             }
           },
           "401": {
@@ -1484,46 +2612,86 @@
           "Fingerings"
         ],
         "operationId": "Update",
-        "consumes": [
-          "application/json-patch+json",
-          "application/json",
-          "text/json",
-          "application/*+json"
-        ],
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
         "parameters": [
           {
-            "in": "path",
             "name": "id",
+            "in": "path",
             "required": true,
-            "type": "string"
-          },
-          {
-            "in": "body",
-            "name": "body",
             "schema": {
-              "$ref": "#/definitions/FingeringDto"
+              "type": "string",
+              "nullable": true
             }
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/FingeringDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FingeringDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FingeringDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/FingeringDto"
+              }
+            }
+          }
+        },
         "responses": {
           "204": {
             "description": "Success"
           },
           "404": {
             "description": "Not Found",
-            "schema": {
-              "type": "string"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              }
             }
           },
           "400": {
             "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/ValidationProblemDetails"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
             }
           },
           "401": {
@@ -1544,17 +2712,15 @@
           "Fingerings"
         ],
         "operationId": "Delete",
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
         "parameters": [
           {
-            "in": "path",
             "name": "id",
+            "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
           }
         ],
         "responses": {
@@ -1563,14 +2729,48 @@
           },
           "403": {
             "description": "Forbidden",
-            "schema": {
-              "type": "string"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              }
             }
           },
           "404": {
             "description": "Not Found",
-            "schema": {
-              "type": "string"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              }
             }
           },
           "401": {
@@ -1590,36 +2790,82 @@
           "Fingerings"
         ],
         "operationId": "GetById",
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
         "parameters": [
           {
-            "in": "path",
             "name": "id",
+            "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "Success",
-            "schema": {
-              "$ref": "#/definitions/Fingering"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fingering"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fingering"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fingering"
+                }
+              }
             }
           },
           "403": {
             "description": "Forbidden",
-            "schema": {
-              "type": "string"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              }
             }
           },
           "404": {
             "description": "Not Found",
-            "schema": {
-              "type": "string"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              }
             }
           },
           "401": {
@@ -1639,25 +2885,60 @@
           "Fingerings"
         ],
         "operationId": "GetAllByAuthor",
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
         "responses": {
           "200": {
             "description": "Success",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Fingering"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Fingering"
+                  },
+                  "nullable": true
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Fingering"
+                  },
+                  "nullable": true
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Fingering"
+                  },
+                  "nullable": true
+                }
               }
             }
           },
           "404": {
             "description": "Not Found",
-            "schema": {
-              "type": "string"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              }
             }
           },
           "401": {
@@ -1680,43 +2961,92 @@
           "Projects"
         ],
         "operationId": "Create",
-        "consumes": [
-          "application/json-patch+json",
-          "application/json",
-          "text/json",
-          "application/*+json"
-        ],
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "schema": {
-              "$ref": "#/definitions/ProjectDto"
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectDto"
+              }
             }
           }
-        ],
+        },
         "responses": {
           "201": {
             "description": "Success",
-            "schema": {
-              "$ref": "#/definitions/Project"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              }
             }
           },
           "409": {
             "description": "Conflict",
-            "schema": {
-              "type": "string"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              }
             }
           },
           "400": {
             "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/ValidationProblemDetails"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
             }
           },
           "401": {
@@ -1739,46 +3069,86 @@
           "Projects"
         ],
         "operationId": "Update",
-        "consumes": [
-          "application/json-patch+json",
-          "application/json",
-          "text/json",
-          "application/*+json"
-        ],
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
         "parameters": [
           {
-            "in": "path",
             "name": "id",
+            "in": "path",
             "required": true,
-            "type": "string"
-          },
-          {
-            "in": "body",
-            "name": "body",
             "schema": {
-              "$ref": "#/definitions/ProjectDto"
+              "type": "string",
+              "nullable": true
             }
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectDto"
+              }
+            }
+          }
+        },
         "responses": {
           "204": {
             "description": "Success"
           },
           "404": {
             "description": "Not Found",
-            "schema": {
-              "type": "string"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              }
             }
           },
           "400": {
             "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/ValidationProblemDetails"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
             }
           },
           "401": {
@@ -1799,17 +3169,15 @@
           "Projects"
         ],
         "operationId": "Delete",
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
         "parameters": [
           {
-            "in": "path",
             "name": "id",
+            "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
           }
         ],
         "responses": {
@@ -1818,14 +3186,48 @@
           },
           "403": {
             "description": "Forbidden",
-            "schema": {
-              "type": "string"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              }
             }
           },
           "404": {
             "description": "Not Found",
-            "schema": {
-              "type": "string"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              }
             }
           },
           "401": {
@@ -1845,36 +3247,82 @@
           "Projects"
         ],
         "operationId": "GetById",
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
         "parameters": [
           {
-            "in": "path",
             "name": "id",
+            "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "Success",
-            "schema": {
-              "$ref": "#/definitions/Project"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              }
             }
           },
           "403": {
             "description": "Forbidden",
-            "schema": {
-              "type": "string"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              }
             }
           },
           "404": {
             "description": "Not Found",
-            "schema": {
-              "type": "string"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              }
             }
           },
           "401": {
@@ -1894,25 +3342,60 @@
           "Projects"
         ],
         "operationId": "GetAllByAuthor",
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
         "responses": {
           "200": {
             "description": "Success",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Project"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Project"
+                  },
+                  "nullable": true
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Project"
+                  },
+                  "nullable": true
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Project"
+                  },
+                  "nullable": true
+                }
               }
             }
           },
           "404": {
             "description": "Not Found",
-            "schema": {
-              "type": "string"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              }
             }
           },
           "401": {
@@ -1935,53 +3418,109 @@
           "Users"
         ],
         "operationId": "Update",
-        "consumes": [
-          "application/json-patch+json",
-          "application/json",
-          "text/json",
-          "application/*+json"
-        ],
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
         "parameters": [
           {
-            "in": "path",
             "name": "id",
+            "in": "path",
             "required": true,
-            "type": "string",
-            "format": "uuid"
-          },
-          {
-            "in": "body",
-            "name": "body",
             "schema": {
-              "$ref": "#/definitions/UserDto"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserDto"
+              }
+            }
+          }
+        },
         "responses": {
           "204": {
             "description": "Success"
           },
           "403": {
             "description": "Forbidden",
-            "schema": {
-              "type": "string"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              }
             }
           },
           "401": {
             "description": "Unauthorized",
-            "schema": {
-              "type": "string"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              }
             }
           },
           "400": {
             "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/ValidationProblemDetails"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
             }
           }
         },
@@ -1996,18 +3535,15 @@
           "Users"
         ],
         "operationId": "Delete",
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
         "parameters": [
           {
-            "in": "path",
             "name": "id",
+            "in": "path",
             "required": true,
-            "type": "string",
-            "format": "uuid"
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         ],
         "responses": {
@@ -2016,14 +3552,48 @@
           },
           "403": {
             "description": "Forbidden",
-            "schema": {
-              "type": "string"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              }
             }
           },
           "401": {
             "description": "Unauthorized",
-            "schema": {
-              "type": "string"
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              }
             }
           }
         },
@@ -2035,762 +3605,794 @@
       }
     }
   },
-  "definitions": {
-    "IntervalQuality": {
-      "enum": [
-        "Diminished",
-        "Minor",
-        "Perfect",
-        "Major",
-        "Augmented"
-      ],
-      "type": "string"
-    },
-    "DegreeAndQualityIntervalDto": {
-      "required": [
-        "degree",
-        "quality",
-        "semitones"
-      ],
-      "type": "object",
-      "properties": {
-        "semitones": {
-          "format": "int32",
-          "maximum": 4294967295,
-          "minimum": 0,
-          "type": "integer"
+  "components": {
+    "schemas": {
+      "IntervalQuality": {
+        "enum": [
+          "Diminished",
+          "Minor",
+          "Perfect",
+          "Major",
+          "Augmented"
+        ],
+        "type": "string"
+      },
+      "DegreeAndQualityIntervalDto": {
+        "required": [
+          "degree",
+          "quality",
+          "semitones"
+        ],
+        "type": "object",
+        "properties": {
+          "semitones": {
+            "maximum": 4294967295,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32"
+          },
+          "degree": {
+            "maximum": 4294967295,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32"
+          },
+          "quality": {
+            "$ref": "#/components/schemas/IntervalQuality"
+          }
         },
-        "degree": {
-          "format": "int32",
-          "maximum": 4294967295,
-          "minimum": 1,
-          "type": "integer"
+        "nullable": true
+      },
+      "IntervalDto": {
+        "required": [
+          "degree",
+          "quality",
+          "semitones"
+        ],
+        "type": "object",
+        "properties": {
+          "degree": {
+            "maximum": 4294967295,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32"
+          },
+          "semitones": {
+            "maximum": 4294967295,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32"
+          },
+          "quality": {
+            "$ref": "#/components/schemas/IntervalQuality"
+          }
         },
-        "quality": {
-          "$ref": "#/definitions/IntervalQuality"
-        }
-      }
-    },
-    "IntervalDto": {
-      "required": [
-        "degree",
-        "quality",
-        "semitones"
-      ],
-      "type": "object",
-      "properties": {
-        "degree": {
-          "format": "int32",
-          "maximum": 4294967295,
-          "minimum": 1,
-          "type": "integer"
+        "nullable": true
+      },
+      "Object": {
+        "type": "object",
+        "nullable": true
+      },
+      "ValidationProblemDetails": {
+        "type": "object",
+        "properties": {
+          "errors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "nullable": true
+              },
+              "nullable": true
+            },
+            "nullable": true,
+            "readOnly": true
+          },
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          },
+          "extensions": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/Object"
+            },
+            "nullable": true,
+            "readOnly": true
+          }
         },
-        "semitones": {
-          "format": "int32",
-          "maximum": 4294967295,
-          "minimum": 0,
-          "type": "integer"
+        "nullable": true
+      },
+      "SemitonesAndQualityIntervalDto": {
+        "required": [
+          "degree",
+          "quality",
+          "semitones"
+        ],
+        "type": "object",
+        "properties": {
+          "degree": {
+            "maximum": 4294967295,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32"
+          },
+          "semitones": {
+            "maximum": 4294967295,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32"
+          },
+          "quality": {
+            "$ref": "#/components/schemas/IntervalQuality"
+          }
         },
-        "quality": {
-          "$ref": "#/definitions/IntervalQuality"
-        }
-      }
-    },
-    "Object": {
-      "type": "object"
-    },
-    "ValidationProblemDetails": {
-      "type": "object",
-      "properties": {
-        "errors": {
-          "type": "object",
-          "additionalProperties": {
+        "nullable": true
+      },
+      "DegreeAndSemitonesIntervalDto": {
+        "required": [
+          "degree",
+          "quality",
+          "semitones"
+        ],
+        "type": "object",
+        "properties": {
+          "quality": {
+            "$ref": "#/components/schemas/IntervalQuality"
+          },
+          "degree": {
+            "maximum": 4294967295,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32"
+          },
+          "semitones": {
+            "maximum": 4294967295,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "nullable": true
+      },
+      "NoteDto": {
+        "required": [
+          "alteration",
+          "key",
+          "picth"
+        ],
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "picth": {
+            "maximum": 8,
+            "minimum": -2,
+            "type": "integer",
+            "format": "int32"
+          },
+          "alteration": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "nullable": true
+      },
+      "NotePairDto": {
+        "required": [
+          "a",
+          "b"
+        ],
+        "type": "object",
+        "properties": {
+          "a": {
+            "$ref": "#/components/schemas/NoteDto"
+          },
+          "b": {
+            "$ref": "#/components/schemas/NoteDto"
+          }
+        },
+        "nullable": true
+      },
+      "IntervalFormat": {
+        "enum": [
+          "Short",
+          "Medium",
+          "Formula"
+        ],
+        "type": "string"
+      },
+      "SignInDto": {
+        "required": [
+          "password",
+          "username"
+        ],
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "nullable": true
+      },
+      "Authentication": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "nullable": true
+          },
+          "refresh_token": {
+            "type": "string",
+            "nullable": true
+          },
+          "expires_in": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "refresh_expires_in": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "expiration_date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "refresh_expiration_date": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "nullable": true
+      },
+      "UserDto": {
+        "required": [
+          "email",
+          "password",
+          "username"
+        ],
+        "type": "object",
+        "properties": {
+          "username": {
+            "minLength": 5,
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "password": {
+            "minLength": 8,
+            "type": "string"
+          }
+        },
+        "nullable": true
+      },
+      "User": {
+        "required": [
+          "email",
+          "id",
+          "username"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "username": {
+            "minLength": 5,
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          }
+        },
+        "nullable": true
+      },
+      "DrumMapDto": {
+        "required": [
+          "id",
+          "map",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 30,
+            "minLength": 5,
+            "type": "string"
+          },
+          "map": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "nullable": true
+            }
+          }
+        },
+        "nullable": true
+      },
+      "DrumMap": {
+        "required": [
+          "id",
+          "map",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 30,
+            "minLength": 5,
+            "type": "string"
+          },
+          "map": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "nullable": true
+            }
+          }
+        },
+        "nullable": true
+      },
+      "FingeringType": {
+        "enum": [
+          "Chord",
+          "Drum"
+        ],
+        "type": "string"
+      },
+      "FingeringEntry": {
+        "required": [
+          "length",
+          "pitch",
+          "position"
+        ],
+        "type": "object",
+        "properties": {
+          "position": {
+            "maximum": 1,
+            "minimum": 0,
+            "type": "number",
+            "format": "double"
+          },
+          "length": {
+            "maximum": 1,
+            "minimum": 0,
+            "type": "number",
+            "format": "double"
+          },
+          "pitch": {
+            "maximum": 127,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "nullable": true
+      },
+      "Fingering": {
+        "required": [
+          "edited_from",
+          "entries",
+          "evaluations",
+          "id",
+          "name",
+          "tags",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "edited_from": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "maxLength": 30,
+            "minLength": 5,
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/FingeringType"
+          },
+          "tags": {
+            "maxLength": 10,
             "type": "array",
             "items": {
-              "type": "string"
+              "type": "string",
+              "nullable": true
             }
           },
-          "readOnly": true
-        },
-        "type": {
-          "type": "string"
-        },
-        "title": {
-          "type": "string"
-        },
-        "status": {
-          "format": "int32",
-          "type": "integer"
-        },
-        "detail": {
-          "type": "string"
-        },
-        "instance": {
-          "type": "string"
-        },
-        "extensions": {
-          "type": "object",
-          "additionalProperties": {
-            "$ref": "#/definitions/Object"
+          "evaluations": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer",
+              "format": "int32"
+            }
           },
-          "readOnly": true
-        }
-      }
-    },
-    "SemitonesAndQualityIntervalDto": {
-      "required": [
-        "degree",
-        "quality",
-        "semitones"
-      ],
-      "type": "object",
-      "properties": {
-        "degree": {
-          "format": "int32",
-          "maximum": 4294967295,
-          "minimum": 1,
-          "type": "integer"
+          "entries": {
+            "maxLength": 50,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FingeringEntry"
+            }
+          }
         },
-        "semitones": {
-          "format": "int32",
-          "maximum": 4294967295,
-          "minimum": 0,
-          "type": "integer"
+        "nullable": true
+      },
+      "FingeringDto": {
+        "required": [
+          "edited_from",
+          "entries",
+          "evaluations",
+          "name",
+          "tags",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "edited_from": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "maxLength": 30,
+            "minLength": 5,
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/FingeringType"
+          },
+          "tags": {
+            "maxLength": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          "evaluations": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "entries": {
+            "maxLength": 50,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FingeringEntry"
+            }
+          }
         },
-        "quality": {
-          "$ref": "#/definitions/IntervalQuality"
-        }
-      }
-    },
-    "DegreeAndSemitonesIntervalDto": {
-      "required": [
-        "degree",
-        "quality",
-        "semitones"
-      ],
-      "type": "object",
-      "properties": {
-        "quality": {
-          "$ref": "#/definitions/IntervalQuality"
-        },
-        "degree": {
-          "format": "int32",
-          "maximum": 4294967295,
-          "minimum": 1,
-          "type": "integer"
-        },
-        "semitones": {
-          "format": "int32",
-          "maximum": 4294967295,
-          "minimum": 0,
-          "type": "integer"
-        }
-      }
-    },
-    "NoteDto": {
-      "required": [
-        "alteration",
-        "key",
-        "picth"
-      ],
-      "type": "object",
-      "properties": {
-        "key": {
-          "type": "string"
-        },
-        "picth": {
-          "format": "int32",
-          "maximum": 8,
-          "minimum": -2,
-          "type": "integer"
-        },
-        "alteration": {
-          "format": "int32",
-          "type": "integer"
-        }
-      }
-    },
-    "NotePairDto": {
-      "required": [
-        "a",
-        "b"
-      ],
-      "type": "object",
-      "properties": {
-        "a": {
-          "$ref": "#/definitions/NoteDto"
-        },
-        "b": {
-          "$ref": "#/definitions/NoteDto"
-        }
-      }
-    },
-    "IntervalFormat": {
-      "enum": [
-        "Short",
-        "Medium",
-        "Formula"
-      ],
-      "type": "string"
-    },
-    "SignInDto": {
-      "required": [
-        "password",
-        "username"
-      ],
-      "type": "object",
-      "properties": {
-        "username": {
-          "type": "string"
-        },
-        "password": {
-          "type": "string"
-        }
-      }
-    },
-    "Authentication": {
-      "type": "object",
-      "properties": {
-        "access_token": {
-          "type": "string"
-        },
-        "refresh_token": {
-          "type": "string"
-        },
-        "expires_in": {
-          "format": "int32",
-          "type": "integer"
-        },
-        "refresh_expires_in": {
-          "format": "int32",
-          "type": "integer"
-        },
-        "expiration_date": {
-          "format": "date-time",
-          "type": "string"
-        },
-        "refresh_expiration_date": {
-          "format": "date-time",
-          "type": "string"
-        }
-      }
-    },
-    "UserDto": {
-      "required": [
-        "email",
-        "password",
-        "username"
-      ],
-      "type": "object",
-      "properties": {
-        "username": {
-          "minLength": 5,
-          "type": "string"
-        },
-        "email": {
-          "format": "email",
-          "type": "string"
-        },
-        "password": {
-          "minLength": 8,
-          "type": "string"
-        }
-      }
-    },
-    "User": {
-      "required": [
-        "email",
-        "id",
-        "username"
-      ],
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "username": {
-          "minLength": 5,
-          "type": "string"
-        },
-        "email": {
-          "format": "email",
-          "type": "string"
-        }
-      }
-    },
-    "DrumMapDto": {
-      "required": [
-        "id",
-        "map",
-        "name"
-      ],
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "name": {
-          "maxLength": 30,
-          "minLength": 5,
-          "type": "string"
-        },
-        "map": {
-          "type": "object",
-          "additionalProperties": {
+        "nullable": true
+      },
+      "Visibility": {
+        "enum": [
+          "Public",
+          "Private"
+        ],
+        "type": "string"
+      },
+      "DrumTrack": {
+        "required": [
+          "drum_map"
+        ],
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/MidiTrack"
+          }
+        ],
+        "properties": {
+          "drum_map": {
+            "maxLength": 24,
+            "minLength": 0,
             "type": "string"
           }
         }
-      }
-    },
-    "DrumMap": {
-      "required": [
-        "id",
-        "map",
-        "name"
-      ],
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "name": {
-          "maxLength": 30,
-          "minLength": 5,
-          "type": "string"
-        },
-        "map": {
-          "type": "object",
-          "additionalProperties": {
+      },
+      "MidiTrack": {
+        "required": [
+          "channel"
+        ],
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Track"
+          }
+        ],
+        "properties": {
+          "channel": {
+            "maximum": 16,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "Track": {
+        "required": [
+          "color",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 30,
+            "minLength": 5,
             "type": "string"
+          },
+          "color": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "nullable": true,
+        "x-abstract": true
+      },
+      "SequenceLength": {
+        "required": [
+          "bar",
+          "end",
+          "start"
+        ],
+        "type": "object",
+        "properties": {
+          "bar": {
+            "maximum": 4294967295,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32"
+          },
+          "start": {
+            "maximum": 1,
+            "minimum": 0,
+            "type": "number",
+            "format": "double"
+          },
+          "end": {
+            "maximum": 1,
+            "minimum": 0,
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "nullable": true
+      },
+      "InnerFingering": {
+        "type": "object",
+        "properties": {
+          "entries": {
+            "maxLength": 50,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FingeringEntry"
+            },
+            "nullable": true
+          }
+        },
+        "nullable": true
+      },
+      "ChordSequence": {
+        "required": [
+          "intervals",
+          "root"
+        ],
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/MidiSequence"
+          }
+        ],
+        "properties": {
+          "root": {
+            "maximum": 127,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32"
+          },
+          "intervals": {
+            "maxLength": 25,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "nullable": true
+            }
           }
         }
-      }
-    },
-    "FingeringType": {
-      "enum": [
-        "Chord",
-        "Drum"
-      ],
-      "type": "string"
-    },
-    "FingeringEntry": {
-      "required": [
-        "length",
-        "pitch",
-        "position"
-      ],
-      "type": "object",
-      "properties": {
-        "position": {
-          "format": "double",
-          "maximum": 1,
-          "minimum": 0,
-          "type": "number"
-        },
-        "length": {
-          "format": "double",
-          "maximum": 1,
-          "minimum": 0,
-          "type": "number"
-        },
-        "pitch": {
-          "format": "int32",
-          "maximum": 127,
-          "minimum": 0,
-          "type": "integer"
+      },
+      "DrumSequence": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/MidiSequence"
+          }
+        ]
+      },
+      "MidiSequence": {
+        "required": [
+          "fingering"
+        ],
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Sequence"
+          }
+        ],
+        "properties": {
+          "fingering": {
+            "$ref": "#/components/schemas/InnerFingering"
+          }
         }
-      }
-    },
-    "Fingering": {
-      "required": [
-        "edited_from",
-        "entries",
-        "evaluations",
-        "id",
-        "name",
-        "tags",
-        "type"
-      ],
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
+      },
+      "Sequence": {
+        "required": [
+          "length"
+        ],
+        "type": "object",
+        "properties": {
+          "length": {
+            "$ref": "#/components/schemas/SequenceLength"
+          }
         },
-        "edited_from": {
-          "type": "string"
-        },
-        "name": {
-          "maxLength": 30,
-          "minLength": 5,
-          "type": "string"
-        },
-        "type": {
-          "$ref": "#/definitions/FingeringType"
-        },
-        "tags": {
-          "maxLength": 10,
-          "type": "array",
-          "items": {
+        "nullable": true,
+        "x-abstract": true
+      },
+      "Theme": {
+        "required": [
+          "name",
+          "sequences",
+          "track_index"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 30,
+            "minLength": 5,
             "type": "string"
+          },
+          "track_index": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sequences": {
+            "maxLength": 50,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Sequence"
+            }
           }
         },
-        "evaluations": {
-          "type": "object",
-          "additionalProperties": {
-            "format": "int32",
-            "type": "integer"
-          }
-        },
-        "entries": {
-          "maxLength": 50,
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/FingeringEntry"
-          }
-        }
-      }
-    },
-    "FingeringDto": {
-      "required": [
-        "edited_from",
-        "entries",
-        "evaluations",
-        "name",
-        "tags",
-        "type"
-      ],
-      "type": "object",
-      "properties": {
-        "edited_from": {
-          "type": "string"
-        },
-        "name": {
-          "maxLength": 30,
-          "minLength": 5,
-          "type": "string"
-        },
-        "type": {
-          "$ref": "#/definitions/FingeringType"
-        },
-        "tags": {
-          "maxLength": 10,
-          "type": "array",
-          "items": {
+        "nullable": true
+      },
+      "ProjectDto": {
+        "required": [
+          "name",
+          "tempo",
+          "themes",
+          "tracks",
+          "visibility"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 30,
+            "minLength": 5,
             "type": "string"
+          },
+          "tempo": {
+            "maximum": 360,
+            "minimum": 30,
+            "type": "integer",
+            "format": "int32"
+          },
+          "visibility": {
+            "$ref": "#/components/schemas/Visibility"
+          },
+          "tracks": {
+            "maxLength": 16,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Track"
+            }
+          },
+          "themes": {
+            "maxLength": 50,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Theme"
+            }
           }
         },
-        "evaluations": {
-          "type": "object",
-          "additionalProperties": {
-            "format": "int32",
-            "type": "integer"
-          }
-        },
-        "entries": {
-          "maxLength": 50,
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/FingeringEntry"
-          }
-        }
-      }
-    },
-    "DrumTrack": {
-      "required": [
-        "channel",
-        "color",
-        "drum_map",
-        "name"
-      ],
-      "type": "object",
-      "properties": {
-        "drum_map": {
-          "maxLength": 24,
-          "minLength": 0,
-          "type": "string"
-        },
-        "channel": {
-          "format": "int32",
-          "maximum": 16,
-          "minimum": 1,
-          "type": "integer"
-        },
-        "name": {
-          "maxLength": 30,
-          "minLength": 5,
-          "type": "string"
-        },
-        "color": {
-          "format": "int32",
-          "type": "integer"
-        }
-      }
-    },
-    "MidiTrack": {
-      "required": [
-        "channel",
-        "color",
-        "name"
-      ],
-      "type": "object",
-      "properties": {
-        "channel": {
-          "format": "int32",
-          "maximum": 16,
-          "minimum": 1,
-          "type": "integer"
-        },
-        "name": {
-          "maxLength": 30,
-          "minLength": 5,
-          "type": "string"
-        },
-        "color": {
-          "format": "int32",
-          "type": "integer"
-        }
-      }
-    },
-    "Track": {
-      "required": [
-        "color",
-        "name"
-      ],
-      "type": "object",
-      "properties": {
-        "name": {
-          "maxLength": 30,
-          "minLength": 5,
-          "type": "string"
-        },
-        "color": {
-          "format": "int32",
-          "type": "integer"
-        }
-      }
-    },
-    "SequenceLength": {
-      "required": [
-        "bar",
-        "end",
-        "start"
-      ],
-      "type": "object",
-      "properties": {
-        "bar": {
-          "format": "int32",
-          "maximum": 4294967295,
-          "minimum": 0,
-          "type": "integer"
-        },
-        "start": {
-          "format": "double",
-          "maximum": 1,
-          "minimum": 0,
-          "type": "number"
-        },
-        "end": {
-          "format": "double",
-          "maximum": 1,
-          "minimum": 0,
-          "type": "number"
-        }
-      }
-    },
-    "InnerFingering": {
-      "type": "object",
-      "properties": {
-        "entries": {
-          "maxLength": 50,
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/FingeringEntry"
-          }
-        }
-      }
-    },
-    "ChordSequence": {
-      "required": [
-        "fingering",
-        "intervals",
-        "length",
-        "root"
-      ],
-      "type": "object",
-      "properties": {
-        "root": {
-          "format": "int32",
-          "maximum": 127,
-          "minimum": 0,
-          "type": "integer"
-        },
-        "intervals": {
-          "maxLength": 25,
-          "type": "array",
-          "items": {
+        "nullable": true
+      },
+      "Project": {
+        "required": [
+          "id",
+          "name",
+          "tempo",
+          "themes",
+          "tracks",
+          "visibility"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
             "type": "string"
+          },
+          "name": {
+            "maxLength": 30,
+            "minLength": 5,
+            "type": "string"
+          },
+          "tempo": {
+            "maximum": 360,
+            "minimum": 30,
+            "type": "integer",
+            "format": "int32"
+          },
+          "visibility": {
+            "$ref": "#/components/schemas/Visibility"
+          },
+          "tracks": {
+            "maxLength": 16,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Track"
+            }
+          },
+          "themes": {
+            "maxLength": 50,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Theme"
+            }
           }
         },
-        "fingering": {
-          "$ref": "#/definitions/InnerFingering"
-        },
-        "length": {
-          "$ref": "#/definitions/SequenceLength"
-        }
+        "nullable": true
       }
     },
-    "DrumSequence": {
-      "required": [
-        "fingering",
-        "length"
-      ],
-      "type": "object",
-      "properties": {
-        "fingering": {
-          "$ref": "#/definitions/InnerFingering"
-        },
-        "length": {
-          "$ref": "#/definitions/SequenceLength"
-        }
-      }
-    },
-    "MidiSequence": {
-      "required": [
-        "fingering",
-        "length"
-      ],
-      "type": "object",
-      "properties": {
-        "fingering": {
-          "$ref": "#/definitions/InnerFingering"
-        },
-        "length": {
-          "$ref": "#/definitions/SequenceLength"
-        }
-      }
-    },
-    "Sequence": {
-      "required": [
-        "length"
-      ],
-      "type": "object",
-      "properties": {
-        "length": {
-          "$ref": "#/definitions/SequenceLength"
-        }
-      }
-    },
-    "Theme": {
-      "required": [
-        "name",
-        "sequences",
-        "track_index"
-      ],
-      "type": "object",
-      "properties": {
-        "name": {
-          "maxLength": 30,
-          "minLength": 5,
-          "type": "string"
-        },
-        "track_index": {
-          "format": "int32",
-          "type": "integer"
-        },
-        "sequences": {
-          "maxLength": 50,
-          "type": "array",
-          "items": { }
-        }
-      }
-    },
-    "ProjectDto": {
-      "required": [
-        "is_private",
-        "name",
-        "tempo",
-        "themes",
-        "tracks"
-      ],
-      "type": "object",
-      "properties": {
-        "name": {
-          "maxLength": 30,
-          "minLength": 5,
-          "type": "string"
-        },
-        "tempo": {
-          "format": "int32",
-          "maximum": 360,
-          "minimum": 30,
-          "type": "integer"
-        },
-        "is_private": {
-          "type": "boolean"
-        },
-        "tracks": {
-          "maxLength": 16,
-          "type": "array",
-          "items": { }
-        },
-        "themes": {
-          "maxLength": 50,
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Theme"
+    "securitySchemes": {
+      "oauth2": {
+        "type": "oauth2",
+        "flows": {
+          "password": {
+            "authorizationUrl": "http://192.168.46.101:8080/auth/realms/master/protocol/openid-connect/auth",
+            "tokenUrl": "http://192.168.46.101:8080/auth/realms/master/protocol/openid-connect/token",
+            "refreshUrl": "http://192.168.46.101:8080/auth/realms/master/protocol/openid-connect/token",
+            "scopes": { }
           }
         }
       }
-    },
-    "Project": {
-      "required": [
-        "id",
-        "is_private",
-        "name",
-        "tempo",
-        "themes",
-        "tracks"
-      ],
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "name": {
-          "maxLength": 30,
-          "minLength": 5,
-          "type": "string"
-        },
-        "tempo": {
-          "format": "int32",
-          "maximum": 360,
-          "minimum": 30,
-          "type": "integer"
-        },
-        "is_private": {
-          "type": "boolean"
-        },
-        "tracks": {
-          "maxLength": 16,
-          "type": "array",
-          "items": { }
-        },
-        "themes": {
-          "maxLength": 50,
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Theme"
-          }
-        }
-      }
-    }
-  },
-  "securityDefinitions": {
-    "oauth2": {
-      "type": "oauth2",
-      "flow": "password",
-      "authorizationUrl": "http://192.168.46.101:8080/auth/realms/master/protocol/openid-connect/auth",
-      "tokenUrl": "http://192.168.46.101:8080/auth/realms/master/protocol/openid-connect/token"
     }
   }
 }

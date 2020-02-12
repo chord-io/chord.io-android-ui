@@ -5,7 +5,7 @@ import io.chord.ui.ChordIOApplication
 
 class CudcOperationInformation(
 	private val operation: CudcOperation,
-	private val entityName: String
+	private val entity: String
 )
 {
 	fun getOperationName(): String
@@ -14,19 +14,19 @@ class CudcOperationInformation(
 		{
 			CudcOperation.CREATE ->
 			{
-				return ChordIOApplication.instance.resources.getString(R.string.cudc_dialog_create)
+				return ChordIOApplication.instance.resources.getString(R.string.cudc_operation_dialog_create)
 			}
 			CudcOperation.UPDATE ->
 			{
-				return ChordIOApplication.instance.resources.getString(R.string.cudc_dialog_update)
+				return ChordIOApplication.instance.resources.getString(R.string.cudc_operation_dialog_update)
 			}
 			CudcOperation.DELETE ->
 			{
-				return ChordIOApplication.instance.resources.getString(R.string.cudc_dialog_delete)
+				return ChordIOApplication.instance.resources.getString(R.string.cudc_operation_dialog_delete)
 			}
 			CudcOperation.CLONE ->
 			{
-				return ChordIOApplication.instance.resources.getString(R.string.cudc_dialog_clone)
+				return ChordIOApplication.instance.resources.getString(R.string.cudc_operation_dialog_clone)
 			}
 		}
 	}
@@ -39,19 +39,19 @@ class CudcOperationInformation(
 		{
 			CudcOperation.CREATE ->
 			{
-				return "$operationName $entityName"
+				return "$operationName $entity"
 			}
 			CudcOperation.UPDATE ->
 			{
-				return "$operationName $entityName"
+				return "$operationName $entity"
 			}
 			CudcOperation.DELETE ->
 			{
-				return "$operationName $entityName ?"
+				return "$operationName $entity ?"
 			}
 			CudcOperation.CLONE ->
 			{
-				return "$operationName $entityName ?"
+				return "$operationName $entity ?"
 			}
 		}
 	}

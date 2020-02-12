@@ -5,7 +5,9 @@ import io.chord.R
 import io.chord.clients.ApiThrowable
 import io.chord.clients.toApiThrowable
 import io.chord.ui.components.Banner
-import io.chord.ui.dialogs.ErrorDialogFragment
+import io.chord.ui.dialogs.DialogLevel
+import io.chord.ui.dialogs.DialogParameters
+import io.chord.ui.dialogs.FloatDialogFragment
 
 @Suppress("ThrowableNotThrown")
 fun Throwable.toActivityApiThrowable(activity: FragmentActivity): ApiThrowable {
@@ -14,13 +16,31 @@ fun Throwable.toActivityApiThrowable(activity: FragmentActivity): ApiThrowable {
 	throwable
 		.doOnConnectionTimeout {
 			val fragmentManager = activity.supportFragmentManager
-			val dialogFragment = ErrorDialogFragment(R.string.api_connection_timeout)
-			dialogFragment.show(fragmentManager, "fragment_network_timeout_dialog")
+			val dialog = FloatDialogFragment(
+				DialogParameters(
+					activity,
+					R.string.api_connection_timeout,
+					null,
+					R.string.dialog_positive_button,
+					R.string.dialog_negative_button,
+					DialogLevel.Error
+				)
+			)
+			dialog.show(fragmentManager, "fragment_connection_error_dialog")
 		}
 		.doOnNetworkError {
 			val fragmentManager = activity.supportFragmentManager
-			val dialogFragment = ErrorDialogFragment(R.string.api_network_error)
-			dialogFragment.show(fragmentManager, "fragment_network_error_dialog")
+			val dialog = FloatDialogFragment(
+				DialogParameters(
+					activity,
+					R.string.api_network_error,
+					null,
+					R.string.dialog_positive_button,
+					R.string.dialog_negative_button,
+					DialogLevel.Error
+				)
+			)
+			dialog.show(fragmentManager, "fragment_network_error_dialog")
 		}
 	
 	return throwable

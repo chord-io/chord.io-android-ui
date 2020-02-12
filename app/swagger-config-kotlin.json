@@ -1,0 +1,7 @@
+{
+  "sourceFolder": "./",
+  "modelPackage": "io.chord.clients.models",
+  "packageName": "io.chord.clients.models",
+  "enumPropertyNaming": "PascalCase",
+  "dateLibrary": "threetenbp"
+}

@@ -26,6 +26,7 @@
     <dimen name="fullscreen_dialog_padding_bottom">8dp</dimen>
     <dimen name="fullscreen_dialog_app_bar_padding_left">6dp</dimen>
     <dimen name="fullscreen_dialog_app_bar_padding_right">8dp</dimen>
+    <dimen name="fullscreen_dialog_field_height">64dp</dimen>
 
     <dimen name="dialog_title_height">64dp</dimen>
     <dimen name="dialog_title_text_size">20sp</dimen>
@@ -38,4 +39,9 @@
     <dimen name="cudc_select_operation_icon_size">16dp</dimen>
     <dimen name="cudc_select_operation_layout_size">30dp</dimen>
     <dimen name="cudc_select_operation_margin_top">10dp</dimen>
+
+    <dimen name="section_dialog_layout_size">40dp</dimen>
+    <dimen name="section_dialog_text_size">18sp</dimen>
+    <dimen name="section_dialog_icon_size">16dp</dimen>
+    <dimen name="section_dialog_padding">16dp</dimen>
 </resources>

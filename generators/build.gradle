@@ -1,0 +1,11 @@
+apply plugin: 'java-library'
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation ('io.swagger.codegen.v3:swagger-codegen-generators:1.0.16') {
+        exclude group: "ch.qos.logback"
+    }
+}
+
+sourceCompatibility = "8"
+targetCompatibility = "8"
