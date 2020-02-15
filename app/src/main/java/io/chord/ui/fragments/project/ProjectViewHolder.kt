@@ -1,4 +1,4 @@
-package io.chord.ui.project
+package io.chord.ui.fragments.project
 
 import android.view.View
 import androidx.databinding.DataBindingUtil

@@ -1,4 +1,4 @@
-package io.chord.ui.project
+package io.chord.ui.fragments.project
 
 import android.content.Intent
 import android.os.Bundle

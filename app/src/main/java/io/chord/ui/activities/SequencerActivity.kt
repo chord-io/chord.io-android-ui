@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import io.chord.R
 import io.chord.databinding.ActivitySequencerBinding
+import io.chord.ui.fragments.track.TrackListFragment
 
 class SequencerActivity : AppCompatActivity()
 {
@@ -32,5 +33,10 @@ class SequencerActivity : AppCompatActivity()
 		this.binding.toolbarSequencer.quantize.attach(R.id.ruler)
 		this.setSupportActionBar(this.binding.toolbarSequencer.editor.toolbar)
 		this.setContentView(view)
+		
+		this.binding.addTrackButton.setOnClickListener {
+			val trackList = this.supportFragmentManager.findFragmentById(R.id.trackList) as TrackListFragment
+			trackList.create()
+		}
 	}
 }

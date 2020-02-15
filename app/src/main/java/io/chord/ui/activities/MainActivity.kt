@@ -1,17 +1,17 @@
 package io.chord.ui.activities
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.mikepenz.iconics.*
+import com.mikepenz.iconics.IconicsDrawable
 import com.mikepenz.iconics.typeface.library.fontawesome.FontAwesome
 import com.mikepenz.iconics.utils.colorRes
 import io.chord.R
 import io.chord.clients.ClientApi
 import io.chord.clients.apis.ProjectsApi
 import io.chord.services.authentication.storage.SharedPreferencesAuthenticationStorage
-import io.chord.ui.project.ProjectListFragment
+import io.chord.ui.fragments.project.ProjectListFragment
 import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity()

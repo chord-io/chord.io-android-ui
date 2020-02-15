@@ -1,4 +1,4 @@
-package io.chord.ui.fragments
+package io.chord.ui.fragments.track
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -80,7 +80,7 @@ class TrackListFragment : Fragment(), TrackListClickListener
 		return true
 	}
 	
-	private fun create()
+	fun create()
 	{
 		val dialog = SelectTrackTypeDialog(this.activity!!)
 		

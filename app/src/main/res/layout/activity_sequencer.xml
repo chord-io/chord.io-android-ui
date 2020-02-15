@@ -31,7 +31,7 @@
                 android:layout_row="0"
                 android:background="@color/backgroundPrimary">
                 <com.mikepenz.iconics.view.IconicsImageView
-                    android:id="@+id/addTrack"
+                    android:id="@+id/addTrackButton"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:clickable="true"
@@ -39,12 +39,12 @@
                     android:background="@drawable/ripple_effect"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintRight_toLeftOf="@id/searchTrack"
+                    app:layout_constraintRight_toLeftOf="@id/searchTrackButton"
                     app:iiv_icon="faw-plus"
                     app:iiv_size="12dp"
                     app:iiv_color="@color/textColorSecondary"/>
                 <com.mikepenz.iconics.view.IconicsImageView
-                    android:id="@+id/searchTrack"
+                    android:id="@+id/searchTrackButton"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:clickable="true"
@@ -74,7 +74,7 @@
                     tools:ignore="UselessParent">
                     <fragment
                         android:id="@+id/trackList"
-                        android:name="io.chord.ui.fragments.TrackListFragment"
+                        android:name="io.chord.ui.fragments.track.TrackListFragment"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
                 </ScrollView>
