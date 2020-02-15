@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable
             name="project"
             type="io.chord.ui.models.ProjectListItemViewModel" />
     </data>
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/list_item_height"
         android:background="@drawable/ripple_effect"
@@ -17,43 +19,69 @@
             android:id="@+id/icon"
             android:layout_width="@dimen/list_item_icon_size"
             android:layout_height="@dimen/list_item_icon_size"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/list_item_margin_left"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:srcCompat="@tools:sample/avatars[1]" />
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/list_item_margin_right"
+            android:layout_marginEnd="@dimen/list_item_margin_right"
+            android:textSize="16sp"
+            android:text="@{project.name}"
+            tools:text="@tools:sample/cities"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/icon"
+            app:layout_constraintRight_toLeftOf="@id/details"/>
 
         <LinearLayout
-            android:id="@+id/texts"
-            android:layout_width="match_parent"
+            android:id="@+id/details"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="@dimen/list_item_margin_right"
             android:orientation="vertical"
-            android:layout_toStartOf="@id/loader"
-            android:layout_toEndOf="@id/icon">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/loader">
 
             <TextView
-                android:id="@+id/name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/information"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:id="@+id/tempo"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@{project.tempo + ` BPM`}"
                 android:textColor="@color/textColorSecondary"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                tools:text="@tools:sample/cities" />
+            <TextView
+                android:id="@+id/tracks"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textColor="@color/textColorSecondary"
+                android:textSize="14sp"
+                android:text="@{`Tracks ` + project.tracks}"
+                tools:text="@tools:sample/cities"/>
+            <TextView
+                android:id="@+id/themes"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textColor="@color/textColorSecondary"
+                android:textSize="14sp"
+                android:text="@{`Themes ` + project.themes}"
+                tools:text="@tools:sample/cities"/>
         </LinearLayout>
 
         <ProgressBar
             android:id="@+id/loader"
             android:layout_width="@dimen/list_item_icon_size"
             android:layout_height="@dimen/list_item_icon_size"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="@dimen/list_item_margin_right"
             android:indeterminate="true"
-            android:visibility="gone"/>
-    </RelativeLayout>
+            android:visibility="visible"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

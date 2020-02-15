@@ -9,7 +9,7 @@ import io.chord.R
 import io.chord.clients.models.Project
 import io.chord.clients.models.Visibility
 import io.chord.databinding.ProjectListItemBinding
-import io.chord.ui.ChordIOApplication
+import io.chord.ui.models.ProjectListItemViewModel
 import io.chord.ui.sections.ClickListener
 import io.chord.ui.sections.ViewHolderBase
 
@@ -28,16 +28,10 @@ class ProjectViewHolder(
                 .icon(visibilityIcon)
                 .colorRes(R.color.colorAccent)
     
-            this.name.text = item.name
-    
-            this.information.text = ChordIOApplication.instance.resources.getString(
-                R.string.project_list_item_information,
-                item.tempo.toString(),
-                item.tracks.size.toString()
-            )
-    
             this.loader.visibility = View.GONE
         }
+        
+        binding.project = ProjectListItemViewModel(item)
 
         this.itemView.setOnClickListener {
             clickListener.onItemClicked(item, this)

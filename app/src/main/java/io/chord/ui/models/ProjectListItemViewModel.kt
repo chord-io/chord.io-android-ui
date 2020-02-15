@@ -15,4 +15,6 @@ class ProjectListItemViewModel(
 	var visibility: Visibility = model.visibility
 	
 	var tracks: Int = model.tracks.size
+	
+	var themes: Int = model.themes.size
 }
