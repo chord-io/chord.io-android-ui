@@ -16,11 +16,12 @@ import io.chord.ui.dialogs.cudc.CudcOperation
 import io.chord.ui.dialogs.customs.SelectCudcOperationDialog
 import io.chord.ui.dialogs.customs.SelectTrackTypeDialog
 import io.chord.ui.dialogs.flows.TrackFlow
+import io.chord.ui.extensions.getRootView
 import java.util.*
 
 class TrackListFragment : Fragment(), TrackListClickListener
 {
-	private val flow: TrackFlow = TrackFlow(this.activity!!)
+	private lateinit var flow: TrackFlow
 	private lateinit var trackList: TrackList
 	private lateinit var trackControlMaster: TrackControl
 	
@@ -30,7 +31,7 @@ class TrackListFragment : Fragment(), TrackListClickListener
 		savedInstanceState: Bundle?
 	): View?
 	{
-		val trackControlMaster = this.activity!!.findViewById<TrackControl>(R.id.trackControlMaster)
+		this.flow = TrackFlow(this.activity!!)
 		
 		this.trackList = LayoutInflater
 			.from(this.context)
@@ -40,10 +41,15 @@ class TrackListFragment : Fragment(), TrackListClickListener
 				false
 			) as TrackList
 		
-		this.trackList.listener = this
-		this.trackList.trackControlMaster = trackControlMaster
-		
 		return this.trackList
+	}
+	
+	override fun onActivityCreated(savedInstanceState: Bundle?)
+	{
+		super.onActivityCreated(savedInstanceState)
+		this.trackList.listener = this
+		this.trackList.trackControlMaster  = this.activity!!.getRootView()
+			.findViewById(R.id.trackControlMaster)
 	}
 	
 	override fun onItemClicked(item: TrackListItemViewHolder)

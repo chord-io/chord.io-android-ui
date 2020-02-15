@@ -81,8 +81,7 @@ inline fun <reified TType: View> View.getChildOfType(): List<TType>
 
 fun FragmentActivity.getRootView(): View
 {
-	val view = this.findViewById<ViewGroup>(android.R.id.content)
-	return view.getChildAt(0)
+	return this.findViewById<ViewGroup>(android.R.id.content).rootView
 }
 
 fun View.getParentRootView(): View
