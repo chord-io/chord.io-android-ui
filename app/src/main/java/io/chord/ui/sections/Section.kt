@@ -138,6 +138,7 @@ class Section<TItem, THolder: ViewHolderBase<TItem, THolder>>: Section
 	fun update(item: TItem)
 	{
 		val index = this.dataset.indexOf(item)
+		this.dataset[index] = item
 		this.adapter.notifyItemChanged(index)
 	}
 	

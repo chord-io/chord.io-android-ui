@@ -9,6 +9,7 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
+import java.io.Serializable
 
 /**
     * @property errors
@@ -19,16 +20,16 @@ import java.io.ObjectOutputStream
     * @property instance
     * @property extensions
 */
-@JsonClass(generateAdapter = true)
+
 open class ValidationProblemDetails(
 
-    @Json(name = "errors") @field:Json(name = "errors") var errors: kotlin.collections.Map<kotlin.String, kotlin.Array<kotlin.String>>? = null,
-    @Json(name = "type") @field:Json(name = "type") var type: kotlin.String? = null,
-    @Json(name = "title") @field:Json(name = "title") var title: kotlin.String? = null,
-    @Json(name = "status") @field:Json(name = "status") var status: kotlin.Int? = null,
-    @Json(name = "detail") @field:Json(name = "detail") var detail: kotlin.String? = null,
-    @Json(name = "instance") @field:Json(name = "instance") var instance: kotlin.String? = null,
-    @Json(name = "extensions") @field:Json(name = "extensions") var extensions: kotlin.collections.Map<kotlin.String, Object>? = null)
+    @Json(name = "errors") @field:Json(name = "errors") var errors: Map<String, List<String>>? = null,
+    @Json(name = "type") @field:Json(name = "type") var type: String? = null,
+    @Json(name = "title") @field:Json(name = "title") var title: String? = null,
+    @Json(name = "status") @field:Json(name = "status") var status: Int? = null,
+    @Json(name = "detail") @field:Json(name = "detail") var detail: String? = null,
+    @Json(name = "instance") @field:Json(name = "instance") var instance: String? = null,
+    @Json(name = "extensions") @field:Json(name = "extensions") var extensions: Map<String, Object>? = null): Serializable
 {
     open fun copy(): ValidationProblemDetails
     {
@@ -41,4 +42,3 @@ open class ValidationProblemDetails(
         return objectInputStream.readObject() as ValidationProblemDetails
     }
 }
-

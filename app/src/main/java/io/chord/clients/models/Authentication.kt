@@ -7,6 +7,7 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
+import java.io.Serializable
 
 /**
     * @property accessToken
@@ -16,15 +17,15 @@ import java.io.ObjectOutputStream
     * @property expirationDate
     * @property refreshExpirationDate
 */
-@JsonClass(generateAdapter = true)
+
 open class Authentication(
 
-    @Json(name = "access_token") @field:Json(name = "access_token") var accessToken: kotlin.String? = null,
-    @Json(name = "refresh_token") @field:Json(name = "refresh_token") var refreshToken: kotlin.String? = null,
-    @Json(name = "expires_in") @field:Json(name = "expires_in") var expiresIn: kotlin.Int? = null,
-    @Json(name = "refresh_expires_in") @field:Json(name = "refresh_expires_in") var refreshExpiresIn: kotlin.Int? = null,
-    @Json(name = "expiration_date") @field:Json(name = "expiration_date") var expirationDate: org.threeten.bp.LocalDateTime? = null,
-    @Json(name = "refresh_expiration_date") @field:Json(name = "refresh_expiration_date") var refreshExpirationDate: org.threeten.bp.LocalDateTime? = null)
+    @Json(name = "access_token") @field:Json(name = "access_token") var accessToken: String? = null,
+    @Json(name = "refresh_token") @field:Json(name = "refresh_token") var refreshToken: String? = null,
+    @Json(name = "expires_in") @field:Json(name = "expires_in") var expiresIn: Int? = null,
+    @Json(name = "refresh_expires_in") @field:Json(name = "refresh_expires_in") var refreshExpiresIn: Int? = null,
+    @Json(name = "expiration_date") @field:Json(name = "expiration_date") var expirationDate: org.threeten.bp.ZonedDateTime? = null,
+    @Json(name = "refresh_expiration_date") @field:Json(name = "refresh_expiration_date") var refreshExpirationDate: org.threeten.bp.ZonedDateTime? = null): Serializable
 {
     open fun copy(): Authentication
     {
@@ -37,4 +38,3 @@ open class Authentication(
         return objectInputStream.readObject() as Authentication
     }
 }
-

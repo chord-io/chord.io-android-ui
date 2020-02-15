@@ -5,6 +5,7 @@ import io.chord.clients.apis.ProjectsApi
 import io.chord.clients.doOnSuccess
 import io.chord.clients.models.Project
 import io.chord.clients.models.ProjectDto
+import io.chord.clients.observe
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.subjects.PublishSubject
@@ -60,24 +61,24 @@ class ProjectManager
 		
 		fun create(project: Project): Observable<Project>
 		{
-			val observable = Observable.just(project)
+			val observable = PublishSubject.create<Project>()
 			val projectToCreate = this.toDto(project)
 			return this.client.create(projectToCreate)
 				.observeOn(AndroidSchedulers.mainThread())
 				.concatWith(observable)
 		}
 		
-		fun delete(project: Project): Observable<Void>
+		fun delete(project: Project): Observable<Project>
 		{
 			this.deleteListeners
 				.removeIf {
 					it == null
 				}
-			
-			val observable = Observable.empty<Void>()
-			return this.client.delete(project.id)
+			val observable = PublishSubject.create<Project>()
+			this.client.delete(project.id)
 				.observeOn(AndroidSchedulers.mainThread())
 				.doOnSuccess {
+					observable.onNext(project)
 					if(project.id == this.current?.id)
 					{
 						this.current = null
@@ -87,43 +88,42 @@ class ProjectManager
 						}
 					}
 				}
-				.concatWith(observable)
+				.observe()
+			return observable
 		}
 		
-		fun update(): Observable<Void>
+		fun update(): Observable<Project>
 		{
 			val project = if(this.stage != null) this.stage!! else this.current
 			return this.update(project!!)
 		}
 		
-		fun update(project: Project): Observable<Void>
+		fun update(project: Project): Observable<Project>
 		{
 			this.updateListeners
 				.removeIf {
 					it == null
 				}
-			
-			val observable = Observable.empty<Void>()
-			val projectToUpdate = ProjectDto(
-				project.name,
-				project.tempo,
-				project.visibility,
-				project.tracks,
-				project.themes
-			)
-			return this.client.update(this.current!!.id, projectToUpdate)
+			val projectToUpdate = this.toDto(project)
+			val observable = PublishSubject.create<Project>()
+			this.client.update(project.id, projectToUpdate)
 				.observeOn(AndroidSchedulers.mainThread())
 				.doOnSuccess {
-					this.current = project
-					this.stage = null
-					this.updateListeners.forEach {
-						it?.invoke()
+					observable.onNext(project)
+					if(project.id == this.current?.id)
+					{
+						this.current = project
+						this.stage = null
+						this.updateListeners.forEach {
+							it?.invoke()
+						}
 					}
 				}
 				.doOnError {
 					this.stage = null
 				}
-				.concatWith(observable)
+				.observe()
+			return observable
 		}
 		
 		fun getAllByAuthor(): Observable<List<Project>>
@@ -131,9 +131,6 @@ class ProjectManager
 			val observable = PublishSubject.create<List<Project>>()
 			return this.client.allByAuthor
 				.observeOn(AndroidSchedulers.mainThread())
-				.doOnSuccess {
-					observable.onNext(it)
-				}
 				.concatWith(observable)
 		}
 	}

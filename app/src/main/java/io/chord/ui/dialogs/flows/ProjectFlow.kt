@@ -1,8 +1,8 @@
 package io.chord.ui.dialogs.flows
 
+import android.annotation.SuppressLint
 import androidx.fragment.app.FragmentActivity
 import io.chord.R
-import io.chord.clients.concatWith
 import io.chord.clients.doOnSuccess
 import io.chord.clients.models.Project
 import io.chord.clients.observe
@@ -15,6 +15,7 @@ import io.chord.ui.dialogs.customs.FormCudcOperationDialog
 import io.chord.ui.extensions.toBanerApiThrowable
 import io.chord.ui.models.ProjectViewModel
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.subjects.PublishSubject
 
 class ProjectFlow(
@@ -40,15 +41,16 @@ class ProjectFlow(
 		return viewModel
 	}
 	
-	private fun <T: Any> observe(
-		operation: Observable<T>,
-		dialog: FormCudcOperationDialog<ProjectDialogFormBinding>,
-		binding: ProjectDialogFormBinding,
+	@SuppressLint("CheckResult")
+	private fun observe(
+		operation: Observable<Project>,
 		observable: PublishSubject<Project>,
-		project: Project
+		dialog: FormCudcOperationDialog<ProjectDialogFormBinding>,
+		binding: ProjectDialogFormBinding
 	)
 	{
 		operation
+			.observeOn(AndroidSchedulers.mainThread())
 			.doOnSubscribe {
 				dialog.fragment.banner.dismiss()
 				binding.nameLayout.isErrorEnabled = false
@@ -56,7 +58,7 @@ class ProjectFlow(
 				binding.author.isEnabled = false
 			}
 			.doOnSuccess {
-				observable.onNext(project)
+				observable.onNext(it)
 				dialog.fragment.validate()
 			}
 			.doOnError { throwable ->
@@ -81,40 +83,7 @@ class ProjectFlow(
 					}
 					.observe()
 			}
-			.concatWith(observable)
 			.observe()
-	}
-	
-	private fun create(
-		dialog: FormCudcOperationDialog<ProjectDialogFormBinding>,
-		binding: ProjectDialogFormBinding,
-		observable: PublishSubject<Project>,
-		project: Project
-	)
-	{
-		this.observe(
-			this.manager.create(project),
-			dialog,
-			binding,
-			observable,
-			project
-		)
-	}
-	
-	private fun update(
-		dialog: FormCudcOperationDialog<ProjectDialogFormBinding>,
-		binding: ProjectDialogFormBinding,
-		observable: PublishSubject<Project>,
-		project: Project
-	)
-	{
-		this.observe(
-			this.manager.update(project),
-			dialog,
-			binding,
-			observable,
-			project
-		)
 	}
 	
 	override fun create(): Observable<Project>
@@ -129,11 +98,11 @@ class ProjectFlow(
 		
 		dialog.onValidate = { binding: ProjectDialogFormBinding ->
 			val projectToCreate = binding.project!!.toModel()
-			this.create(
-				dialog,
-				binding,
+			this.observe(
+				this.manager.create(projectToCreate),
 				observable,
-				projectToCreate
+				dialog,
+				binding
 			)
 		}
 		
@@ -154,11 +123,11 @@ class ProjectFlow(
 		
 		dialog.onValidate = { binding: ProjectDialogFormBinding ->
 			val projectToUpdate = binding.project!!.toModel()
-			this.update(
-				dialog,
-				binding,
+			this.observe(
+				this.manager.update(projectToUpdate),
 				observable,
-				projectToUpdate
+				dialog,
+				binding
 			)
 		}
 		
@@ -167,9 +136,9 @@ class ProjectFlow(
 		return observable
 	}
 	
-	override fun delete(model: Project): Observable<Void>
+	override fun delete(model: Project): Observable<Project>
 	{
-		val observable = Observable.empty<Void>()
+		val observable = PublishSubject.create<Project>()
 		val dialog = ConfirmationCudcOperationDialog(
 			this.context,
 			CudcOperation.DELETE,
@@ -178,7 +147,9 @@ class ProjectFlow(
 		
 		dialog.onValidate = {
 			this.manager.delete(model)
-				.concatWith(observable)
+				.doOnSuccess {
+					observable.onNext(it)
+				}
 				.observe()
 		}
 		
@@ -199,11 +170,11 @@ class ProjectFlow(
 		
 		dialog.onValidate = { binding: ProjectDialogFormBinding ->
 			val projectToCreate = binding.project!!.toModel()
-			this.create(
-				dialog,
-				binding,
+			this.observe(
+				this.manager.create(projectToCreate),
 				observable,
-				projectToCreate
+				dialog,
+				binding
 			)
 		}
 		

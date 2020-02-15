@@ -15,16 +15,17 @@ class FormDialog<TBinding: ViewDataBinding>(
 		this.entity
 	)
 	
-	lateinit var onCreate: ((dataBinding: TBinding) -> Unit)
-	override lateinit var onValidate: ((dataBinding: TBinding) -> Unit)
-	lateinit var onBind: ((dataBinding: TBinding) -> Unit)
+	override var onValidate: ((dataBinding: TBinding) -> Unit)
+		get() = this.fragment.onValidate
+		set(value) {
+			this.fragment.onValidate = value
+		}
 	
-	init
-	{
-		this.fragment.onCreate = this.onCreate
-		this.fragment.onValidate = this.onValidate
-		this.fragment.onBind = this.onBind
-	}
+	var onBind: ((dataBinding: TBinding) -> Unit)
+		get() = this.fragment.onBind
+		set(value) {
+			this.fragment.onBind = value
+		}
 	
 	override fun show()
 	{

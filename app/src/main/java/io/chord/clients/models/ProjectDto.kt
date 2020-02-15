@@ -11,6 +11,7 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
+import java.io.Serializable
 
 /**
     * @property name
@@ -19,14 +20,14 @@ import java.io.ObjectOutputStream
     * @property tracks
     * @property themes
 */
-@JsonClass(generateAdapter = true)
+
 open class ProjectDto(
-    @Json(name = "name") @field:Json(name = "name") var name: kotlin.String,
-    @Json(name = "tempo") @field:Json(name = "tempo") var tempo: kotlin.Int,
+    @Json(name = "name") @field:Json(name = "name") var name: String,
+    @Json(name = "tempo") @field:Json(name = "tempo") var tempo: Int,
     @Json(name = "visibility") @field:Json(name = "visibility") var visibility: Visibility,
-    @Json(name = "tracks") @field:Json(name = "tracks") var tracks: kotlin.Array<Track>,
-    @Json(name = "themes") @field:Json(name = "themes") var themes: kotlin.Array<Theme>
-)
+    @Json(name = "tracks") @field:Json(name = "tracks") var tracks: List<Track>,
+    @Json(name = "themes") @field:Json(name = "themes") var themes: List<Theme>
+): Serializable
 {
     open fun copy(): ProjectDto
     {
@@ -39,4 +40,3 @@ open class ProjectDto(
         return objectInputStream.readObject() as ProjectDto
     }
 }
-

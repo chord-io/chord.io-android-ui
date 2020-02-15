@@ -7,16 +7,17 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
+import java.io.Serializable
 
 /**
     * @property name
     * @property color
 */
-@JsonClass(generateAdapter = true)
+
 abstract class Track(
-    @Json(name = "name") @field:Json(name = "name") var name: kotlin.String,
-    @Json(name = "color") @field:Json(name = "color") var color: kotlin.Int
-)
+    @Json(name = "name") @field:Json(name = "name") var name: String,
+    @Json(name = "color") @field:Json(name = "color") var color: Int
+): Serializable
 {
     open fun copy(): Track
     {
@@ -29,4 +30,3 @@ abstract class Track(
         return objectInputStream.readObject() as Track
     }
 }
-

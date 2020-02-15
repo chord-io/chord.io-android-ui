@@ -21,7 +21,7 @@
         android:visibility="gone"
         android:background="@color/backgroundSecondary"
         app:cio_bn_color="@color/errorColor"
-        app:cio_bn_icon="faw_exclamation_circle" />
+        app:cio_bn_icon="faw-exclamation-circle" />
 
     <FrameLayout
         android:id="@+id/frameLayout"

@@ -18,7 +18,7 @@ class SelectTrackTypeDialog(
 ): CustomDialog<(() -> Unit)>
 {
 	override val fragment: DialogFragment
-	override lateinit var onValidate: (() -> Unit)
+	override var onValidate: (() -> Unit) = {}
 	
 	lateinit var onMidiSelected: (() -> Unit)
 	

@@ -13,6 +13,16 @@ abstract class BaseDialogFragment(
 	protected val parameters: DialogParameters
 ) : DialogFragment()
 {
+	private fun getColor(): Int
+	{
+		return when(this.parameters.level)
+		{
+			DialogLevel.Information -> this.context!!.getColor(R.color.colorAccent)
+			DialogLevel.Error -> this.context!!.getColor(R.color.errorColor)
+			DialogLevel.Warning -> this.context!!.getColor(R.color.warningColor)
+		}
+	}
+	
 	protected open fun getBuilder(): MaterialAlertDialogBuilder
 	{
 		return MaterialAlertDialogBuilder(this.requireContext(), R.style.Dialog)
@@ -34,17 +44,19 @@ abstract class BaseDialogFragment(
 				false
 			)
 		
-		val color = when(this.parameters.level)
-		{
-			DialogLevel.Information -> this.context!!.getColor(R.color.colorAccent)
-			DialogLevel.Error -> this.context!!.getColor(R.color.errorColor)
-			DialogLevel.Warning -> this.context!!.getColor(R.color.warningColor)
-		}
-		
-		titleView.setBackgroundColor(color)
+		titleView.setBackgroundColor(this.getColor())
 		titleView.title.text = this.parameters.title
 		builder.setCustomTitle(titleView)
 		
 		return builder.create()
+	}
+	
+	override fun onStart()
+	{
+		super.onStart()
+		
+		val dialog = this.dialog as AlertDialog
+		dialog.getButton(AlertDialog.BUTTON_POSITIVE).setBackgroundColor(this.getColor())
+		dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(this.getColor())
 	}
 }

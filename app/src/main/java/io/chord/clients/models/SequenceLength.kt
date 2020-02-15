@@ -7,18 +7,19 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
+import java.io.Serializable
 
 /**
     * @property bar
     * @property start
     * @property end
 */
-@JsonClass(generateAdapter = true)
+
 open class SequenceLength(
-    @Json(name = "bar") @field:Json(name = "bar") var bar: kotlin.Int,
-    @Json(name = "start") @field:Json(name = "start") var start: kotlin.Double,
-    @Json(name = "end") @field:Json(name = "end") var end: kotlin.Double
-)
+    @Json(name = "bar") @field:Json(name = "bar") var bar: Int,
+    @Json(name = "start") @field:Json(name = "start") var start: Double,
+    @Json(name = "end") @field:Json(name = "end") var end: Double
+): Serializable
 {
     open fun copy(): SequenceLength
     {
@@ -31,4 +32,3 @@ open class SequenceLength(
         return objectInputStream.readObject() as SequenceLength
     }
 }
-

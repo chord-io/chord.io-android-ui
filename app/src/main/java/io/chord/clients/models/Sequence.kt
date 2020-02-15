@@ -9,14 +9,15 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
+import java.io.Serializable
 
 /**
     * @property length
 */
-@JsonClass(generateAdapter = true)
+
 abstract class Sequence(
     @Json(name = "length") @field:Json(name = "length") var length: SequenceLength
-)
+): Serializable
 {
     open fun copy(): Sequence
     {
@@ -29,4 +30,3 @@ abstract class Sequence(
         return objectInputStream.readObject() as Sequence
     }
 }
-

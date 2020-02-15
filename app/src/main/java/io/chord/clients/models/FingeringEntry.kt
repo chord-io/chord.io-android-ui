@@ -7,18 +7,19 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
+import java.io.Serializable
 
 /**
     * @property position
     * @property length
     * @property pitch
 */
-@JsonClass(generateAdapter = true)
+
 open class FingeringEntry(
-    @Json(name = "position") @field:Json(name = "position") var position: kotlin.Double,
-    @Json(name = "length") @field:Json(name = "length") var length: kotlin.Double,
-    @Json(name = "pitch") @field:Json(name = "pitch") var pitch: kotlin.Int
-)
+    @Json(name = "position") @field:Json(name = "position") var position: Double,
+    @Json(name = "length") @field:Json(name = "length") var length: Double,
+    @Json(name = "pitch") @field:Json(name = "pitch") var pitch: Int
+): Serializable
 {
     open fun copy(): FingeringEntry
     {
@@ -31,4 +32,3 @@ open class FingeringEntry(
         return objectInputStream.readObject() as FingeringEntry
     }
 }
-

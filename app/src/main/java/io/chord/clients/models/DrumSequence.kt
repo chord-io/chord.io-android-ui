@@ -10,8 +10,25 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
+import java.io.Serializable
 
 /**
 */
-@JsonClass(generateAdapter = true)
-open class DrumSequence
+
+open class DrumSequence(
+    length: SequenceLength,
+    fingering: InnerFingering): Serializable, MidiSequence(
+    length,
+    fingering)
+{
+    override fun copy(): DrumSequence
+    {
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        val objectOutputStream = ObjectOutputStream(byteArrayOutputStream)
+        objectOutputStream.writeObject(this)
+        objectOutputStream.close()
+        val byteArrayInputStream = ByteArrayInputStream(byteArrayOutputStream.toByteArray())
+        val objectInputStream = ObjectInputStream(byteArrayInputStream)
+        return objectInputStream.readObject() as DrumSequence
+    }
+}

@@ -50,6 +50,38 @@ public class KotlinClientGenerator extends KotlinClientCodegen {
                             ""
                     );
                 }
+
+                if(x.datatype.contains("LocalDateTime"))
+                {
+                    x.datatype = x.datatype.replace(
+                            "LocalDateTime",
+                            "ZonedDateTime"
+                    );
+                }
+
+                if(x.datatype.contains("Array"))
+                {
+                    x.datatype = x.datatype.replace(
+                            "Array",
+                            "List"
+                    );
+                }
+
+                if(x.datatype.contains("kotlin."))
+                {
+                    x.datatype = x.datatype.replace(
+                            "kotlin.",
+                            ""
+                    );
+                }
+
+                if(x.datatype.contains("collections."))
+                {
+                    x.datatype = x.datatype.replace(
+                            "collections.",
+                            ""
+                    );
+                }
             });
 
         if(!model.getIsEnum() && model.parentSchema != null)

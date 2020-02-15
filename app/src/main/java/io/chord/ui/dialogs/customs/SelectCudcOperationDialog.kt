@@ -17,7 +17,8 @@ class SelectCudcOperationDialog(
 ) : CustomDialog<((CudcOperation) -> Unit)>
 {
 	override val fragment: DialogFragment
-	override lateinit var onValidate: ((CudcOperation) -> Unit)
+	
+	override var onValidate: ((CudcOperation) -> Unit) = {}
 	
 	lateinit var onCreateSelected: (() -> Unit)
 	lateinit var onUpdateSelected: (() -> Unit)

@@ -9,14 +9,15 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
+import java.io.Serializable
 
 /**
     * @property entries
 */
-@JsonClass(generateAdapter = true)
+
 open class InnerFingering(
 
-    @Json(name = "entries") @field:Json(name = "entries") var entries: kotlin.Array<FingeringEntry>? = null)
+    @Json(name = "entries") @field:Json(name = "entries") var entries: List<FingeringEntry>? = null): Serializable
 {
     open fun copy(): InnerFingering
     {
@@ -29,4 +30,3 @@ open class InnerFingering(
         return objectInputStream.readObject() as InnerFingering
     }
 }
-

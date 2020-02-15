@@ -2,7 +2,6 @@ package io.chord.ui.dialogs.flows
 
 import androidx.fragment.app.FragmentActivity
 import io.chord.R
-import io.chord.clients.concatWith
 import io.chord.clients.doOnSuccess
 import io.chord.clients.models.MidiTrack
 import io.chord.clients.observe
@@ -71,7 +70,6 @@ class MidiTrackFlow(
 					}
 					.observe()
 			}
-			.concatWith(observable)
 			.observe()
 	}
 	
@@ -125,9 +123,9 @@ class MidiTrackFlow(
 		return observable
 	}
 	
-	override fun delete(model: MidiTrack): Observable<Void>
+	override fun delete(model: MidiTrack): Observable<MidiTrack>
 	{
-		val observable = Observable.empty<Void>()
+		val observable = PublishSubject.create<MidiTrack>()
 		val dialog = ConfirmationCudcOperationDialog(
 			this.context,
 			CudcOperation.DELETE,
@@ -137,7 +135,6 @@ class MidiTrackFlow(
 		dialog.onValidate = {
 			this.manager.tracks.delete(model)
 			this.manager.update()
-				.concatWith(observable)
 				.observe()
 		}
 		

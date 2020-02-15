@@ -18,14 +18,24 @@ class ProjectViewModel(
 	
 	fun toModel(): Project
 	{
-		return Project(
-			this.model.id,
-			this.name,
-			this.tempo,
-			this.visibility,
-			this.model.tracks,
-			this.model.themes
-		)
+		try
+		{
+			model.name = this.name
+			model.tempo = this.tempo
+			model.visibility = this.visibility
+			return model
+		}
+		catch(exception: UninitializedPropertyAccessException)
+		{
+			return Project(
+				"",
+				this.name,
+				this.tempo,
+				this.visibility,
+				listOf(),
+				listOf()
+			)
+		}
 	}
 	
 	fun fromModel(model: Project)

@@ -9,16 +9,17 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
+import java.io.Serializable
 
 /**
     * @property a
     * @property b
 */
-@JsonClass(generateAdapter = true)
+
 open class NotePairDto(
     @Json(name = "a") @field:Json(name = "a") var a: NoteDto,
     @Json(name = "b") @field:Json(name = "b") var b: NoteDto
-)
+): Serializable
 {
     open fun copy(): NotePairDto
     {
@@ -31,4 +32,3 @@ open class NotePairDto(
         return objectInputStream.readObject() as NotePairDto
     }
 }
-

@@ -63,6 +63,13 @@ dependencies {
     implementation project(":generators")
     swaggerCodegen project(':generators')
 
+    // Reflection
+    implementation('org.reflections:reflections:0.9.12') {
+        exclude group: "com.google.code.findbugs"
+    }
+
+    implementation("com.google.guava:guava:28.2-android")
+
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
@@ -154,10 +161,12 @@ swaggerSources {
     api {
         inputFile = file('swagger.json')
         code {
-            language = 'java'
+            language = 'io.chord.generators.JavaClientGenerator'
             outputDir = file('src/main/java/io/chord/tmp')
             configFile = file('swagger-config-java.json')
+            templateDir = file('templates/java')
             components = ['apis']
+            rawOptions = ["--template-engine", "mustache"]
         }
     }
     model {
@@ -166,7 +175,7 @@ swaggerSources {
             language = 'io.chord.generators.KotlinClientGenerator'
             outputDir = file('src/main/java/io/chord/tmp')
             configFile = file('swagger-config-kotlin.json')
-            templateDir = file('templates/kotlin-model')
+            templateDir = file('templates/kotlin')
             components = ['models']
             rawOptions = ["--template-engine", "mustache"]
         }
@@ -175,16 +184,16 @@ swaggerSources {
 
 task generateSwagger3Api(dependsOn: generateSwaggerCodeApi) {
     doLast{
-        ant.move(file: "$generateSwaggerCodeModel.outputDir/../tmp/io/chord/clients", tofile: generateSwaggerCodeModel.outputDir)
-        delete "$generateSwaggerCodeModel.outputDir/../io"
+        ant.move(file: "$generateSwaggerCodeApi.outputDir/../tmp/io/chord/clients", tofile: generateSwaggerCodeApi.outputDir)
+        delete "$generateSwaggerCodeApi.outputDir/../io"
 
-        fileTree("$generateSwaggerCodeModel.outputDir").exclude(
+        fileTree("$generateSwaggerCodeApi.outputDir").exclude(
                 "apis/"
         ).visit { FileVisitDetails details ->
             delete details.file
         }
 
-        ant.move(file: "$generateSwaggerCodeModel.outputDir", tofile: "$generateSwaggerCodeModel.outputDir/../clients/")
+        ant.move(file: "$generateSwaggerCodeApi.outputDir", tofile: "$generateSwaggerCodeApi.outputDir/../clients/")
     }
 }
 
@@ -205,7 +214,6 @@ task generateSwagger3Model(dependsOn: generateSwaggerCodeModel) {
 
 generateSwagger3Api.shouldRunAfter generateSwaggerCodeApi
 generateSwagger3Model.shouldRunAfter generateSwaggerCodeModel
-generateSwaggerCodeApi.shouldRunAfter generateSwaggerCodeModel
 
 repositories {
     mavenCentral()

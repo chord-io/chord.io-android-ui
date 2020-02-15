@@ -11,16 +11,17 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
+import java.io.Serializable
 
 /**
     * @property fingering
 */
-@JsonClass(generateAdapter = true)
+
 open class MidiSequence(
     length: SequenceLength,
     @Json(name = "fingering") @field:Json(name = "fingering") var fingering: InnerFingering
-) : Sequence(
-    length) 
+): Serializable, Sequence(
+    length)
 {
     override fun copy(): MidiSequence
     {
@@ -33,4 +34,3 @@ open class MidiSequence(
         return objectInputStream.readObject() as MidiSequence
     }
 }
-

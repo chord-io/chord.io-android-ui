@@ -9,18 +9,19 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
+import java.io.Serializable
 
 /**
     * @property name
     * @property trackIndex
     * @property sequences
 */
-@JsonClass(generateAdapter = true)
+
 open class Theme(
-    @Json(name = "name") @field:Json(name = "name") var name: kotlin.String,
-    @Json(name = "track_index") @field:Json(name = "track_index") var trackIndex: kotlin.Int,
-    @Json(name = "sequences") @field:Json(name = "sequences") var sequences: kotlin.Array<Sequence>
-)
+    @Json(name = "name") @field:Json(name = "name") var name: String,
+    @Json(name = "track_index") @field:Json(name = "track_index") var trackIndex: Int,
+    @Json(name = "sequences") @field:Json(name = "sequences") var sequences: List<Sequence>
+): Serializable
 {
     open fun copy(): Theme
     {
@@ -33,4 +34,3 @@ open class Theme(
         return objectInputStream.readObject() as Theme
     }
 }
-

@@ -29,7 +29,6 @@ open class FullscreenDialogFragment<TBinding: ViewDataBinding>(
 	private lateinit var action: MenuItem
 	private lateinit var _banner: Banner
 	
-	lateinit var onCreate: ((dataBinding: TBinding) -> Unit)
 	lateinit var onValidate: ((dataBinding: TBinding) -> Unit)
 	lateinit var onBind: ((dataBinding: TBinding) -> Unit)
 	
@@ -78,7 +77,7 @@ open class FullscreenDialogFragment<TBinding: ViewDataBinding>(
 			layout,
 			true
 		)
-		this.onBind.invoke(this.dataBinding)
+		this.onBind(this.dataBinding)
 		this.rootView = this.dataBinding.root
 		
 		return view
@@ -90,8 +89,6 @@ open class FullscreenDialogFragment<TBinding: ViewDataBinding>(
 	)
 	{
 		super.onViewCreated(view, savedInstanceState)
-		
-		this.onCreate.invoke(this.dataBinding)
 		
 		val activity = this.activity!!
 		
@@ -113,7 +110,7 @@ open class FullscreenDialogFragment<TBinding: ViewDataBinding>(
 		toolbar.setOnMenuItemClickListener {
 			this.action.setActionView(R.layout.dialog_form_loader)
 			(this.rootView as ViewGroup).setViewState(false)
-			this.onValidate.invoke(dataBinding)
+			this.onValidate(dataBinding)
 			true
 		}
 	}

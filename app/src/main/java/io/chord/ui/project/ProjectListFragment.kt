@@ -24,11 +24,12 @@ import io.chord.ui.dialogs.flows.ProjectFlow
 import io.chord.ui.sections.ClickListener
 import io.chord.ui.sections.Section
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter
+import io.reactivex.android.schedulers.AndroidSchedulers
 import java.util.*
 
 class ProjectListFragment : Fragment(), ClickListener<Project, ProjectViewHolder>
 {
-    private val flow: ProjectFlow = ProjectFlow(this.activity!!)
+    private lateinit var flow: ProjectFlow
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewAdapter: SectionedRecyclerViewAdapter
     private lateinit var viewSection: Section<Project, ProjectViewHolder>
@@ -40,6 +41,8 @@ class ProjectListFragment : Fragment(), ClickListener<Project, ProjectViewHolder
         savedInstanceState: Bundle?
     ): View?
     {
+        this.flow = ProjectFlow(this.activity!!)
+        
         this.viewManager = LinearLayoutManager(this.activity)
         this.viewAdapter = SectionedRecyclerViewAdapter()
         this.viewSection = Section(
@@ -106,7 +109,7 @@ class ProjectListFragment : Fragment(), ClickListener<Project, ProjectViewHolder
                 CudcOperation.CLONE
             )
         )
-    
+        
         dialog.onDeleteSelected = { this.delete(item) }
         dialog.onUpdateSelected = { this.update(item) }
         dialog.onCloneSelected = { this.clone(item) }
@@ -123,9 +126,11 @@ class ProjectListFragment : Fragment(), ClickListener<Project, ProjectViewHolder
     fun create()
     {
         this.flow.create()
+            .observeOn(AndroidSchedulers.mainThread())
             .doOnSuccess {
                 this.viewSection.add(it)
             }
+            .observe()
     }
     
     private fun update(project: Project)
@@ -134,22 +139,25 @@ class ProjectListFragment : Fragment(), ClickListener<Project, ProjectViewHolder
             .doOnSuccess {
                 this.viewSection.update(it)
             }
+            .observe()
     }
     
     private fun delete(project: Project)
     {
         this.flow.delete(project)
             .doOnSuccess {
-                this.viewSection.remove(project)
+                this.viewSection.remove(it)
             }
+            .observe()
     }
     
     private fun clone(project: Project)
     {
         this.flow.clone(project)
             .doOnSuccess {
-                this.viewSection.add(project)
+                this.viewSection.add(it)
             }
+            .observe()
     }
     
     private fun loadProjects()

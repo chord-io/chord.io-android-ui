@@ -15,7 +15,12 @@ class ConfirmationCudcOperationDialog(
 ): CustomDialog<(() -> Unit)>
 {
 	override val fragment: FloatDialogFragment
-	override lateinit var onValidate: (() -> Unit)
+	
+	override var onValidate: (() -> Unit)
+		get() = this.fragment.onValidate
+		set(value) {
+			this.fragment.onValidate = value
+		}
 	
 	init
 	{
@@ -33,8 +38,6 @@ class ConfirmationCudcOperationDialog(
 				DialogLevel.Warning
 			)
 		)
-		
-		this.fragment.onValidate = this.onValidate
 	}
 	
 	override fun show()

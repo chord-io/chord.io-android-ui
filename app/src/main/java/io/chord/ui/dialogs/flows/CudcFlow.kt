@@ -6,6 +6,6 @@ interface CudcFlow<T> : Flow
 {
 	fun create(): Observable<T>
 	fun update(model: T): Observable<T>
-	fun delete(model: T): Observable<Void>
+	fun delete(model: T): Observable<T>
 	fun clone(model: T): Observable<T>
 }

@@ -14,7 +14,7 @@ class TrackManager
 			val tracks = mutableListOf<Track>()
 			tracks.addAll(project.tracks)
 			tracks.add(track)
-			project.tracks = tracks.toTypedArray()
+			project.tracks = tracks.toList()
 			this.manager.staging(project)
 		}
 		
@@ -25,7 +25,7 @@ class TrackManager
 			tracks.addAll(project.tracks)
 			val index = tracks.indexOf(track)
 			tracks[index] = track
-			project.tracks = tracks.toTypedArray()
+			project.tracks = tracks.toList()
 			this.manager.staging(project)
 		}
 		
@@ -35,7 +35,7 @@ class TrackManager
 			val tracks = mutableListOf<Track>()
 			tracks.addAll(project.tracks)
 			tracks.remove(track)
-			project.tracks = tracks.toTypedArray()
+			project.tracks = tracks.toList()
 			this.manager.staging(project)
 		}
 	}

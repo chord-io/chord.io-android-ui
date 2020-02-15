@@ -1,28 +1,26 @@
 package io.chord.clients.models
 
 
-import io.chord.clients.models.MidiTrack
-import org.threeten.bp.LocalDateTime
 import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
+import java.io.Serializable
 
 /**
     * @property drumMap
 */
-@JsonClass(generateAdapter = true)
+
 open class DrumTrack(
     name: kotlin.String,
     color: kotlin.Int,
     channel: kotlin.Int,
     @Json(name = "drum_map") @field:Json(name = "drum_map") var drumMap: kotlin.String
-) : MidiTrack(
+): Serializable, MidiTrack(
     name,
     color,
-    channel) 
+    channel)
 {
     override fun copy(): DrumTrack
     {
@@ -35,4 +33,3 @@ open class DrumTrack(
         return objectInputStream.readObject() as DrumTrack
     }
 }
-

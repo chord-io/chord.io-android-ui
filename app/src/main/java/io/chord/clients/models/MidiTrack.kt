@@ -1,24 +1,27 @@
 package io.chord.clients.models
 
 
+import io.chord.clients.models.Track
+import org.threeten.bp.LocalDateTime
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
+import java.io.Serializable
 
 /**
     * @property channel
 */
-@JsonClass(generateAdapter = true)
+
 open class MidiTrack(
     name: kotlin.String,
     color: kotlin.Int,
     @Json(name = "channel") @field:Json(name = "channel") var channel: kotlin.Int
-) : Track(
+): Serializable, Track(
     name,
-    color) 
+    color)
 {
     override fun copy(): MidiTrack
     {
@@ -31,4 +34,3 @@ open class MidiTrack(
         return objectInputStream.readObject() as MidiTrack
     }
 }
-

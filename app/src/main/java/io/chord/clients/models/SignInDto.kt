@@ -7,16 +7,17 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
+import java.io.Serializable
 
 /**
     * @property username
     * @property password
 */
-@JsonClass(generateAdapter = true)
+
 open class SignInDto(
-    @Json(name = "username") @field:Json(name = "username") var username: kotlin.String,
-    @Json(name = "password") @field:Json(name = "password") var password: kotlin.String
-)
+    @Json(name = "username") @field:Json(name = "username") var username: String,
+    @Json(name = "password") @field:Json(name = "password") var password: String
+): Serializable
 {
     open fun copy(): SignInDto
     {
@@ -29,4 +30,3 @@ open class SignInDto(
         return objectInputStream.readObject() as SignInDto
     }
 }
-

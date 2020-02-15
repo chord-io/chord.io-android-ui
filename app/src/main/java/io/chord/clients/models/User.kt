@@ -7,18 +7,19 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
+import java.io.Serializable
 
 /**
     * @property id
     * @property username
     * @property email
 */
-@JsonClass(generateAdapter = true)
+
 open class User(
-    @Json(name = "id") @field:Json(name = "id") var id: kotlin.String,
-    @Json(name = "username") @field:Json(name = "username") var username: kotlin.String,
-    @Json(name = "email") @field:Json(name = "email") var email: kotlin.String
-)
+    @Json(name = "id") @field:Json(name = "id") var id: String,
+    @Json(name = "username") @field:Json(name = "username") var username: String,
+    @Json(name = "email") @field:Json(name = "email") var email: String
+): Serializable
 {
     open fun copy(): User
     {
@@ -31,4 +32,3 @@ open class User(
         return objectInputStream.readObject() as User
     }
 }
-

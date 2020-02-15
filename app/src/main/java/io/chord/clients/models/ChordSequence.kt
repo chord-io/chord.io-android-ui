@@ -10,20 +10,21 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
+import java.io.Serializable
 
 /**
     * @property root
     * @property intervals
 */
-@JsonClass(generateAdapter = true)
+
 open class ChordSequence(
     length: SequenceLength,
     fingering: InnerFingering,
     @Json(name = "root") @field:Json(name = "root") var root: kotlin.Int,
     @Json(name = "intervals") @field:Json(name = "intervals") var intervals: kotlin.Array<kotlin.String>
-) : MidiSequence(
+): Serializable, MidiSequence(
     length,
-    fingering) 
+    fingering)
 {
     override fun copy(): ChordSequence
     {
@@ -36,4 +37,3 @@ open class ChordSequence(
         return objectInputStream.readObject() as ChordSequence
     }
 }
-

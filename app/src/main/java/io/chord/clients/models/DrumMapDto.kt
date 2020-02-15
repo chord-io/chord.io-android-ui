@@ -7,18 +7,19 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
+import java.io.Serializable
 
 /**
     * @property id
     * @property name
     * @property map
 */
-@JsonClass(generateAdapter = true)
+
 open class DrumMapDto(
-    @Json(name = "id") @field:Json(name = "id") var id: kotlin.String,
-    @Json(name = "name") @field:Json(name = "name") var name: kotlin.String,
-    @Json(name = "map") @field:Json(name = "map") var map: kotlin.collections.Map<kotlin.String, kotlin.String>
-)
+    @Json(name = "id") @field:Json(name = "id") var id: String,
+    @Json(name = "name") @field:Json(name = "name") var name: String,
+    @Json(name = "map") @field:Json(name = "map") var map: Map<String, String>
+): Serializable
 {
     open fun copy(): DrumMapDto
     {
@@ -31,4 +32,3 @@ open class DrumMapDto(
         return objectInputStream.readObject() as DrumMapDto
     }
 }
-

@@ -9,18 +9,19 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
+import java.io.Serializable
 
 /**
     * @property semitones
     * @property degree
     * @property quality
 */
-@JsonClass(generateAdapter = true)
+
 open class DegreeAndQualityIntervalDto(
-    @Json(name = "semitones") @field:Json(name = "semitones") var semitones: kotlin.Int,
-    @Json(name = "degree") @field:Json(name = "degree") var degree: kotlin.Int,
+    @Json(name = "semitones") @field:Json(name = "semitones") var semitones: Int,
+    @Json(name = "degree") @field:Json(name = "degree") var degree: Int,
     @Json(name = "quality") @field:Json(name = "quality") var quality: IntervalQuality
-)
+): Serializable
 {
     open fun copy(): DegreeAndQualityIntervalDto
     {
@@ -33,4 +34,3 @@ open class DegreeAndQualityIntervalDto(
         return objectInputStream.readObject() as DegreeAndQualityIntervalDto
     }
 }
-
