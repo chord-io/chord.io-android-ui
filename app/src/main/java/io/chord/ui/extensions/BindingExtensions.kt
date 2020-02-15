@@ -4,6 +4,7 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.databinding.InverseBindingAdapter
+import io.chord.ui.components.ColorPicker
 
 @BindingAdapter("android:text")
 fun setProgress(view: EditText, value: Int)
@@ -21,5 +22,11 @@ fun setProgress(view: TextView, value: Int)
 fun getProgress(view: EditText): Int
 {
 	return view.text.toString().toInt()
+}
+
+@BindingAdapter("android:onColorChanged")
+fun ColorPicker.setOnColorChangeListener(listener: ColorPicker.ColorPickerChangedListener)
+{
+	this.listener = listener
 }
 

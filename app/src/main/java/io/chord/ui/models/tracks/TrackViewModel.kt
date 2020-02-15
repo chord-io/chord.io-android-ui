@@ -15,4 +15,9 @@ abstract class TrackViewModel : BaseObservable()
 		this.name = model.name
 		this.color = model.color
 	}
+	
+	fun onColorChanged(color: Int)
+	{
+		this.color = color
+	}
 }

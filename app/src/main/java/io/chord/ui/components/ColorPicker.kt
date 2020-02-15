@@ -10,6 +10,11 @@ import io.chord.R
 
 class ColorPicker : GridLayout
 {
+	interface ColorPickerChangedListener
+	{
+		fun onColorChange(color: Int)
+	}
+	
 	private class Button(
 		private val context: Context,
 		private val layout: ColorPicker,
@@ -30,6 +35,7 @@ class ColorPicker : GridLayout
 				}
 				buttonClicked.background = this.generateCheckedDrawable(color)
 				this.layout._selectedColor = color
+				this.layout.listener?.onColorChange(color)
 			}
 		}
 		
@@ -54,6 +60,7 @@ class ColorPicker : GridLayout
 		}
 	}
 	
+	var listener: ColorPickerChangedListener? = null
 	private val buttons: MutableList<Button> = mutableListOf()
 	
 	private var _selectedColor: Int = -1
