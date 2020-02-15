@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable
             name="application"
@@ -53,7 +54,7 @@
                 android:layout_gravity="fill_horizontal|center_vertical"
                 android:padding="0dp"
                 android:progress="@={track.channel}"
-                android:onProgressChanged="@{track.onValueChanged}"
+                android:onProgressChanged="@{track::onValueChanged}"
                 android:max="16"
                 android:min="1" />
 
@@ -64,6 +65,26 @@
                 android:gravity="end|center_vertical"
                 android:text="@{track.channel}"
                 android:textColor="@color/colorAccent" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/fullscreen_dialog_big_field_height"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".20"
+                android:gravity="center_vertical"
+                android:text="@string/track_list_dialog_form_color"
+                android:textSize="16sp" />
+
+            <io.chord.ui.components.ColorPicker
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".80"
+                app:cio_cp_defaultColor="@color/backgroundTernary"/>
         </LinearLayout>
     </LinearLayout>
 </layout>

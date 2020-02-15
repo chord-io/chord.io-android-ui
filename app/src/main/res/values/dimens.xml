@@ -27,6 +27,7 @@
     <dimen name="fullscreen_dialog_app_bar_padding_left">6dp</dimen>
     <dimen name="fullscreen_dialog_app_bar_padding_right">8dp</dimen>
     <dimen name="fullscreen_dialog_field_height">64dp</dimen>
+    <dimen name="fullscreen_dialog_big_field_height">96dp</dimen>
 
     <dimen name="dialog_title_height">64dp</dimen>
     <dimen name="dialog_title_text_size">20sp</dimen>
