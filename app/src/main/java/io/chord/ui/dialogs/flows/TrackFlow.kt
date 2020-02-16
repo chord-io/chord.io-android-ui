@@ -15,7 +15,7 @@ class TrackFlow(
 		return when(model)
 		{
 			is MidiTrack -> this.midi
-			else -> throw NoWhenBranchMatchedException("any related flow not found")
+			else -> throw NoWhenBranchMatchedException("any related flow not found") as Throwable
 		}
 	}
 }

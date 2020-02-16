@@ -19,9 +19,14 @@ class ValidationProblemDetailMapper(
 		val errors = this.validationProblemDetails.errors!!
 		
 		this.map.forEach { (key, callback) ->
-			if(errors.containsKey(key))
+			val entries = errors
+				.filterKeys {
+					it.contains(key)
+				}
+				.entries
+			if(entries.isNotEmpty())
 			{
-				callback(errors.getValue(key).first())
+				callback(entries.first().value.first())
 			}
 		}
 	}

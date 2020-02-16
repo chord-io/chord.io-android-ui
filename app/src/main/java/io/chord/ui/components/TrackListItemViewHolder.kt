@@ -11,7 +11,7 @@ class TrackListItemViewHolder(
 	val view: View
 )
 {
-	private lateinit var _trackControlMaster: TrackControl
+	private var _trackControlMaster: TrackControl? = null
 	private lateinit var _binding: TrackListItemBinding
 	
 	var model: Track
@@ -22,19 +22,15 @@ class TrackListItemViewHolder(
 		}
 	
 	var trackControlMaster: TrackControl
-		get() = this._trackControlMaster
+		get() = this._trackControlMaster!!
 		set(value) {
-			if(this._trackControlMaster == value)
-			{
-				return
-			}
 			val control = this._binding
 				.layout
 				.getChildOfType<TrackControl>()
 				.first()
 			control.selfDetach()
 			this._trackControlMaster = value
-			this._trackControlMaster.attach(control)
+			this._trackControlMaster!!.attach(control)
 		}
 	
 	fun bind(model: TrackListItemViewModel, listener: TrackListClickListener)

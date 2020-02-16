@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import io.chord.R
 import io.chord.clients.doOnSuccess
 import io.chord.clients.models.MidiTrack
+import io.chord.clients.observe
+import io.chord.services.managers.ProjectManager
 import io.chord.ui.components.TrackControl
 import io.chord.ui.components.TrackList
 import io.chord.ui.components.TrackListClickListener
@@ -50,6 +52,7 @@ class TrackListFragment : Fragment(), TrackListClickListener
 		this.trackList.listener = this
 		this.trackList.trackControlMaster  = this.activity!!.getRootView()
 			.findViewById(R.id.trackControlMaster)
+		this.loadTracks()
 	}
 	
 	override fun onItemClicked(item: TrackListItemViewHolder)
@@ -62,7 +65,6 @@ class TrackListFragment : Fragment(), TrackListClickListener
 		val dialog = SelectCudcOperationDialog(
 			this.activity!!,
 			EnumSet.of(
-				CudcOperation.CREATE,
 				CudcOperation.UPDATE,
 				CudcOperation.DELETE,
 				CudcOperation.CLONE
@@ -90,6 +92,7 @@ class TrackListFragment : Fragment(), TrackListClickListener
 				.doOnSuccess {
 					this.trackList.add(it)
 				}
+				.observe()
 		}
 		
 		dialog.show()
@@ -102,6 +105,7 @@ class TrackListFragment : Fragment(), TrackListClickListener
 			.doOnSuccess {
 				this.trackList.update(it)
 			}
+			.observe()
 	}
 	
 	private fun delete(item: TrackListItemViewHolder)
@@ -111,6 +115,7 @@ class TrackListFragment : Fragment(), TrackListClickListener
 			.doOnSuccess {
 				this.trackList.remove(model)
 			}
+			.observe()
 	}
 	
 	private fun clone(item: TrackListItemViewHolder)
@@ -120,5 +125,12 @@ class TrackListFragment : Fragment(), TrackListClickListener
 			.doOnSuccess {
 				this.trackList.add(it)
 			}
+			.observe()
+	}
+	
+	private fun loadTracks()
+	{
+		val tracks = ProjectManager.getCurrent()!!.tracks
+		this.trackList.addAll(tracks)
 	}
 }

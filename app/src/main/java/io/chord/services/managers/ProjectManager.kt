@@ -120,6 +120,7 @@ class ProjectManager
 					}
 				}
 				.doOnError {
+					observable.onError(it)
 					this.stage = null
 				}
 				.observe()

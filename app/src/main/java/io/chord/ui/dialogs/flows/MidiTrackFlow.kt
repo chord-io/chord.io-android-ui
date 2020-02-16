@@ -79,11 +79,11 @@ class MidiTrackFlow(
 		val dialog = this.createDialog(CudcOperation.CREATE)
 		
 		dialog.onBind = { binding ->
-			binding.track = MidiTrackViewModel()
+			binding.track = this.createViewModel(MidiTrack("", 0, 1))
 		}
 		
 		dialog.onValidate = { binding ->
-			val trackToAdd = binding.track!!.toModel()
+			val trackToAdd = binding.track!!.toModel() as MidiTrack
 			this.manager.tracks.add(trackToAdd)
 			this.save(
 				dialog,
@@ -102,14 +102,15 @@ class MidiTrackFlow(
 	{
 		val observable = PublishSubject.create<MidiTrack>()
 		val dialog = this.createDialog(CudcOperation.UPDATE)
+		val indexToUpdate = this.manager.tracks.indexOf(model)
 		
 		dialog.onBind = { binding ->
 			binding.track = this.createViewModel(model)
 		}
 		
 		dialog.onValidate = { binding ->
-			val trackToUpdate = binding.track!!.toModel()
-			this.manager.tracks.update(trackToUpdate)
+			val trackToUpdate = binding.track!!.toModel() as MidiTrack
+			this.manager.tracks.update(indexToUpdate, trackToUpdate)
 			this.save(
 				dialog,
 				binding,
@@ -129,12 +130,15 @@ class MidiTrackFlow(
 		val dialog = ConfirmationCudcOperationDialog(
 			this.context,
 			CudcOperation.DELETE,
-			R.layout.track_midi_dialog_form
+			R.string.track_list_entity_name
 		)
 		
 		dialog.onValidate = {
 			this.manager.tracks.delete(model)
 			this.manager.update()
+				.doOnSuccess {
+					observable.onNext(model)
+				}
 				.observe()
 		}
 		
@@ -153,7 +157,7 @@ class MidiTrackFlow(
 		}
 		
 		dialog.onValidate = { binding ->
-			val trackToAdd = binding.track!!.toModel()
+			val trackToAdd = binding.track!!.toModel() as MidiTrack
 			this.manager.tracks.add(trackToAdd)
 			this.save(
 				dialog,

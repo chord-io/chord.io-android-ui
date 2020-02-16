@@ -199,6 +199,11 @@ class TrackList : LinearLayout, Zoomable
 		this.adapter.add(track)
 	}
 	
+	fun addAll(tracks: List<Track>)
+	{
+		this.adapter.addAll(tracks.toMutableList())
+	}
+	
 	fun update(track: Track)
 	{
 		this.adapter.update(track)

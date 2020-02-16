@@ -68,13 +68,16 @@ class BindBehavior<T: Bindable> (
 	
 	fun detach(control: T)
 	{
-		val index = this._controls
+		val keys = this._controls
 			.filterValues {
 				it == control
 			}
 			.keys
-			.first()
-		this._controls.remove(index)
+		
+		if(keys.isNotEmpty())
+		{
+			this._controls.remove(keys.first())
+		}
 	}
 	
 	override fun detachAll()

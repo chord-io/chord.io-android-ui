@@ -1,7 +1,6 @@
 package io.chord.clients
 
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import io.chord.R
 import io.chord.clients.apis.ArithmeticIntervalApi
@@ -10,7 +9,6 @@ import io.chord.clients.apis.AuthenticationApi
 import io.chord.clients.apis.ProjectsApi
 import io.chord.clients.apis.UsersApi
 import io.chord.clients.models.ChordSequence
-import io.chord.clients.models.DrumSequence
 import io.chord.clients.models.DrumTrack
 import io.chord.clients.models.MidiSequence
 import io.chord.clients.models.MidiTrack
@@ -25,6 +23,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import java.lang.reflect.Type
 
 class ClientApi {
     companion object {
@@ -32,23 +31,22 @@ class ClientApi {
             .add(XNullableAdapterFactory())
             .add(TypesAdapterFactory())
             .addPolymorphicJsonAdapter<Track>(
-                MidiTrack::class.java,
-                DrumTrack::class.java
+                MidiTrack::class.java to "channel",
+                DrumTrack::class.java to "drum_map"
             )
             .addPolymorphicJsonAdapter<Sequence>(
-                MidiSequence::class.java,
-                ChordSequence::class.java,
-                DrumSequence::class.java
+                MidiSequence::class.java to "fingering",
+                ChordSequence::class.java to "intervals"
             )
             .add(KotlinJsonAdapterFactory())
             .build()
         
-        private inline fun <reified T> Moshi.Builder.addPolymorphicJsonAdapter(vararg subtypes: Class<out T>): Moshi.Builder
+        private inline fun <reified T> Moshi.Builder.addPolymorphicJsonAdapter(vararg subtypes: Pair<Type, String>): Moshi.Builder
         {
             val cls = T::class.java
-            var factory = PolymorphicJsonAdapterFactory.of(cls, cls.name)
+            val factory = PolymorphicJsonAdapterFactory.of(cls)
             subtypes.toList().forEach {
-                factory = factory.withSubtype(it, it.name)
+                factory.withSubtype(it.first, it.second)
             }
             this.add(factory)
             return this
