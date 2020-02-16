@@ -2,10 +2,13 @@ package io.chord.ui.components
 
 import android.view.View
 import androidx.databinding.DataBindingUtil
+import io.chord.R
 import io.chord.clients.models.Track
 import io.chord.databinding.TrackListItemBinding
 import io.chord.ui.extensions.getChildOfType
 import io.chord.ui.models.TrackListItemViewModel
+import io.chord.ui.utils.ColorUtils
+import io.chord.ui.utils.RippleDrawableUtils
 
 class TrackListItemViewHolder(
 	val view: View
@@ -19,6 +22,7 @@ class TrackListItemViewHolder(
 		set(value) {
 			this._binding.track!!.fromModel(value)
 			this._binding.invalidateAll()
+			this.setBackgroundColor(value.color)
 		}
 	
 	var trackControlMaster: TrackControl
@@ -45,6 +49,8 @@ class TrackListItemViewHolder(
 		this._binding.layout.setOnLongClickListener {
 			listener.onItemLongClicked(this)
 		}
+		
+		this.setBackgroundColor(model.model.color)
 	}
 	
 	fun unbind()
@@ -54,5 +60,22 @@ class TrackListItemViewHolder(
 			.getChildOfType<TrackControl>()
 			.first()
 			.selfDetach()
+	}
+	
+	private fun setBackgroundColor(color: Int)
+	{
+		val theme = this.view.context.theme
+		val resources = this.view.resources
+		this._binding.layout.background = RippleDrawableUtils.create(
+			color,
+			android.R.color.holo_red_dark,
+			RippleDrawableUtils.getColorDrawableFromColor(color)
+		)
+		val textColor = ColorUtils.readableTextColor(
+			color,
+			resources.getColor(R.color.textColor, theme),
+			resources.getColor(R.color.backgroundPrimary, theme)
+		)
+		this._binding.name.setTextColor(textColor)
 	}
 }

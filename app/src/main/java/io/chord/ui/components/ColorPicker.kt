@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.GridLayout
 import io.chord.R
+import io.chord.ui.extensions.dpToPixel
 
 class ColorPicker : GridLayout
 {
@@ -18,7 +19,7 @@ class ColorPicker : GridLayout
 	private class Button(
 		private val context: Context,
 		private val layout: ColorPicker,
-		private val color: Int
+		val color: Int
 	)
 	{
 		val view: View = View(this.context)
@@ -27,16 +28,22 @@ class ColorPicker : GridLayout
 		{
 			this.view.isClickable = true
 			this.view.isFocusable = true
-			this.view.background = this.generateDrawable(color)
 			
-			this.view.setOnClickListener { buttonClicked ->
-				this.layout.buttons.forEach {
-					it.view.background = this.generateDrawable(it.color)
-				}
-				buttonClicked.background = this.generateCheckedDrawable(color)
-				this.layout._selectedColor = color
-				this.layout.listener?.onColorChange(color)
+			this.view.background = this.generateDrawable(this.color)
+			
+			this.view.setOnClickListener {
+				this.select()
 			}
+		}
+		
+		fun select()
+		{
+			this.layout.buttons.forEach {
+				it.view.background = this.generateDrawable(it.color)
+			}
+			this.view.background = this.generateCheckedDrawable(this.color)
+			this.layout._selectedColor = this.color
+			this.layout.listener?.onColorChange(this.color)
 		}
 		
 		private fun generateDrawable(color: Int): Drawable
@@ -45,12 +52,30 @@ class ColorPicker : GridLayout
 				R.drawable.color_picker_background,
 				context.theme
 			) as GradientDrawable
-			drawable.setColor(color)
+			drawable.setColor(this.layout.defaultColor)
+			// TODO Make stroke width as parameter
+			if(this.layout.defaultColor == color)
+			{
+				val defaultStrokColor = this.context.resources.getColor(
+					R.color.textColor, this.context.theme
+				)
+				drawable.setStroke(2f.dpToPixel().toInt(), defaultStrokColor)
+			}
+			else
+			{
+				drawable.setStroke(2f.dpToPixel().toInt(), color)
+			}
+			
 			return drawable
 		}
 		
 		private fun generateCheckedDrawable(color: Int): Drawable
 		{
+			if(this.layout.defaultColor == color)
+			{
+				return this.generateDrawable(color)
+			}
+			
 			val drawable = this.context.resources.getDrawable(
 				R.drawable.color_picker_background_checked,
 				context.theme
@@ -124,7 +149,14 @@ class ColorPicker : GridLayout
 		this.generateLayout()
 	}
 	
-	private fun getColors(): List<Int>
+	fun selectColor(color: Int)
+	{
+		this.buttons.firstOrNull {
+			it.color == color
+		}?.select()
+	}
+	
+	fun getColors(): List<Int>
 	{
 		if(this.colors.isNotEmpty())
 		{
@@ -175,6 +207,8 @@ class ColorPicker : GridLayout
 			GridLayout.spec(0, 0),
 			this.defaultColor
 		)
+		
+		this._selectedColor = this.defaultColor
 	}
 	
 	private fun generateButton(color: Int): View

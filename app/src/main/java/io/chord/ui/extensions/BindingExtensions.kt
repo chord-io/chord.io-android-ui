@@ -28,5 +28,16 @@ fun getProgress(view: EditText): Int
 fun ColorPicker.setOnColorChangeListener(listener: ColorPicker.ColorPickerChangedListener)
 {
 	this.listener = listener
+	
+	if(this.selectedColor == this.defaultColor)
+	{
+		this.listener?.onColorChange(this.defaultColor)
+	}
+}
+
+@BindingAdapter("android:selectColor")
+fun ColorPicker.selectColor(color: Int)
+{
+	this.selectColor(color)
 }
 
