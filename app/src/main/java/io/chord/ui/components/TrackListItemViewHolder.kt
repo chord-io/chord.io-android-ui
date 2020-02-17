@@ -66,15 +66,26 @@ class TrackListItemViewHolder(
 	{
 		val theme = this.view.context.theme
 		val resources = this.view.resources
+		val textColorSecondary = resources.getColor(R.color.textColorSecondary, theme)
+		val backgroundPrimary = resources.getColor(R.color.backgroundPrimary, theme)
+		val colorAccent = resources.getColor(R.color.colorAccent, theme)
+		val textColor = ColorUtils.readableColor(
+			color,
+			textColorSecondary,
+			backgroundPrimary
+		)
+		val rippleColor = if(textColor == textColorSecondary)
+		{
+			colorAccent
+		}
+		else
+		{
+			textColor
+		}
 		this._binding.layout.background = RippleDrawableUtils.create(
 			color,
-			android.R.color.holo_red_dark,
+			rippleColor,
 			RippleDrawableUtils.getColorDrawableFromColor(color)
-		)
-		val textColor = ColorUtils.readableTextColor(
-			color,
-			resources.getColor(R.color.textColor, theme),
-			resources.getColor(R.color.backgroundPrimary, theme)
 		)
 		this._binding.name.setTextColor(textColor)
 	}
