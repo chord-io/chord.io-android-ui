@@ -38,6 +38,23 @@ class TrackManager
 			this.manager.staging(project)
 		}
 		
+		fun move(from: Int, to: Int)
+		{
+			if(from == to)
+			{
+				return
+			}
+			
+			val project = this.manager.getCurrent()!!.copy()
+			val tracks = mutableListOf<Track>()
+			tracks.addAll(project.tracks)
+			val item = tracks[from]
+			tracks.removeAt(from)
+			tracks.add(to, item)
+			project.tracks = tracks.toList()
+			this.manager.staging(project)
+		}
+		
 		fun indexOf(track: Track): Int
 		{
 			val tracks = this.manager.getCurrent()!!.tracks

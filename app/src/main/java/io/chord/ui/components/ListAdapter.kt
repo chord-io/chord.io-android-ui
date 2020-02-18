@@ -19,6 +19,7 @@ class ListAdapter<TModel, TViewModel: ListViewModel>(
 	private val _items: MutableList<TModel> = mutableListOf()
 	private val _holders: MutableList<ListViewHolder<TModel, TViewModel>> = mutableListOf()
 	private val _recycledHolders: MutableList<ListViewHolder<TModel, TViewModel>> = mutableListOf()
+	private var _notifyOnChange: Boolean = true
 	
 	var layoutId by Delegates.notNull<Int>()
 	lateinit var listener: ListClickListener<TModel>
@@ -30,7 +31,18 @@ class ListAdapter<TModel, TViewModel: ListViewModel>(
 	
 	init
 	{
-		this.setNotifyOnChange(true)
+		this.setNotifyOnChange(this._notifyOnChange)
+	}
+	
+	override fun setNotifyOnChange(notifyOnChange: Boolean)
+	{
+		super.setNotifyOnChange(notifyOnChange)
+		this._notifyOnChange = notifyOnChange
+	}
+	
+	fun getNotifyOnChange(): Boolean
+	{
+		return this._notifyOnChange
 	}
 	
 	fun recycleView(view: View)
@@ -103,6 +115,20 @@ class ListAdapter<TModel, TViewModel: ListViewModel>(
 	{
 		this._items.clear()
 		super.clear()
+	}
+	
+	fun move(from: Int, to: Int)
+	{
+		if(from == to)
+		{
+			return
+		}
+		
+		val item = this._items[from]
+		this._items.removeAt(from)
+		this._items.add(to, item)
+		super.clear()
+		super.addAll(this._items)
 	}
 	
 	private fun getViewHolder(item: TModel): ListViewHolder<TModel, TViewModel>

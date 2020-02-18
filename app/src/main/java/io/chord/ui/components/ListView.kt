@@ -1,19 +1,82 @@
 package io.chord.ui.components
 
+import android.content.ClipData
 import android.content.Context
 import android.database.DataSetObserver
 import android.graphics.PorterDuff
 import android.graphics.drawable.ShapeDrawable
 import android.util.AttributeSet
+import android.view.DragEvent
+import android.view.View
 import android.widget.LinearLayout
 import io.chord.R
 import io.chord.ui.behaviors.BindBehavior
 import io.chord.ui.behaviors.Bindable
 import io.chord.ui.behaviors.BindableBehavior
 import io.chord.ui.behaviors.ZoomBehavior
+import io.chord.ui.extensions.getDirectChildrens
 
 abstract class ListView<TModel, TViewModel: ListViewModel, TViewHolder: ListViewHolder<TModel, TViewModel>> : LinearLayout, Zoomable
 {
+	private val onDragListener = View.OnDragListener { view, event ->
+		val index = this.indexOfChild(view)
+		val eventIndex = if(this.draggedItem != null)
+		{
+			this.indexOfChild(this.draggedItem)
+		}
+		else
+		{
+			event.localState as Int
+		}
+		
+		if(index == -1 || eventIndex == index)
+		{
+			return@OnDragListener false
+		}
+		
+		when (event.action) {
+			DragEvent.ACTION_DRAG_STARTED -> {
+				this.draggedItem = this.getDirectChildrens()!![eventIndex]
+				this.draggedItem!!.visibility = View.INVISIBLE
+				return@OnDragListener true
+			}
+			DragEvent.ACTION_DRAG_ENTERED -> {
+				if(this.draggedItem == null)
+				{
+					return@OnDragListener false
+				}
+				this.removeViewAt(eventIndex)
+				this.addView(this.draggedItem, index)
+				return@OnDragListener true
+			}
+			DragEvent.ACTION_DRAG_ENDED -> {
+				if(this.draggedItem == null)
+				{
+					return@OnDragListener false
+				}
+				this.draggedItem!!.visibility = View.VISIBLE
+				this.draggedItem = null
+				val from = event.localState as Int
+				val to = eventIndex
+				val notifyOnChange = this.adapter.getNotifyOnChange()
+				this.adapter.setNotifyOnChange(false)
+				this.adapter.move(from, to)
+				this.adapter.setNotifyOnChange(notifyOnChange)
+				this.listener.onDragEnded(from, to)
+				return@OnDragListener true
+			}
+			else -> return@OnDragListener false
+		}
+	}
+	
+	private val onLongClickListener = View.OnLongClickListener { view: View ->
+		val index = this.indexOfChild(view)
+		val data = ClipData.newPlainText(null, index.toString())
+		val shadow = View.DragShadowBuilder(view)
+		view.startDragAndDrop(data, shadow, index, 0)
+		true
+	}
+	
 	private class ListViewDataSetObserver(
 		private val trackList: ListView<*, *, *>
 	) : DataSetObserver()
@@ -29,6 +92,7 @@ abstract class ListView<TModel, TViewModel: ListViewModel, TViewHolder: ListView
 		}
 	}
 	
+	private var draggedItem: View? = null
 	private val zoomBehavior: ZoomBehavior = ZoomBehavior()
 	private val bindableBehavior = BindableBehavior(this)
 	private val divider: ShapeDrawable = ShapeDrawable()
@@ -226,6 +290,10 @@ abstract class ListView<TModel, TViewModel: ListViewModel, TViewHolder: ListView
 				null,
 				this
 			)
+			
+			view.setOnLongClickListener(this.onLongClickListener)
+			view.setOnDragListener(this.onDragListener)
+			
 			val holder = this.adapter.getViewHolder(view)
 			this.onViewHolder(holder as TViewHolder)
 			this.adjustItemViewDimension(holder, height, padding)

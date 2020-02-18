@@ -57,11 +57,6 @@ class TrackListFragment : Fragment(), ListClickListener<Track>
 	
 	override fun onItemClicked(item: Track)
 	{
-	
-	}
-	
-	override fun onItemLongClicked(item: Track): Boolean
-	{
 		val dialog = SelectCudcOperationDialog(
 			this.activity!!,
 			EnumSet.of(
@@ -78,8 +73,13 @@ class TrackListFragment : Fragment(), ListClickListener<Track>
 		dialog.onCloneSelected = { this.clone(item) }
 		
 		dialog.show()
-		
-		return true
+	}
+	
+	override fun onDragEnded(from: Int, to: Int)
+	{
+		ProjectManager.tracks.move(from, to)
+		// TODO: handle observable
+		ProjectManager.update()
 	}
 	
 	fun create()

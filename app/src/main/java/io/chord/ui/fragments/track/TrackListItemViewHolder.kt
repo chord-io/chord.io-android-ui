@@ -49,10 +49,6 @@ class TrackListItemViewHolder(
 			listener.onItemClicked(this.model)
 		}
 		
-		this._binding.layout.setOnLongClickListener {
-			listener.onItemLongClicked(this.model)
-		}
-		
 		this.setBackgroundColor(model.model.color)
 	}
 	
