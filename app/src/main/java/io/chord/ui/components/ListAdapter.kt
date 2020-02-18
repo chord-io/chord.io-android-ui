@@ -1,32 +1,31 @@
 package io.chord.ui.components
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import io.chord.R
-import io.chord.clients.models.Track
 import io.chord.ui.extensions.getDirectParentOfType
-import io.chord.ui.models.TrackListItemViewModel
+import kotlin.properties.Delegates
 
-class TrackListAdapter(
-	context: Context,
-	private val viewHolderFactory: ((View) -> TrackListItemViewHolder)
-) : ArrayAdapter<Track>(
+class ListAdapter<TModel, TViewModel: ListViewModel>(
+	context: Context
+) : ArrayAdapter<TModel>(
 	context,
 	0,
 	mutableListOf()
 )
 {
-	private val _items: MutableList<Track> = mutableListOf()
-	private val _holders: MutableList<TrackListItemViewHolder> = mutableListOf()
-	private val _recycledHolders: MutableList<TrackListItemViewHolder> = mutableListOf()
+	private val _items: MutableList<TModel> = mutableListOf()
+	private val _holders: MutableList<ListViewHolder<TModel, TViewModel>> = mutableListOf()
+	private val _recycledHolders: MutableList<ListViewHolder<TModel, TViewModel>> = mutableListOf()
 	
-	lateinit var listener: TrackListClickListener
+	var layoutId by Delegates.notNull<Int>()
+	lateinit var listener: ListClickListener<TModel>
+	lateinit var viewHolderFactory: ((View) -> ListViewHolder<TModel, TViewModel>)
+	lateinit var viewModelFactory: ((TModel) -> TViewModel)
 	
-	val items: List<Track>
+	val items: List<TModel>
 		get() = this._items.toList()
 	
 	init
@@ -40,7 +39,7 @@ class TrackListAdapter(
 		this.recycleView(holder)
 	}
 	
-	private fun recycleView(holder: TrackListItemViewHolder)
+	private fun recycleView(holder: ListViewHolder<TModel, TViewModel>)
 	{
 		holder.unbind()
 		val parent = holder.view.getDirectParentOfType<ViewGroup>()
@@ -59,26 +58,26 @@ class TrackListAdapter(
 		}
 	}
 	
-	override fun add(item: Track)
+	override fun add(item: TModel)
 	{
 		this._items.add(item)
 		super.add(item)
 	}
 	
-	override fun addAll(vararg items: Track)
+	override fun addAll(vararg items: TModel)
 	{
 		this._items.addAll(items.toList())
 		super.addAll(*items)
 	}
 	
-	override fun addAll(collection: MutableCollection<out Track>)
+	override fun addAll(collection: MutableCollection<out TModel>)
 	{
 		this._items.addAll(collection)
 		super.addAll(collection)
 	}
 	
 	override fun insert(
-		item: Track,
+		item: TModel,
 		index: Int
 	)
 	{
@@ -86,13 +85,13 @@ class TrackListAdapter(
 		super.insert(item, index)
 	}
 	
-	fun update(item: Track)
+	fun update(item: TModel)
 	{
 		val holder = this.getViewHolder(item)
 		holder.model = item
 	}
 	
-	override fun remove(item: Track)
+	override fun remove(item: TModel)
 	{
 		val holder = this.getViewHolder(item)
 		this.recycleView(holder)
@@ -106,11 +105,7 @@ class TrackListAdapter(
 		super.clear()
 	}
 	
-	// TODO Generify
-	// TODO recycleviews
-	// TODO make this class generic
-	
-	private fun getViewHolder(item: Track): TrackListItemViewHolder
+	private fun getViewHolder(item: TModel): ListViewHolder<TModel, TViewModel>
 	{
 		val result = this._holders
 			.stream()
@@ -127,9 +122,7 @@ class TrackListAdapter(
 		return result.get()
 	}
 	
-	fun getViewHolder(
-		view: View
-	): TrackListItemViewHolder
+	fun getViewHolder(view: View): ListViewHolder<TModel, TViewModel>
 	{
 		val result = this._holders
 			.stream()
@@ -146,12 +139,13 @@ class TrackListAdapter(
 		return this.viewHolderFactory(view)
 	}
 	
-	fun bindViewHolder(holder: TrackListItemViewHolder, position: Int)
+	fun bindViewHolder(holder: ListViewHolder<TModel, TViewModel>, position: Int)
 	{
-		holder.bind(TrackListItemViewModel(this.getItem(position)!!), this.listener)
+		val model = this.getItem(position)!!
+		val viewModel = this.viewModelFactory(model)
+		holder.bind(viewModel, this.listener)
 	}
 	
-	@SuppressLint("ViewHolder")
 	override fun getView(
 		position: Int,
 		convertView: View?,
@@ -170,7 +164,7 @@ class TrackListAdapter(
 			val view = LayoutInflater
 				.from(this.context)
 				.inflate(
-					R.layout.track_list_item,
+					this.layoutId,
 					parent,
 					false
 				)

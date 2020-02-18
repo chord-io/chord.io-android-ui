@@ -3,7 +3,7 @@
     <data>
         <variable
             name="track"
-            type="io.chord.ui.models.TrackListItemViewModel" />
+            type="io.chord.ui.models.tracks.TrackListItemViewModel" />
     </data>
 
     <LinearLayout

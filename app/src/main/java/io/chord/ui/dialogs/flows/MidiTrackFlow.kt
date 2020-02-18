@@ -21,6 +21,8 @@ class MidiTrackFlow(
 {
 	private val manager: ProjectManager.Companion = ProjectManager.Companion
 	
+	// TODO: generify
+	
 	private fun createDialog(operation: CudcOperation): FormCudcOperationDialog<TrackMidiDialogFormBinding>
 	{
 		return FormCudcOperationDialog(

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ListView">
+        <attr name="cio_lv_zoomDuration" format="integer"/>
+        <attr name="cio_lv_dividerColor" format="color"/>
+        <attr name="cio_lv_dividerThickness" format="dimension"/>
+        <attr name="cio_lv_rowHeight" format="dimension"/>
+        <attr name="cio_lv_rowPadding" format="dimension"/>
+    </declare-styleable>
+
+    <dimen name="list_view_divider_thickness">2dp</dimen>
+    <dimen name="list_view_row_height">96dp</dimen>
+    <dimen name="list_view_row_padding">4dp</dimen>
+    <integer name="list_view_zoom_duration">500</integer>
+</resources>

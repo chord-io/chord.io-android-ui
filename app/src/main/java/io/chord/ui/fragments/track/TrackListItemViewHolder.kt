@@ -1,23 +1,26 @@
-package io.chord.ui.components
+package io.chord.ui.fragments.track
 
 import android.view.View
 import androidx.databinding.DataBindingUtil
 import io.chord.R
 import io.chord.clients.models.Track
 import io.chord.databinding.TrackListItemBinding
+import io.chord.ui.components.ListClickListener
+import io.chord.ui.components.ListViewHolder
+import io.chord.ui.components.TrackControl
 import io.chord.ui.extensions.getChildOfType
-import io.chord.ui.models.TrackListItemViewModel
+import io.chord.ui.models.tracks.TrackListItemViewModel
 import io.chord.ui.utils.ColorUtils
 import io.chord.ui.utils.RippleDrawableUtils
 
 class TrackListItemViewHolder(
-	val view: View
-)
+	override val view: View
+) : ListViewHolder<Track, TrackListItemViewModel>
 {
 	private var _trackControlMaster: TrackControl? = null
 	private lateinit var _binding: TrackListItemBinding
 	
-	var model: Track
+	override var model: Track
 		get() = this._binding.track!!.model
 		set(value) {
 			this._binding.track!!.fromModel(value)
@@ -37,23 +40,23 @@ class TrackListItemViewHolder(
 			this._trackControlMaster!!.attach(control)
 		}
 	
-	fun bind(model: TrackListItemViewModel, listener: TrackListClickListener)
+	override fun bind(model: TrackListItemViewModel, listener: ListClickListener<Track>)
 	{
 		this._binding = DataBindingUtil.bind(this.view)!!
 		this._binding.track = model
 		
 		this._binding.layout.setOnClickListener {
-			listener.onItemClicked(this)
+			listener.onItemClicked(this.model)
 		}
 		
 		this._binding.layout.setOnLongClickListener {
-			listener.onItemLongClicked(this)
+			listener.onItemLongClicked(this.model)
 		}
 		
 		this.setBackgroundColor(model.model.color)
 	}
 	
-	fun unbind()
+	override fun unbind()
 	{
 		this._binding
 			.layout

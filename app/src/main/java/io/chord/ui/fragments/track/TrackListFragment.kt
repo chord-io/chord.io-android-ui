@@ -8,12 +8,12 @@ import androidx.fragment.app.Fragment
 import io.chord.R
 import io.chord.clients.doOnSuccess
 import io.chord.clients.models.MidiTrack
+import io.chord.clients.models.Track
 import io.chord.clients.observe
 import io.chord.services.managers.ProjectManager
+import io.chord.ui.components.ListClickListener
 import io.chord.ui.components.TrackControl
 import io.chord.ui.components.TrackList
-import io.chord.ui.components.TrackListClickListener
-import io.chord.ui.components.TrackListItemViewHolder
 import io.chord.ui.dialogs.cudc.CudcOperation
 import io.chord.ui.dialogs.customs.SelectCudcOperationDialog
 import io.chord.ui.dialogs.customs.SelectTrackTypeDialog
@@ -21,7 +21,7 @@ import io.chord.ui.dialogs.flows.TrackFlow
 import io.chord.ui.extensions.getRootView
 import java.util.*
 
-class TrackListFragment : Fragment(), TrackListClickListener
+class TrackListFragment : Fragment(), ListClickListener<Track>
 {
 	private lateinit var flow: TrackFlow
 	private lateinit var trackList: TrackList
@@ -55,12 +55,12 @@ class TrackListFragment : Fragment(), TrackListClickListener
 		this.loadTracks()
 	}
 	
-	override fun onItemClicked(item: TrackListItemViewHolder)
+	override fun onItemClicked(item: Track)
 	{
 	
 	}
 	
-	override fun onItemLongClicked(item: TrackListItemViewHolder): Boolean
+	override fun onItemLongClicked(item: Track): Boolean
 	{
 		val dialog = SelectCudcOperationDialog(
 			this.activity!!,
@@ -98,30 +98,27 @@ class TrackListFragment : Fragment(), TrackListClickListener
 		dialog.show()
 	}
 	
-	private fun update(item: TrackListItemViewHolder)
+	private fun update(item: Track)
 	{
-		val model = item.model
-		this.flow.fromModel(model).update(model as MidiTrack)
+		this.flow.fromModel(item).update(item as MidiTrack)
 			.doOnSuccess {
 				this.trackList.update(it)
 			}
 			.observe()
 	}
 	
-	private fun delete(item: TrackListItemViewHolder)
+	private fun delete(item: Track)
 	{
-		val model = item.model
-		this.flow.fromModel(model).delete(model as MidiTrack)
+		this.flow.fromModel(item).delete(item as MidiTrack)
 			.doOnSuccess {
-				this.trackList.remove(model)
+				this.trackList.remove(item)
 			}
 			.observe()
 	}
 	
-	private fun clone(item: TrackListItemViewHolder)
+	private fun clone(item: Track)
 	{
-		val model = item.model
-		this.flow.fromModel(model).clone(model as MidiTrack)
+		this.flow.fromModel(item).clone(item as MidiTrack)
 			.doOnSuccess {
 				this.trackList.add(it)
 			}
