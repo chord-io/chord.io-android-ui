@@ -23,7 +23,6 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import java.lang.reflect.Type
 
 class ClientApi {
     companion object {
@@ -31,22 +30,22 @@ class ClientApi {
             .add(XNullableAdapterFactory())
             .add(TypesAdapterFactory())
             .addPolymorphicJsonAdapter<Track>(
-                MidiTrack::class.java to "channel",
-                DrumTrack::class.java to "drum_map"
+                MidiTrack::class.java,
+                DrumTrack::class.java
             )
             .addPolymorphicJsonAdapter<Sequence>(
-                MidiSequence::class.java to "fingering",
-                ChordSequence::class.java to "intervals"
+                MidiSequence::class.java,
+                ChordSequence::class.java
             )
             .add(KotlinJsonAdapterFactory())
             .build()
         
-        private inline fun <reified T> Moshi.Builder.addPolymorphicJsonAdapter(vararg subtypes: Pair<Type, String>): Moshi.Builder
+        private inline fun <reified T> Moshi.Builder.addPolymorphicJsonAdapter(vararg subtypes: Class<*>): Moshi.Builder
         {
             val cls = T::class.java
             val factory = PolymorphicJsonAdapterFactory.of(cls)
             subtypes.toList().forEach {
-                factory.withSubtype(it.first, it.second)
+                factory.withSubtype(it)
             }
             this.add(factory)
             return this

@@ -1,5 +1,6 @@
 package io.chord.clients
 
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonReader
 import com.squareup.moshi.JsonWriter
@@ -7,23 +8,45 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import java.lang.reflect.Type
 
-class PolymorphicJsonAdapterFactory<T> private constructor(
-	private val type: Class<T>
+class PolymorphicJsonAdapterFactory private constructor(
+	private val type: Class<*>
 ) : JsonAdapter.Factory
 {
-	private val subtypes: MutableMap<Type, String> = mutableMapOf()
+	private val subtypes: MutableMap<Class<*>, String> = mutableMapOf()
 	
 	companion object
 	{
-		fun <T> of(type: Class<T>) : PolymorphicJsonAdapterFactory<T>
+		fun of(type: Class<*>) : PolymorphicJsonAdapterFactory
 		{
 			return PolymorphicJsonAdapterFactory(type)
 		}
 	}
 	
-	fun withSubtype(type: Type, propertyKey: String)
+	fun withSubtype(type: Class<*>)
 	{
-		this.subtypes[type] = propertyKey
+		val cls = type
+		val fields = cls.declaredFields
+		
+		if(fields.isEmpty())
+		{
+			throw IllegalStateException("subtype must have at least one declared field")
+		}
+		
+		val annotatedFields = fields.filter { field ->
+			field.annotations.count { it.annotationClass == Json::class } > 0
+		}
+		
+		if(annotatedFields.isEmpty())
+		{
+			throw IllegalStateException("declared fields must be annotated with com.squareup.moshi.Json attribute")
+		}
+		
+		val field = annotatedFields.first()
+		val annotation = field.annotations.find {
+			it is Json
+		} as Json
+		
+		this.subtypes[type] = annotation.name
 	}
 	
 	override fun create(
@@ -48,7 +71,7 @@ class PolymorphicJsonAdapterFactory<T> private constructor(
 	}
 	
 	class PolymorphicJsonAdapter(
-		private val subtypes: MutableMap<Type, String>,
+		private val subtypes: MutableMap<Class<*>, String>,
 		private val adapters: List<JsonAdapter<Any>>
 	) : JsonAdapter<Any>()
 	{
@@ -68,7 +91,7 @@ class PolymorphicJsonAdapterFactory<T> private constructor(
 		
 		override fun toJson(writer: JsonWriter, value: Any?)
 		{
-			val type: Type = value!!.javaClass
+			val type = value!!.javaClass
 			val index: Int = this.subtypes.keys.indexOf(type)
 			require(index != -1) {
 				("Expected one of "
