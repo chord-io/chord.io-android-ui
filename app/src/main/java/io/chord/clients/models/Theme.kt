@@ -13,13 +13,11 @@ import java.io.Serializable
 
 /**
     * @property name
-    * @property trackIndex
     * @property sequences
 */
 
 open class Theme(
     @Json(name = "name") @field:Json(name = "name") var name: String,
-    @Json(name = "track_index") @field:Json(name = "track_index") var trackIndex: Int,
     @Json(name = "sequences") @field:Json(name = "sequences") var sequences: List<Sequence>
 ): Serializable
 {

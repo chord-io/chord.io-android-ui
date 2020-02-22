@@ -1,11 +1,13 @@
 package io.chord.generators;
 
 
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import io.swagger.codegen.v3.CodegenModel;
+import io.swagger.codegen.v3.CodegenProperty;
 import io.swagger.codegen.v3.generators.kotlin.KotlinClientCodegen;
 import io.swagger.v3.oas.models.media.Schema;
 
@@ -37,52 +39,10 @@ public class KotlinClientGenerator extends KotlinClientCodegen {
             model.classname = "Object";
         }
 
-        model.allVars
-            .forEach(x -> {
-                if(x.datatype.contains("object"))
-                {
-                    x.datatype = x.datatype.replace(
-                        "object",
-                        "Object"
-                    );
-                    x.datatype = x.datatype.replace(
-                            "`",
-                            ""
-                    );
-                }
-
-                if(x.datatype.contains("LocalDateTime"))
-                {
-                    x.datatype = x.datatype.replace(
-                            "LocalDateTime",
-                            "ZonedDateTime"
-                    );
-                }
-
-                if(x.datatype.contains("Array"))
-                {
-                    x.datatype = x.datatype.replace(
-                            "Array",
-                            "List"
-                    );
-                }
-
-                if(x.datatype.contains("kotlin."))
-                {
-                    x.datatype = x.datatype.replace(
-                            "kotlin.",
-                            ""
-                    );
-                }
-
-                if(x.datatype.contains("collections."))
-                {
-                    x.datatype = x.datatype.replace(
-                            "collections.",
-                            ""
-                    );
-                }
-            });
+        this.cleanVars(model.allVars);
+        this.cleanVars(model.vars);
+        this.cleanVars(model.requiredVars);
+        this.cleanVars(model.optionalVars);
 
         if(!model.getIsEnum() && model.parentSchema != null)
         {
@@ -105,6 +65,11 @@ public class KotlinClientGenerator extends KotlinClientCodegen {
                     parent,
                     allDefinitions
             );
+
+            this.cleanVars(parentModel.allVars);
+            this.cleanVars(parentModel.vars);
+            this.cleanVars(parentModel.requiredVars);
+            this.cleanVars(parentModel.optionalVars);
 
             model.parentVars = parentModel.allVars;
         }
@@ -135,5 +100,54 @@ public class KotlinClientGenerator extends KotlinClientCodegen {
         }
 
         super.addImport(m, type);
+    }
+
+    private void cleanVars(List<CodegenProperty> properties)
+    {
+        properties.forEach(x -> {
+            if(x.datatype.contains("object"))
+            {
+                x.datatype = x.datatype.replace(
+                        "object",
+                        "Object"
+                );
+                x.datatype = x.datatype.replace(
+                        "`",
+                        ""
+                );
+            }
+
+            if(x.datatype.contains("LocalDateTime"))
+            {
+                x.datatype = x.datatype.replace(
+                        "LocalDateTime",
+                        "ZonedDateTime"
+                );
+            }
+
+            if(x.datatype.contains("Array"))
+            {
+                x.datatype = x.datatype.replace(
+                        "Array",
+                        "List"
+                );
+            }
+
+            if(x.datatype.contains("kotlin."))
+            {
+                x.datatype = x.datatype.replace(
+                        "kotlin.",
+                        ""
+                );
+            }
+
+            if(x.datatype.contains("collections."))
+            {
+                x.datatype = x.datatype.replace(
+                        "collections.",
+                        ""
+                );
+            }
+        });
     }
 }

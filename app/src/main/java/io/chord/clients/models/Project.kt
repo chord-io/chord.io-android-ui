@@ -1,7 +1,12 @@
 package io.chord.clients.models
 
 
+import io.chord.clients.models.Theme
+import io.chord.clients.models.Track
+import io.chord.clients.models.Visibility
+import org.threeten.bp.LocalDateTime
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream

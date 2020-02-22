@@ -1,7 +1,7 @@
 package io.chord.clients.models
 
 
-import io.chord.clients.models.MidiTrack
+import io.chord.clients.models.ThemeLength
 import org.threeten.bp.LocalDateTime
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -12,22 +12,16 @@ import java.io.ObjectOutputStream
 import java.io.Serializable
 
 /**
-    * @property drumMap
+    * @property index
+    * @property length
 */
 
-open class DrumTrack(
-    name: String,
-    color: Int,
-    themes: List<ThemeEntry>,
-    channel: Int,
-    @Json(name = "drum_map") @field:Json(name = "drum_map") var drumMap: String
-): Serializable, MidiTrack(
-    name,
-    color,
-    themes,
-    channel)
+open class ThemeEntry(
+    @Json(name = "index") @field:Json(name = "index") var index: Int,
+    @Json(name = "length") @field:Json(name = "length") var length: ThemeLength
+): Serializable
 {
-    override fun copy(): DrumTrack
+    open fun copy(): ThemeEntry
     {
         val byteArrayOutputStream = ByteArrayOutputStream()
         val objectOutputStream = ObjectOutputStream(byteArrayOutputStream)
@@ -35,6 +29,6 @@ open class DrumTrack(
         objectOutputStream.close()
         val byteArrayInputStream = ByteArrayInputStream(byteArrayOutputStream.toByteArray())
         val objectInputStream = ObjectInputStream(byteArrayInputStream)
-        return objectInputStream.readObject() as DrumTrack
+        return objectInputStream.readObject() as ThemeEntry
     }
 }

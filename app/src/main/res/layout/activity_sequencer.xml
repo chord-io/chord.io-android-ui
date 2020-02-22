@@ -104,10 +104,9 @@
                 android:layout_column="1"
                 android:layout_row="1"
                 android:background="@color/backgroundPrimary">
-                <Button
+                <io.chord.ui.components.Sequencer
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="lolilol"/>
+                    android:layout_height="match_parent" />
             </io.chord.ui.components.TwoDimensionalScrollView>
 
             <LinearLayout

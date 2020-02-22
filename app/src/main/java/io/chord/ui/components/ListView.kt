@@ -13,10 +13,11 @@ import io.chord.R
 import io.chord.ui.behaviors.BindBehavior
 import io.chord.ui.behaviors.Bindable
 import io.chord.ui.behaviors.BindableBehavior
+import io.chord.ui.behaviors.Binder
 import io.chord.ui.behaviors.ZoomBehavior
 import io.chord.ui.extensions.getDirectChildrens
 
-abstract class ListView<TModel, TViewModel: ListViewModel, TViewHolder: ListViewHolder<TModel, TViewModel>> : LinearLayout, Zoomable
+abstract class ListView<TModel, TViewModel: ListViewModel, TViewHolder: ListViewHolder<TModel, TViewModel>> : LinearLayout, Zoomable, Binder
 {
 	private val onDragListener = View.OnDragListener { view, event ->
 		val index = this.indexOfChild(view)
@@ -84,17 +85,20 @@ abstract class ListView<TModel, TViewModel: ListViewModel, TViewHolder: ListView
 		override fun onChanged()
 		{
 			this.trackList.populateLayout()
+			this.trackList.bindBehavior.requestDispatchEvent()
 		}
 		
 		override fun onInvalidated()
 		{
 			this.trackList.populateLayout()
+			this.trackList.bindBehavior.requestDispatchEvent()
 		}
 	}
 	
 	private var draggedItem: View? = null
 	private val zoomBehavior: ZoomBehavior = ZoomBehavior()
 	private val bindableBehavior = BindableBehavior(this)
+	private val bindBehavior = BindBehavior<Listable<TModel>>(this)
 	private val divider: ShapeDrawable = ShapeDrawable()
 	protected val adapter: ListAdapter<TModel, TViewModel> = ListAdapter(this.context)
 	
@@ -221,6 +225,11 @@ abstract class ListView<TModel, TViewModel: ListViewModel, TViewHolder: ListView
 		
 		this.adapter.registerDataSetObserver(ListViewDataSetObserver(this))
 		
+		this.bindBehavior.onAttach = {}
+		this.bindBehavior.onDispatchEvent = {
+			it.setDataSet(this.adapter.items)
+		}
+		
 		this.zoomBehavior.heightAnimator.duration = this.zoomDuration
 		
 		this.zoomBehavior.onEvaluateHeight = this::rowHeight
@@ -229,6 +238,31 @@ abstract class ListView<TModel, TViewModel: ListViewModel, TViewHolder: ListView
 		this.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
 			this.invalidateDividerDrawable()
 		}
+	}
+	
+	override fun attach(id: Int)
+	{
+		this.bindBehavior.attach(id)
+	}
+	
+	override fun attach(view: View)
+	{
+		this.bindBehavior.attach(view)
+	}
+	
+	override fun attachAll(views: List<View>)
+	{
+		this.bindBehavior.attachAll(views)
+	}
+	
+	override fun detach(id: Int)
+	{
+		this.bindBehavior.detach(id)
+	}
+	
+	override fun detachAll()
+	{
+		this.bindBehavior.detachAll()
 	}
 	
 	override fun attach(controller: BindBehavior<Bindable>)

@@ -92,22 +92,22 @@ open class FullscreenDialogFragment<TBinding: ViewDataBinding>(
 		
 		val activity = this.activity!!
 		
-		toolbar.navigationIcon = IconicsDrawable(activity)
+		this.toolbar.navigationIcon = IconicsDrawable(activity)
 			.icon(FontAwesome.Icon.faw_arrow_left)
 			.sizeRes(R.dimen.app_bar_icon_size)
 			.colorRes(R.color.backgroundPrimary)
 		
-		toolbar.inflateMenu(R.menu.dialog_fullscreen)
-		val menu = toolbar.menu
+		this.toolbar.inflateMenu(R.menu.dialog_fullscreen)
+		val menu = this.toolbar.menu
 		this.action = menu.findItem(R.id.action)
 		this.action.icon = IconicsDrawable(activity)
 			.icon(FontAwesome.Icon.faw_check)
 			.sizeRes(R.dimen.app_bar_icon_size)
 			.colorRes(R.color.backgroundPrimary)
 		
-		toolbar.setNavigationOnClickListener { this.dismiss() }
-		toolbar.title = this.title
-		toolbar.setOnMenuItemClickListener {
+		this.toolbar.setNavigationOnClickListener { this.dismiss() }
+		this.toolbar.title = this.title
+		this.toolbar.setOnMenuItemClickListener {
 			this.action.setActionView(R.layout.dialog_form_loader)
 			(this.rootView as ViewGroup).setViewState(false)
 			this.onValidate(dataBinding)

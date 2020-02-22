@@ -20,8 +20,8 @@ import java.io.Serializable
 open class ChordSequence(
     length: SequenceLength,
     fingering: InnerFingering,
-    @Json(name = "root") @field:Json(name = "root") var root: kotlin.Int,
-    @Json(name = "intervals") @field:Json(name = "intervals") var intervals: kotlin.Array<kotlin.String>
+    @Json(name = "root") @field:Json(name = "root") var root: Int,
+    @Json(name = "intervals") @field:Json(name = "intervals") var intervals: List<String>
 ): Serializable, MidiSequence(
     length,
     fingering)

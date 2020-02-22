@@ -101,6 +101,7 @@ class ListAdapter<TModel, TViewModel: ListViewModel>(
 	{
 		val holder = this.getViewHolder(item)
 		holder.model = item
+		this.notifyDataSetInvalidated()
 	}
 	
 	override fun remove(item: TModel)

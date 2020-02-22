@@ -7,10 +7,9 @@
 
 {{#vendorExtensions.x-abstract}}abstract {{/vendorExtensions.x-abstract}}{{^vendorExtensions.x-abstract}}open {{/vendorExtensions.x-abstract}}class {{classname}}(
 {{#parentVars}}
-    {{name}}: {{datatype}}{{^-last}},
+    {{name}}: {{{datatype}}}{{^-last}},
     {{/-last}}
-{{/parentVars}}
-{{#hasVars}}{{#parentSchema}},
+{{/parentVars}}{{#hasVars}}{{#parentSchema}},
 {{/parentSchema}}
 {{#requiredVars}}
     {{>data_class_req_var}}{{^-last}},

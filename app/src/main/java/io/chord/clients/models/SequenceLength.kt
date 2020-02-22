@@ -10,13 +10,11 @@ import java.io.ObjectOutputStream
 import java.io.Serializable
 
 /**
-    * @property bar
     * @property start
     * @property end
 */
 
 open class SequenceLength(
-    @Json(name = "bar") @field:Json(name = "bar") var bar: Int,
     @Json(name = "start") @field:Json(name = "start") var start: Double,
     @Json(name = "end") @field:Json(name = "end") var end: Double
 ): Serializable

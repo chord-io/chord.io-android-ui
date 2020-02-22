@@ -8,19 +8,25 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.core.graphics.toRectF
 import io.chord.R
-import io.chord.ui.behaviors.*
+import io.chord.services.managers.ProjectManager
+import io.chord.ui.behaviors.BarBehavior
+import io.chord.ui.behaviors.BindBehavior
+import io.chord.ui.behaviors.Bindable
+import io.chord.ui.behaviors.BindableBehavior
+import io.chord.ui.behaviors.QuantizeBehavior
+import io.chord.ui.behaviors.ZoomBehavior
 import io.chord.ui.extensions.getOptimalTextSize
 import io.chord.ui.utils.QuantizeUtils
 
 class Ruler : View, Zoomable, Quantifiable, Bindable
 {
-	private var barCount: Int = 10
 	private var textSizeOptimum: Float = -1f
 	private var textPosition: Float = -1f
 	private var textHalfPadding: Float = -1f
 	private val zoomBehavior: ZoomBehavior = ZoomBehavior()
 	private val bindableBehavior = BindableBehavior(this)
 	private val quantizeBehavior = QuantizeBehavior()
+	private val barBehavior = BarBehavior()
 	private val painter: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
 	
 	private var _zoomDuration: Long = -1
@@ -194,6 +200,12 @@ class Ruler : View, Zoomable, Quantifiable, Bindable
 		
 		typedArray.recycle()
 		
+		this.barBehavior.onCount = {
+			ProjectManager.getCurrent()!!.tracks.flatMap {
+				it.themes
+			}
+		}
+		
 		this.zoomBehavior.widthAnimator.duration = this.zoomDuration
 		
 		this.zoomBehavior.onEvaluateWidth = this::defaultWidth
@@ -203,7 +215,7 @@ class Ruler : View, Zoomable, Quantifiable, Bindable
 			this.invalidate()
 		}
 		
-		this.quantizeBehavior.segmentCount = this.barCount
+		this.quantizeBehavior.segmentCount = this.barBehavior.count()
 		this.quantizeBehavior.segmentLength = this.defaultWidth
 		this.quantizeBehavior.offset = this._ticksThickness / 2f
 	}
@@ -244,7 +256,7 @@ class Ruler : View, Zoomable, Quantifiable, Bindable
 	)
 	{
 		this.quantizeBehavior.generate()
-		val width = this.zoomBehavior.factorizedWidth * this.barCount
+		val width = this.zoomBehavior.factorizedWidth * this.barBehavior.count()
 		val height = MeasureSpec.getSize(heightMeasureSpec)
 		this.setMeasuredDimension(width.toInt(), height)
 	}

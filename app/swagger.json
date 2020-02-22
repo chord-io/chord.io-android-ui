@@ -4107,6 +4107,43 @@
         ],
         "type": "string"
       },
+      "ThemeLength": {
+        "required": [
+          "end",
+          "start"
+        ],
+        "type": "object",
+        "properties": {
+          "start": {
+            "minimum": 0,
+            "type": "number",
+            "format": "double"
+          },
+          "end": {
+            "minimum": 0,
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "nullable": true
+      },
+      "ThemeEntry": {
+        "required": [
+          "index",
+          "length"
+        ],
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "length": {
+            "$ref": "#/components/schemas/ThemeLength"
+          }
+        },
+        "nullable": true
+      },
       "DrumTrack": {
         "required": [
           "drum_map"
@@ -4145,18 +4182,26 @@
       "Track": {
         "required": [
           "color",
-          "name"
+          "name",
+          "themes"
         ],
         "type": "object",
         "properties": {
           "name": {
             "maxLength": 30,
-            "minLength": 5,
+            "minLength": 3,
             "type": "string"
           },
           "color": {
             "type": "integer",
             "format": "int32"
+          },
+          "themes": {
+            "maxLength": 50,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ThemeEntry"
+            }
           }
         },
         "nullable": true,
@@ -4164,26 +4209,17 @@
       },
       "SequenceLength": {
         "required": [
-          "bar",
           "end",
           "start"
         ],
         "type": "object",
         "properties": {
-          "bar": {
-            "maximum": 4294967295,
-            "minimum": 0,
-            "type": "integer",
-            "format": "int32"
-          },
           "start": {
-            "maximum": 1,
             "minimum": 0,
             "type": "number",
             "format": "double"
           },
           "end": {
-            "maximum": 1,
             "minimum": 0,
             "type": "number",
             "format": "double"
@@ -4270,8 +4306,7 @@
       "Theme": {
         "required": [
           "name",
-          "sequences",
-          "track_index"
+          "sequences"
         ],
         "type": "object",
         "properties": {
@@ -4279,10 +4314,6 @@
             "maxLength": 30,
             "minLength": 5,
             "type": "string"
-          },
-          "track_index": {
-            "type": "integer",
-            "format": "int32"
           },
           "sequences": {
             "maxLength": 50,
