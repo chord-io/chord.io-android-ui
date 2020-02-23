@@ -47,7 +47,7 @@ abstract class ListView<TModel, TViewModel: ListViewModel, TViewHolder: ListView
 				{
 					return@OnDragListener false
 				}
-				this.removeViewAt(eventIndex)
+				this.removeView(this.draggedItem)
 				this.addView(this.draggedItem, index)
 				return@OnDragListener true
 			}
