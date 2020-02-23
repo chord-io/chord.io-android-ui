@@ -81,7 +81,7 @@ class MidiTrackFlow(
 		val dialog = this.createDialog(CudcOperation.CREATE)
 		
 		dialog.onBind = { binding ->
-			binding.track = this.createViewModel(MidiTrack("", 0, listOf(), 1))
+			binding.track = this.createViewModel(MidiTrack("", 0, listOf(), listOf(), 1))
 		}
 		
 		dialog.onValidate = { binding ->

@@ -11,10 +11,40 @@ import io.github.luizgrp.sectionedrecyclerviewadapter.utils.EmptyViewHolder
 
 class Section<TItem, THolder: ViewHolderBase<TItem, THolder>>: Section
 {
+	private var title: String? = null
 	private val dataset: MutableList<TItem> = mutableListOf()
 	private lateinit var adapter: SectionAdapter
-	private val holderFactory: (view: View) -> THolder
+	private val holderFactory: ((view: View) -> THolder)
+	private var headerHolderFactory: ((view: View) -> HeaderViewHolder<TItem, THolder>)? = null
 	private val clickListener: ClickListener<TItem, THolder>
+	
+	constructor(
+		title: String,
+		itemResourceId: Int,
+		headerResourceId: Int,
+		emptyResourceId: Int,
+		loadingResourceId: Int,
+		failedResourceId: Int,
+		holderFactory: (view: View) -> THolder,
+		headerHolderFactory: ((view: View) -> HeaderViewHolder<TItem, THolder>)?,
+		clickListener: ClickListener<TItem, THolder>
+	) : super(
+		SectionParameters
+			.builder()
+			.itemResourceId(itemResourceId)
+			.headerResourceId(headerResourceId)
+			.loadingResourceId(loadingResourceId)
+			.failedResourceId(failedResourceId)
+			.emptyResourceId(emptyResourceId)
+			.build()
+	)
+	{
+		this.state = State.EMPTY
+		this.title = title
+		this.holderFactory = holderFactory
+		this.headerHolderFactory = headerHolderFactory
+		this.clickListener = clickListener
+	}
 	
 	constructor(
 		itemResourceId: Int,
@@ -167,7 +197,7 @@ class Section<TItem, THolder: ViewHolderBase<TItem, THolder>>: Section
 	
 	override fun getHeaderViewHolder(view: View): RecyclerView.ViewHolder
 	{
-		return EmptyViewHolder(view)
+		return if(this.title == null) EmptyViewHolder(view) else this.headerHolderFactory!!(view)
 	}
 	
 	override fun getLoadingViewHolder(view: View): RecyclerView.ViewHolder
@@ -202,6 +232,15 @@ class Section<TItem, THolder: ViewHolderBase<TItem, THolder>>: Section
 	{
 		(holder as? FailedViewHolder<TItem, THolder>)?.bind(
 			this,
+			this.clickListener
+		)
+	}
+	
+	@Suppress("UNCHECKED_CAST")
+	override fun onBindHeaderViewHolder(holder: RecyclerView.ViewHolder?)
+	{
+		(holder as? HeaderViewHolder<TItem, THolder>)?.bind(
+			this.title!!,
 			this.clickListener
 		)
 	}

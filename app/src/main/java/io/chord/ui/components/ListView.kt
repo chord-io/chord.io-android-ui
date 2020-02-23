@@ -9,6 +9,7 @@ import android.util.AttributeSet
 import android.view.DragEvent
 import android.view.View
 import android.widget.LinearLayout
+import androidx.fragment.app.Fragment
 import io.chord.R
 import io.chord.ui.behaviors.BindBehavior
 import io.chord.ui.behaviors.Bindable
@@ -63,6 +64,7 @@ abstract class ListView<TModel, TViewModel: ListViewModel, TViewHolder: ListView
 				this.adapter.setNotifyOnChange(false)
 				this.adapter.move(from, to)
 				this.adapter.setNotifyOnChange(notifyOnChange)
+				this.bindBehavior.requestDispatchEvent()
 				this.listener.onDragEnded(from, to)
 				return@OnDragListener true
 			}
@@ -248,6 +250,11 @@ abstract class ListView<TModel, TViewModel: ListViewModel, TViewHolder: ListView
 	override fun attach(view: View)
 	{
 		this.bindBehavior.attach(view)
+	}
+	
+	override fun attach(fragment: Fragment)
+	{
+		this.bindBehavior.attach(fragment)
 	}
 	
 	override fun attachAll(views: List<View>)

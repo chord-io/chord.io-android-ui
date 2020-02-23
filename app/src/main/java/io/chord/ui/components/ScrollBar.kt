@@ -10,9 +10,15 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
 import android.widget.ScrollView
+import androidx.fragment.app.Fragment
 import io.chord.R
 import io.chord.ui.animations.FastOutSlowInValueAnimator
-import io.chord.ui.behaviors.*
+import io.chord.ui.behaviors.BindBehavior
+import io.chord.ui.behaviors.Bindable
+import io.chord.ui.behaviors.BindableBehavior
+import io.chord.ui.behaviors.Binder
+import io.chord.ui.behaviors.OrientedBoundBehavior
+import io.chord.ui.behaviors.PropertyBehavior
 import io.chord.ui.extensions.getParentRootView
 import io.chord.ui.gestures.GestureDetector
 import io.chord.ui.gestures.SimpleOnGestureListener
@@ -612,6 +618,12 @@ class ScrollBar : View, Binder
 	{
 		val control = Control(view, this)
 		this.bindBehavior.attach(view.id, control)
+	}
+	
+	override fun attach(fragment: Fragment)
+	{
+		// TODO Make control for fragment
+		this.bindBehavior.attach(fragment)
 	}
 	
 	override fun attachAll(views: List<View>)

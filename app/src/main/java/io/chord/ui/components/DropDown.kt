@@ -9,7 +9,7 @@ import android.widget.Spinner
 import io.chord.R
 import kotlinx.android.synthetic.main.component_dropdown.view.*
 
-open class DropDown : LinearLayout
+abstract class DropDown : LinearLayout
 {
 	private var _label: String? = null
 	private var _textColor: Int = 0
@@ -77,18 +77,12 @@ open class DropDown : LinearLayout
 		context: Context?,
 		attrs: AttributeSet?
 	) : super(context, attrs)
-	{
-		this.init(attrs, 0)
-	}
 	
 	constructor(
 		context: Context?,
 		attrs: AttributeSet?,
 		defStyleAttr: Int
 	) : super(context, attrs, defStyleAttr)
-	{
-		this.init(attrs, defStyleAttr)
-	}
 	
 	constructor(
 		context: Context?,
@@ -96,9 +90,6 @@ open class DropDown : LinearLayout
 		defStyleAttr: Int,
 		defStyleRes: Int
 	) : super(context, attrs, defStyleAttr, defStyleRes)
-	{
-		this.init(attrs, defStyleAttr)
-	}
 	
 	protected open fun init(attrs: AttributeSet?, defStyle: Int) {
 		View.inflate(this.context, R.layout.component_dropdown, this)

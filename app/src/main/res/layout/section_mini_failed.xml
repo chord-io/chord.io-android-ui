@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootView"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/section_state_mini_height"
+    android:clickable="true"
+    android:focusable="true"
+    android:background="@drawable/ripple_effect" >
+
+    <com.mikepenz.iconics.view.IconicsImageView
+        android:id="@+id/imageView"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="false"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="0dp"
+        app:iiv_color="@color/colorAccent"
+        app:iiv_icon="cmd-cloud-off-outline" />
+</RelativeLayout>

@@ -2,15 +2,24 @@ package io.chord.ui.components
 
 import android.animation.ValueAnimator
 import android.content.Context
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.Rect
+import android.graphics.RectF
+import android.graphics.Typeface
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.graphics.toRectF
+import androidx.fragment.app.Fragment
 import io.chord.R
 import io.chord.ui.animations.FastOutSlowInValueAnimator
-import io.chord.ui.behaviors.*
+import io.chord.ui.behaviors.BindBehavior
+import io.chord.ui.behaviors.Binder
+import io.chord.ui.behaviors.OrientedBoundBehavior
+import io.chord.ui.behaviors.PropertyBehavior
+import io.chord.ui.behaviors.StepPositionBehavior
 import io.chord.ui.extensions.dpToPixel
 import io.chord.ui.extensions.getTextBounds
 import io.chord.ui.extensions.getTextCentered
@@ -602,6 +611,11 @@ class ZoomBar : View, Binder
 	override fun attach(view: View)
 	{
 		this.bindBehavior.attach(view)
+	}
+	
+	override fun attach(fragment: Fragment)
+	{
+		this.bindBehavior.attach(fragment)
 	}
 	
 	override fun attachAll(views: List<View>)

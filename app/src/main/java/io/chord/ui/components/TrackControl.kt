@@ -12,6 +12,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.graphics.toRectF
+import androidx.fragment.app.Fragment
 import io.chord.R
 import io.chord.ui.animations.FastOutSlowInValueAnimator
 import io.chord.ui.animations.HsvColorEvaluator
@@ -19,7 +20,11 @@ import io.chord.ui.behaviors.BindBehavior
 import io.chord.ui.behaviors.Bindable
 import io.chord.ui.behaviors.BindableBehavior
 import io.chord.ui.behaviors.Binder
-import io.chord.ui.extensions.*
+import io.chord.ui.extensions.getTextCentered
+import io.chord.ui.extensions.round
+import io.chord.ui.extensions.setBackgroundColor
+import io.chord.ui.extensions.setRoundness
+import io.chord.ui.extensions.toTransparent
 import io.chord.ui.utils.RippleDrawableUtils
 import java.util.*
 
@@ -500,6 +505,11 @@ class TrackControl : View, Binder, Bindable
 	override fun attach(view: View)
 	{
 		this.bindBehavior.attach(view)
+	}
+	
+	override fun attach(fragment: Fragment)
+	{
+		this.bindBehavior.attach(fragment)
 	}
 	
 	override fun attachAll(views: List<View>)

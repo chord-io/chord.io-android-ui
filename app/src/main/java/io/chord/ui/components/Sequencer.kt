@@ -196,7 +196,7 @@ class Sequencer : View, Zoomable, Listable<Track>
 		
 		this.barBehavior.onCount = {
 			ProjectManager.getCurrent()!!.tracks.flatMap {
-				it.themes
+				it.entries
 			}
 		}
 	}

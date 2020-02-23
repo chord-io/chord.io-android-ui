@@ -4107,106 +4107,6 @@
         ],
         "type": "string"
       },
-      "ThemeLength": {
-        "required": [
-          "end",
-          "start"
-        ],
-        "type": "object",
-        "properties": {
-          "start": {
-            "minimum": 0,
-            "type": "number",
-            "format": "double"
-          },
-          "end": {
-            "minimum": 0,
-            "type": "number",
-            "format": "double"
-          }
-        },
-        "nullable": true
-      },
-      "ThemeEntry": {
-        "required": [
-          "index",
-          "length"
-        ],
-        "type": "object",
-        "properties": {
-          "index": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "length": {
-            "$ref": "#/components/schemas/ThemeLength"
-          }
-        },
-        "nullable": true
-      },
-      "DrumTrack": {
-        "required": [
-          "drum_map"
-        ],
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/MidiTrack"
-          }
-        ],
-        "properties": {
-          "drum_map": {
-            "maxLength": 24,
-            "minLength": 0,
-            "type": "string"
-          }
-        }
-      },
-      "MidiTrack": {
-        "required": [
-          "channel"
-        ],
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Track"
-          }
-        ],
-        "properties": {
-          "channel": {
-            "maximum": 16,
-            "minimum": 1,
-            "type": "integer",
-            "format": "int32"
-          }
-        }
-      },
-      "Track": {
-        "required": [
-          "color",
-          "name",
-          "themes"
-        ],
-        "type": "object",
-        "properties": {
-          "name": {
-            "maxLength": 30,
-            "minLength": 3,
-            "type": "string"
-          },
-          "color": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "themes": {
-            "maxLength": 50,
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ThemeEntry"
-            }
-          }
-        },
-        "nullable": true,
-        "x-abstract": true
-      },
       "SequenceLength": {
         "required": [
           "end",
@@ -4325,11 +4225,118 @@
         },
         "nullable": true
       },
+      "ThemeLength": {
+        "required": [
+          "end",
+          "start"
+        ],
+        "type": "object",
+        "properties": {
+          "start": {
+            "minimum": 0,
+            "type": "number",
+            "format": "double"
+          },
+          "end": {
+            "minimum": 0,
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "nullable": true
+      },
+      "ThemeEntry": {
+        "required": [
+          "index",
+          "length"
+        ],
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "length": {
+            "$ref": "#/components/schemas/ThemeLength"
+          }
+        },
+        "nullable": true
+      },
+      "DrumTrack": {
+        "required": [
+          "drum_map"
+        ],
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/MidiTrack"
+          }
+        ],
+        "properties": {
+          "drum_map": {
+            "maxLength": 24,
+            "minLength": 0,
+            "type": "string"
+          }
+        }
+      },
+      "MidiTrack": {
+        "required": [
+          "channel"
+        ],
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Track"
+          }
+        ],
+        "properties": {
+          "channel": {
+            "maximum": 16,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "Track": {
+        "required": [
+          "color",
+          "entries",
+          "name",
+          "themes"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 30,
+            "minLength": 3,
+            "type": "string"
+          },
+          "color": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "themes": {
+            "maxLength": 50,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Theme"
+            }
+          },
+          "entries": {
+            "maxLength": 50,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ThemeEntry"
+            }
+          }
+        },
+        "nullable": true,
+        "x-abstract": true
+      },
       "ProjectDto": {
         "required": [
           "name",
           "tempo",
-          "themes",
           "tracks",
           "visibility"
         ],
@@ -4355,13 +4362,6 @@
             "items": {
               "$ref": "#/components/schemas/Track"
             }
-          },
-          "themes": {
-            "maxLength": 50,
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Theme"
-            }
           }
         },
         "nullable": true
@@ -4371,7 +4371,6 @@
           "id",
           "name",
           "tempo",
-          "themes",
           "tracks",
           "visibility"
         ],
@@ -4399,13 +4398,6 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/Track"
-            }
-          },
-          "themes": {
-            "maxLength": 50,
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Theme"
             }
           }
         },

@@ -32,7 +32,6 @@ class ProjectViewModel(
 				this.name,
 				this.tempo,
 				this.visibility,
-				listOf(),
 				listOf()
 			)
 		}

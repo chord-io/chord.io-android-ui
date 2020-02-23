@@ -2,14 +2,22 @@ package io.chord.ui.activities
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import com.mikepenz.iconics.IconicsDrawable
+import com.mikepenz.iconics.typeface.library.fontawesome.FontAwesome
+import com.mikepenz.iconics.utils.colorRes
+import com.mikepenz.iconics.utils.sizeRes
 import io.chord.R
 import io.chord.databinding.ActivitySequencerBinding
+import io.chord.ui.behaviors.ToolbarEditorBehavior
+import io.chord.ui.fragments.theme.ThemeListFragment
 import io.chord.ui.fragments.track.TrackListFragment
 
 class SequencerActivity : AppCompatActivity()
 {
+	private lateinit var toolBarBehavior: ToolbarEditorBehavior
 	private lateinit var binding: ActivitySequencerBinding
 	
 	override fun onCreate(savedInstanceState: Bundle?)
@@ -38,5 +46,40 @@ class SequencerActivity : AppCompatActivity()
 			val trackList = this.supportFragmentManager.findFragmentById(R.id.trackList) as TrackListFragment
 			trackList.create()
 		}
+		
+		this.toolBarBehavior = ToolbarEditorBehavior(
+			this,
+			this.binding.toolbarSequencer.editor
+		)
+		
+		val themeList = this.supportFragmentManager.findFragmentById(R.id.themeList) as ThemeListFragment
+		val trackList = this.supportFragmentManager.findFragmentById(R.id.trackList) as TrackListFragment
+		trackList.attach(themeList)
+		
+		this.toolBarBehavior.onMoveMode = {}
+		this.toolBarBehavior.onSelectMode = {}
+		this.toolBarBehavior.onEditMode = {}
+		this.toolBarBehavior.onEraseMode = {}
+		this.toolBarBehavior.onCloneMode = {}
+		this.toolBarBehavior.onPlay = {}
+		this.toolBarBehavior.onStop = {}
+		this.toolBarBehavior.onUndo = {}
+		this.toolBarBehavior.onRedo = {}
+		
+		this.binding.toolbarSequencer.library.setOnClickListener {
+			if(this.binding.libraryContainer.visibility == View.VISIBLE)
+			{
+				this.binding.libraryContainer.visibility = View.GONE
+			}
+			else
+			{
+				this.binding.libraryContainer.visibility = View.VISIBLE
+			}
+		}
+		
+		this.binding.toolbarSequencer.editor.toolbar.navigationIcon = IconicsDrawable(this)
+			.icon(FontAwesome.Icon.faw_arrow_left)
+			.sizeRes(R.dimen.app_bar_icon_size)
+			.colorRes(R.color.backgroundPrimary)
 	}
 }

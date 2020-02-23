@@ -1,6 +1,7 @@
 package io.chord.clients.models
 
 
+import io.chord.clients.models.Theme
 import io.chord.clients.models.ThemeEntry
 import io.chord.clients.models.Track
 import org.threeten.bp.LocalDateTime
@@ -19,12 +20,14 @@ import java.io.Serializable
 open class MidiTrack(
     name: String,
     color: Int,
-    themes: List<ThemeEntry>,
+    themes: List<Theme>,
+    entries: List<ThemeEntry>,
     @Json(name = "channel") @field:Json(name = "channel") var channel: Int
 ): Serializable, Track(
     name,
     color,
-    themes)
+    themes,
+    entries)
 {
     override fun copy(): MidiTrack
     {

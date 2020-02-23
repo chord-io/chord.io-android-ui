@@ -16,5 +16,9 @@ class ProjectListItemViewModel(
 	
 	var tracks: Int = model.tracks.size
 	
-	var themes: Int = model.themes.size
+	var themes: Int = model.tracks
+		.map {
+			it.entries.size
+		}
+		.sum()
 }

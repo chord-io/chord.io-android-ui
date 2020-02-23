@@ -1,6 +1,7 @@
 package io.chord.ui.behaviors
 
 import android.view.View
+import androidx.fragment.app.Fragment
 import io.chord.ui.extensions.getParentRootView
 
 class BindBehavior<T: Bindable> (
@@ -37,6 +38,13 @@ class BindBehavior<T: Bindable> (
 		this.checkIfAlreadyAttached(view.id)
 		val control: T = view as? T ?: throw TypeCastException("cannot cast to class type")
 		this.attach(view.id, control)
+	}
+	
+	override fun attach(fragment: Fragment)
+	{
+		this.checkIfAlreadyAttached(fragment.id)
+		val control: T = fragment as? T ?: throw TypeCastException("cannot cast to class type")
+		this.attach(fragment.id, control)
 	}
 	
 	fun attach(control: T)

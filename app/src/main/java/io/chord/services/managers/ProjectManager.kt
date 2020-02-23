@@ -28,8 +28,7 @@ class ProjectManager
 				project.name,
 				project.tempo,
 				project.visibility,
-				project.tracks,
-				project.themes
+				project.tracks
 			)
 		}
 		

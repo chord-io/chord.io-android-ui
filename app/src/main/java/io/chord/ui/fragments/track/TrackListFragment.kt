@@ -11,6 +11,7 @@ import io.chord.clients.models.MidiTrack
 import io.chord.clients.models.Track
 import io.chord.clients.observe
 import io.chord.services.managers.ProjectManager
+import io.chord.ui.behaviors.Binder
 import io.chord.ui.components.ListClickListener
 import io.chord.ui.components.TrackControl
 import io.chord.ui.components.TrackList
@@ -21,11 +22,11 @@ import io.chord.ui.dialogs.flows.TrackFlow
 import io.chord.ui.extensions.getRootView
 import java.util.*
 
-class TrackListFragment : Fragment(), ListClickListener<Track>
+class TrackListFragment : Fragment(), ListClickListener<Track>, Binder
 {
 	private lateinit var flow: TrackFlow
-	private lateinit var trackList: TrackList
-	private lateinit var trackControlMaster: TrackControl
+	private lateinit var list: TrackList
+	private lateinit var controlMaster: TrackControl
 	
 	override fun onCreateView(
 		inflater: LayoutInflater,
@@ -35,7 +36,7 @@ class TrackListFragment : Fragment(), ListClickListener<Track>
 	{
 		this.flow = TrackFlow(this.activity!!)
 		
-		this.trackList = LayoutInflater
+		this.list = LayoutInflater
 			.from(this.context)
 			.inflate(
 				R.layout.track_list_fragment,
@@ -43,14 +44,14 @@ class TrackListFragment : Fragment(), ListClickListener<Track>
 				false
 			) as TrackList
 		
-		return this.trackList
+		return this.list
 	}
 	
 	override fun onActivityCreated(savedInstanceState: Bundle?)
 	{
 		super.onActivityCreated(savedInstanceState)
-		this.trackList.listener = this
-		this.trackList.trackControlMaster  = this.activity!!.getRootView()
+		this.list.listener = this
+		this.list.trackControlMaster  = this.activity!!.getRootView()
 			.findViewById(R.id.trackControlMaster)
 		this.loadTracks()
 	}
@@ -90,7 +91,7 @@ class TrackListFragment : Fragment(), ListClickListener<Track>
 		dialog.onMidiSelected = {
 			this.flow.midi.create()
 				.doOnSuccess {
-					this.trackList.add(it)
+					this.list.add(it)
 				}
 				.observe()
 		}
@@ -102,7 +103,7 @@ class TrackListFragment : Fragment(), ListClickListener<Track>
 	{
 		this.flow.fromModel(item).update(item as MidiTrack)
 			.doOnSuccess {
-				this.trackList.update(it)
+				this.list.update(it)
 			}
 			.observe()
 	}
@@ -111,7 +112,7 @@ class TrackListFragment : Fragment(), ListClickListener<Track>
 	{
 		this.flow.fromModel(item).delete(item as MidiTrack)
 			.doOnSuccess {
-				this.trackList.remove(item)
+				this.list.remove(item)
 			}
 			.observe()
 	}
@@ -120,7 +121,7 @@ class TrackListFragment : Fragment(), ListClickListener<Track>
 	{
 		this.flow.fromModel(item).clone(item as MidiTrack)
 			.doOnSuccess {
-				this.trackList.add(it)
+				this.list.add(it)
 			}
 			.observe()
 	}
@@ -128,6 +129,36 @@ class TrackListFragment : Fragment(), ListClickListener<Track>
 	private fun loadTracks()
 	{
 		val tracks = ProjectManager.getCurrent()!!.tracks
-		this.trackList.addAll(tracks)
+		this.list.addAll(tracks)
+	}
+	
+	override fun attach(id: Int)
+	{
+		this.list.attach(id)
+	}
+	
+	override fun attach(view: View)
+	{
+		this.list.attach(view)
+	}
+	
+	override fun attach(fragment: Fragment)
+	{
+		this.list.attach(fragment)
+	}
+	
+	override fun attachAll(views: List<View>)
+	{
+		this.list.attachAll(views)
+	}
+	
+	override fun detach(id: Int)
+	{
+		this.detach(id)
+	}
+	
+	override fun detachAll()
+	{
+		this.detachAll()
 	}
 }

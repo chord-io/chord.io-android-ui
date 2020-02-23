@@ -202,7 +202,7 @@ class Ruler : View, Zoomable, Quantifiable, Bindable
 		
 		this.barBehavior.onCount = {
 			ProjectManager.getCurrent()!!.tracks.flatMap {
-				it.themes
+				it.entries
 			}
 		}
 		

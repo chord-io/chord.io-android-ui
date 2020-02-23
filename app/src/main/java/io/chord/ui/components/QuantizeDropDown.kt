@@ -4,17 +4,17 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.AdapterView
+import androidx.fragment.app.Fragment
 import io.chord.R
+import io.chord.ui.behaviors.BindBehavior
 import io.chord.ui.behaviors.Binder
-import io.chord.ui.extensions.getParentRootView
 import io.chord.ui.utils.QuantizeUtils
 import kotlinx.android.synthetic.main.component_dropdown.view.*
 
-class QuantizeDropDown : DropDown, AdapterView.OnItemSelectedListener,
-	Binder
+class QuantizeDropDown : DropDown, AdapterView.OnItemSelectedListener, Binder
 {
 	private lateinit var adapter: QuantizeDropDownAdapter
-	private val quantifiables: MutableMap<Int, Quantifiable> = mutableMapOf()
+	private val bindBehavior = BindBehavior<Quantifiable>(this)
 	private lateinit var selectedQuantization: QuantizeUtils.Quantization
 	
 	constructor(context: Context?) : super(context)
@@ -23,12 +23,18 @@ class QuantizeDropDown : DropDown, AdapterView.OnItemSelectedListener,
 		context: Context?,
 		attrs: AttributeSet?
 	) : super(context, attrs)
+	{
+		this.init(attrs, 0)
+	}
 	
 	constructor(
 		context: Context?,
 		attrs: AttributeSet?,
 		defStyleAttr: Int
 	) : super(context, attrs, defStyleAttr)
+	{
+		this.init(attrs, defStyleAttr)
+	}
 	
 	constructor(
 		context: Context?,
@@ -36,6 +42,9 @@ class QuantizeDropDown : DropDown, AdapterView.OnItemSelectedListener,
 		defStyleAttr: Int,
 		defStyleRes: Int
 	) : super(context, attrs, defStyleAttr, defStyleRes)
+	{
+		this.init(attrs, defStyleAttr)
+	}
 	
 	override fun init(attrs: AttributeSet?, defStyle: Int) {
 		super.init(attrs, defStyle)
@@ -49,6 +58,11 @@ class QuantizeDropDown : DropDown, AdapterView.OnItemSelectedListener,
 		this.dropdownView.setSelection(0)
 		this.dropdownView.onItemSelectedListener = this
 		this.dropdownView.adapter = this.adapter
+		
+		this.bindBehavior.onAttach = {}
+		this.bindBehavior.onDispatchEvent = {
+			it.setQuantization(this.selectedQuantization)
+		}
 	}
 	
 	override fun onItemSelected(
@@ -66,7 +80,7 @@ class QuantizeDropDown : DropDown, AdapterView.OnItemSelectedListener,
 			item.second, item.first
 		)
 		
-		this.dispatchEvent()
+		this.bindBehavior.requestDispatchEvent()
 	}
 	
 	override fun onNothingSelected(parent: AdapterView<*>?)
@@ -76,41 +90,31 @@ class QuantizeDropDown : DropDown, AdapterView.OnItemSelectedListener,
 	
 	override fun attach(id: Int)
 	{
-		val rootView = this.getParentRootView()
-		val quantifiable = rootView.findViewById<View>(id)
-		this.attach(quantifiable)
+		this.bindBehavior.attach(id)
 	}
 	
 	override fun attach(view: View)
 	{
-		this.quantifiables[id] = view as Quantifiable
-		
-		this.dispatchEvent()
+		this.bindBehavior.attach(view)
+	}
+	
+	override fun attach(fragment: Fragment)
+	{
+		this.bindBehavior.attach(fragment)
 	}
 	
 	override fun attachAll(views: List<View>)
 	{
-		views.forEach {
-			this.quantifiables[it.id] = it as Quantifiable
-		}
-		
-		this.dispatchEvent()
+		this.bindBehavior.attachAll(views)
 	}
 	
 	override fun detach(id: Int)
 	{
-		this.quantifiables.remove(id)
+		this.bindBehavior.detach(id)
 	}
 	
 	override fun detachAll()
 	{
-		this.quantifiables.clear()
-	}
-	
-	private fun dispatchEvent()
-	{
-		this.quantifiables.forEach { (_, quantifiable) ->
-			quantifiable.setQuantization(this.selectedQuantization)
-		}
+		this.bindBehavior.detachAll()
 	}
 }

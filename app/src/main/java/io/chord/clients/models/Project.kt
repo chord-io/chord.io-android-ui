@@ -1,7 +1,6 @@
 package io.chord.clients.models
 
 
-import io.chord.clients.models.Theme
 import io.chord.clients.models.Track
 import io.chord.clients.models.Visibility
 import org.threeten.bp.LocalDateTime
@@ -19,7 +18,6 @@ import java.io.Serializable
     * @property tempo
     * @property visibility
     * @property tracks
-    * @property themes
 */
 
 open class Project(
@@ -27,8 +25,7 @@ open class Project(
     @Json(name = "name") @field:Json(name = "name") var name: String,
     @Json(name = "tempo") @field:Json(name = "tempo") var tempo: Int,
     @Json(name = "visibility") @field:Json(name = "visibility") var visibility: Visibility,
-    @Json(name = "tracks") @field:Json(name = "tracks") var tracks: List<Track>,
-    @Json(name = "themes") @field:Json(name = "themes") var themes: List<Theme>
+    @Json(name = "tracks") @field:Json(name = "tracks") var tracks: List<Track>
 ): Serializable
 {
     open fun copy(): Project
