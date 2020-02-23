@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.GridLayout
 import io.chord.R
 import io.chord.ui.extensions.dpToPixel
+import io.chord.ui.extensions.toTransparent
 
 class ColorPicker : GridLayout
 {
@@ -52,7 +53,7 @@ class ColorPicker : GridLayout
 				R.drawable.color_picker_background,
 				context.theme
 			) as GradientDrawable
-			drawable.setColor(this.layout.defaultColor)
+			drawable.setColor(this.layout.defaultColor.toTransparent(0f))
 			// TODO Make stroke width as parameter
 			if(this.layout.defaultColor == color)
 			{

@@ -8,17 +8,19 @@ class TrackListItemViewModel(
 	val model: Track
 ) : BaseObservable(), ListViewModel
 {
-	// TODO normalize toModel/fromModel
 	var name: String = model.name
+	var color: Int = model.color
 	
 	fun toModel(): Track
 	{
 		this.model.name = this.name
+		this.model.color = this.color
 		return this.model
 	}
 	
 	fun fromModel(model: Track)
 	{
 		this.name = model.name
+		this.color = model.color
 	}
 }

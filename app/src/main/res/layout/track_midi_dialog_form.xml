@@ -87,7 +87,7 @@
                 android:layout_weight=".80"
                 android:selectColor="@{track.color}"
                 android:onColorChanged="@{track::onColorChanged}"
-                app:cio_cp_defaultColor="@color/backgroundTernary"/>
+                app:cio_cp_defaultColor="@color/colorAccent"/>
         </LinearLayout>
     </LinearLayout>
 </layout>
