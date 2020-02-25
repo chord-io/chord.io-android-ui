@@ -6,9 +6,9 @@ import android.view.View
 import androidx.databinding.DataBindingUtil
 import com.mikepenz.iconics.typeface.library.fontawesome.FontAwesome
 import com.mikepenz.iconics.utils.colorInt
-import io.chord.R
 import io.chord.clients.models.Theme
 import io.chord.databinding.ThemeListItemBinding
+import io.chord.ui.extensions.toTransparent
 import io.chord.ui.models.ThemeListItemViewModel
 import io.chord.ui.sections.ClickListener
 import io.chord.ui.sections.ViewHolderBase
@@ -56,7 +56,7 @@ class ThemeViewHolder(
         val mask = ShapeDrawable(shape)
         
         this.binding.layout.background = RippleDrawableUtils.create(
-            this.itemView.resources.getColor(R.color.backgroundTernary, this.itemView.context.theme),
+            this.color.toTransparent(0.1f),
             this.color,
             mask
         )

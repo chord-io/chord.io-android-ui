@@ -27,7 +27,7 @@
             android:layout_marginEnd="5dp"
             android:gravity="center_vertical"
             android:textColor="@color/textColor"
-            android:textSize="12sp"
+            android:textSize="13sp"
             tools:text="@tools:sample/cities" />
         <TextView
             android:id="@+id/counter"

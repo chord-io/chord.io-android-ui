@@ -26,7 +26,7 @@ class ThemeManager
 			val tracks = project.tracks
 			tracks.forEach { track ->
 				val themes = track.themes.toMutableList()
-				themes[index] = theme.copy()
+				themes[index].name = theme.name
 				track.themes = themes.toList()
 			}
 			this.manager.staging(project)

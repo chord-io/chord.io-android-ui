@@ -9,6 +9,7 @@ import com.mikepenz.iconics.utils.colorInt
 import io.chord.clients.models.Theme
 import io.chord.databinding.ThemeListHeaderBinding
 import io.chord.ui.extensions.dpToPixel
+import io.chord.ui.extensions.toTransparent
 import io.chord.ui.sections.ClickListener
 import io.chord.ui.sections.ExpandableSection
 import io.chord.ui.sections.HeaderViewHolder
@@ -29,7 +30,8 @@ class ThemeHeaderViewHolder(
         this.toggle(isExpanded)
         val background = this.binding.layout.background as LayerDrawable
         val drawable = background.getDrawable(0) as GradientDrawable
-        drawable.setStroke(2f.dpToPixel().toInt(), this.color)
+        drawable.setColor(this.color.toTransparent(0.1f))
+        drawable.setStroke(2f.dpToPixel().toInt(), this.color.toTransparent(0.2f))
     }
     
     override fun bind(

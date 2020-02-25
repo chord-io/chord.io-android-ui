@@ -8,6 +8,7 @@ import io.chord.ui.components.ListClickListener
 import io.chord.ui.components.ListViewHolder
 import io.chord.ui.components.TrackControl
 import io.chord.ui.extensions.getChildOfType
+import io.chord.ui.extensions.toTransparent
 import io.chord.ui.models.tracks.TrackListItemViewModel
 
 class TrackListItemViewHolder(
@@ -60,6 +61,7 @@ class TrackListItemViewHolder(
 	
 	private fun setColor(color: Int)
 	{
+		this._binding.layout.setBackgroundColor(color.toTransparent(0.1f))
 		this._binding.color.setBackgroundColor(color)
 	}
 }

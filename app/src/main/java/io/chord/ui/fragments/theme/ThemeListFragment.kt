@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,10 +19,13 @@ import io.chord.ui.behaviors.BindBehavior
 import io.chord.ui.behaviors.Bindable
 import io.chord.ui.behaviors.BindableBehavior
 import io.chord.ui.components.Listable
+import io.chord.ui.dialogs.cudc.CudcOperation
+import io.chord.ui.dialogs.customs.SelectCudcOperationDialog
 import io.chord.ui.dialogs.flows.ThemeFlow
 import io.chord.ui.sections.ExpandableSection
 import io.chord.ui.sections.Section
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter
+import java.util.*
 
 class ThemeListFragment : Fragment(), ThemeClickListener<Theme, ThemeViewHolder>, Listable<Track>
 {
@@ -80,20 +84,20 @@ class ThemeListFragment : Fragment(), ThemeClickListener<Theme, ThemeViewHolder>
 
     override fun onItemLongClicked(item: Theme, holder: ThemeViewHolder): Boolean
     {
-//        val dialog = SelectCudcOperationDialog(
-//            this.context as AppCompatActivity,
-//            EnumSet.of(
-//                CudcOperation.UPDATE,
-//                CudcOperation.DELETE,
-//                CudcOperation.CLONE
-//            )
-//        )
-//
-//        dialog.onDeleteSelected = { this.delete(item) }
-//        dialog.onUpdateSelected = { this.update(item) }
-//        dialog.onCloneSelected = { this.clone(item) }
-//
-//        dialog.show()
+        val dialog = SelectCudcOperationDialog(
+            this.context as AppCompatActivity,
+            EnumSet.of(
+                CudcOperation.UPDATE,
+                CudcOperation.DELETE,
+                CudcOperation.CLONE
+            )
+        )
+
+        dialog.onDeleteSelected = { this.delete(item) }
+        dialog.onUpdateSelected = { this.update(item) }
+        dialog.onCloneSelected = { this.clone(item) }
+
+        dialog.show()
         return true
     }
     
