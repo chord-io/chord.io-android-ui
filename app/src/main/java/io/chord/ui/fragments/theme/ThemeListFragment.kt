@@ -180,10 +180,15 @@ class ThemeListFragment : Fragment(), ThemeClickListener<Theme, ThemeViewHolder>
         this.viewAdapter.removeAllSections()
         this.recyclerView.adapter = null
         this.recyclerView.layoutManager = null
-        
+    
         dataset.forEach { track ->
             val state = states.firstOrNull { it.first == track.name }
             val isExpanded = state?.second ?: false
+            val themes = ProjectManager.getCurrent()!!.tracks
+                .first {
+                    it.name == track.name
+                }
+                .themes
             val section = ExpandableSection(
                 track.name,
                 R.layout.theme_list_item,
@@ -198,7 +203,7 @@ class ThemeListFragment : Fragment(), ThemeClickListener<Theme, ThemeViewHolder>
     
             this.viewAdapter.addSection(track.name, section)
             section.setAdapter(this.viewAdapter)
-            section.setDataset(track.themes)
+            section.setDataset(themes)
             
             if(isExpanded)
             {
