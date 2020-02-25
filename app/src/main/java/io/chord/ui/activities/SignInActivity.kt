@@ -2,7 +2,7 @@ package io.chord.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
+import android.view.ViewGroup
 import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -21,7 +21,7 @@ import io.chord.databinding.SignUpDialogFormBinding
 import io.chord.services.authentication.storage.SharedPreferencesAuthenticationStorage
 import io.chord.services.authentication.workers.RefreshTokenWorker
 import io.chord.ui.dialogs.customs.FormDialog
-import io.chord.ui.extensions.getRootView
+import io.chord.ui.extensions.getChildOfType
 import io.chord.ui.extensions.setViewState
 import io.chord.ui.extensions.toBanerApiThrowable
 import io.chord.ui.models.SignInFormViewModel
@@ -40,15 +40,17 @@ class SignInActivity : AppCompatActivity()
 	{
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_sign_in)
-		
-		this.binding = DataBindingUtil.bind(this.getRootView())!!
+	}
+	
+	override fun onStart()
+	{
+		super.onStart()
+		val rootView = this.findViewById<ViewGroup>(android.R.id.content).rootView
+		val layout = rootView.getChildOfType<RelativeLayout>().first()
+		this.binding = DataBindingUtil.bind(layout)!!
 		this.binding.user = SignInFormViewModel()
-		
-		this.findViewById<RelativeLayout>(R.id.signup)
-			.setOnClickListener {this.signUp()}
-		
-		this.findViewById<Button>(R.id.signin)
-			.setOnClickListener { this.signIn() }
+		this.binding.signup.setOnClickListener {this.signUp()}
+		this.binding.signin.setOnClickListener {this.signIn()}
 	}
 	
 	private fun signIn()

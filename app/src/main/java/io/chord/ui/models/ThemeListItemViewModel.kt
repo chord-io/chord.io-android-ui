@@ -8,4 +8,5 @@ class ThemeListItemViewModel(
 ) : BaseObservable()
 {
 	var name: String = model.name
+	var sequences: Int = model.sequences.size
 }

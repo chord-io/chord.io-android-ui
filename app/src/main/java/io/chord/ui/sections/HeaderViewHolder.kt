@@ -16,6 +16,7 @@ abstract class HeaderViewHolder<TItem, THolder: ViewHolderBase<TItem, THolder>>(
     
     abstract fun bind(
         title: String,
+        section: Section<TItem, THolder>,
         clickListener: ClickListener<TItem, THolder>
     )
 }

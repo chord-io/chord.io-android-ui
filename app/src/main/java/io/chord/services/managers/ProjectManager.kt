@@ -21,6 +21,7 @@ class ProjectManager
 		private val deleteListeners: MutableList<(() -> Unit)?> = mutableListOf()
 		
 		val tracks: TrackManager.Companion = TrackManager.Companion
+		val themes: ThemeManager.Companion = ThemeManager.Companion
 		
 		private fun toDto(project: Project): ProjectDto
 		{
@@ -108,7 +109,6 @@ class ProjectManager
 			this.client.update(project.id, projectToUpdate)
 				.observeOn(AndroidSchedulers.mainThread())
 				.doOnSuccess {
-					observable.onNext(project)
 					if(project.id == this.current?.id)
 					{
 						this.current = project
@@ -117,6 +117,7 @@ class ProjectManager
 							it?.invoke()
 						}
 					}
+					observable.onNext(project)
 				}
 				.doOnError {
 					observable.onError(it)

@@ -11,8 +11,7 @@ class TrackManager
 		fun add(track: Track)
 		{
 			val project = this.manager.getCurrent()!!.copy()
-			val tracks = mutableListOf<Track>()
-			tracks.addAll(project.tracks)
+			val tracks = project.tracks.toMutableList()
 			tracks.add(track)
 			project.tracks = tracks.toList()
 			this.manager.staging(project)
@@ -21,8 +20,7 @@ class TrackManager
 		fun update(index: Int, track: Track)
 		{
 			val project = this.manager.getCurrent()!!.copy()
-			val tracks = mutableListOf<Track>()
-			tracks.addAll(project.tracks)
+			val tracks = project.tracks.toMutableList()
 			tracks[index] = track
 			project.tracks = tracks.toList()
 			this.manager.staging(project)
@@ -31,9 +29,10 @@ class TrackManager
 		fun delete(track: Track)
 		{
 			val project = this.manager.getCurrent()!!.copy()
-			val tracks = mutableListOf<Track>()
-			tracks.addAll(project.tracks)
-			tracks.remove(this.getTrack(tracks, track))
+			val tracks = project.tracks.toMutableList()
+			tracks.removeIf {
+				it.name == track.name
+			}
 			project.tracks = tracks.toList()
 			this.manager.staging(project)
 		}
@@ -46,8 +45,7 @@ class TrackManager
 			}
 			
 			val project = this.manager.getCurrent()!!.copy()
-			val tracks = mutableListOf<Track>()
-			tracks.addAll(project.tracks)
+			val tracks = project.tracks.toMutableList()
 			val item = tracks[from]
 			tracks.removeAt(from)
 			tracks.add(to, item)
@@ -58,27 +56,9 @@ class TrackManager
 		fun indexOf(track: Track): Int
 		{
 			val tracks = this.manager.getCurrent()!!.tracks
-			return this.indexOf(tracks, track)
-		}
-		
-		private fun getTrack(tracks: List<Track>, track: Track): Track?
-		{
-			return tracks.filter {
+			return tracks.indexOfFirst {
 				it.name == track.name
 			}
-			.firstOrNull()
-		}
-		
-		private fun indexOf(tracks: List<Track>, track: Track): Int
-		{
-			val item = this.getTrack(tracks, track)
-			
-			if(item != null)
-			{
-				return tracks.indexOf(item)
-			}
-			
-			return -1
 		}
 	}
 }

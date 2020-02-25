@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <LinearLayout
         android:id="@+id/layout"
         android:layout_width="match_parent"
@@ -8,16 +9,32 @@
         android:orientation="horizontal"
         android:paddingStart="8dp"
         android:paddingEnd="@dimen/list_item_padding_right"
-        android:background="@drawable/section_header_border_color_accent">
-
+        android:background="@drawable/section_header_border_color_accent"
+        android:clickable="true"
+        android:focusable="true">
+        <com.mikepenz.iconics.view.IconicsImageView
+            android:id="@+id/icon"
+            android:layout_width="@dimen/list_item_mini_icon_size"
+            android:layout_height="@dimen/list_item_mini_icon_size"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="5dp"
+            app:iiv_size="10dp" />
         <TextView
             android:id="@+id/title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginEnd="5dp"
+            android:gravity="center_vertical"
             android:textColor="@color/textColor"
             android:textSize="12sp"
             tools:text="@tools:sample/cities" />
+        <TextView
+            android:id="@+id/counter"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical|center"
+            android:textColor="@color/textColorSecondary"
+            android:textSize="12sp"/>
     </LinearLayout>
 </layout>

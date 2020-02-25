@@ -43,12 +43,14 @@
     <string name="project_dialog_form_tempo">Tempo</string>
     <string name="project_dialog_form_visibility">Visibility</string>
 
-    <string name="track_list_entity_name">Track</string>
+    <string name="track_entity_name">Track</string>
     <string name="track_list_header">Tracks</string>
     <string name="track_list_item_information">channel %1$s</string>
     <string name="track_list_dialog_form_name">Name</string>
     <string name="track_list_dialog_form_channel">Channel</string>
     <string name="track_list_dialog_form_color">Color</string>
+
+    <string name="theme_entity_name">Theme</string>
 
     <string name="signin_username">Username</string>
     <string name="signin_password">Password</string>

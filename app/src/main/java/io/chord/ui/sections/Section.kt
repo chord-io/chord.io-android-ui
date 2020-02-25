@@ -9,11 +9,11 @@ import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter
 import io.github.luizgrp.sectionedrecyclerviewadapter.utils.EmptyViewHolder
 
-class Section<TItem, THolder: ViewHolderBase<TItem, THolder>>: Section
+open class Section<TItem, THolder: ViewHolderBase<TItem, THolder>>: Section
 {
 	private var title: String? = null
 	private val dataset: MutableList<TItem> = mutableListOf()
-	private lateinit var adapter: SectionAdapter
+	protected lateinit var adapter: SectionAdapter
 	private val holderFactory: ((view: View) -> THolder)
 	private var headerHolderFactory: ((view: View) -> HeaderViewHolder<TItem, THolder>)? = null
 	private val clickListener: ClickListener<TItem, THolder>
@@ -146,6 +146,8 @@ class Section<TItem, THolder: ViewHolderBase<TItem, THolder>>: Section
 		{
 			this.setStateLoaded()
 		}
+		
+		this.adapter.notifyAllItemsChanged()
 	}
 	
 	fun setAdapter(adapter: SectionedRecyclerViewAdapter)
@@ -241,6 +243,7 @@ class Section<TItem, THolder: ViewHolderBase<TItem, THolder>>: Section
 	{
 		(holder as? HeaderViewHolder<TItem, THolder>)?.bind(
 			this.title!!,
+			this,
 			this.clickListener
 		)
 	}
