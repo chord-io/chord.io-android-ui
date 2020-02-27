@@ -26,7 +26,7 @@ import io.chord.ui.sections.Section
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter
 import java.util.*
 
-class ThemeListFragment : Fragment(), ThemeClickListener<ThemeSectionItem, ThemeViewHolder>, Listable<Track>
+class ThemeListFragment : Fragment(), ThemeClickListener, Listable<Track>
 {
     private val bindableBehavior = BindableBehavior(this)
     private lateinit var flow: ThemeFlow
@@ -109,6 +109,11 @@ class ThemeListFragment : Fragment(), ThemeClickListener<ThemeSectionItem, Theme
         // TODO play theme with midi engine
     }
     
+    override fun onStopClicked(item: ThemeSectionItem)
+    {
+        // TODO play theme with midi engine
+    }
+    
     fun create()
     {
         this.flow.create()
@@ -162,6 +167,8 @@ class ThemeListFragment : Fragment(), ThemeClickListener<ThemeSectionItem, Theme
     
     override fun setDataSet(dataset: List<Track>)
     {
+        // TODO: stop playing theme when dataset changed
+        
         val tracks = this.getTracks()
         val sections = this.viewAdapter.copyOfSectionsMap
         val states = sections.map {

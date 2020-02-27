@@ -111,14 +111,25 @@ class ThemeViewHolder(
             mask
         )
         
-        val themeClickListener = clickListener as ThemeClickListener<ThemeSectionItem, ThemeViewHolder>
+        val themeClickListener = clickListener as ThemeClickListener
         
         this.binding.icon.setOnClickListener {
-            themeClickListener.onPlayClicked(item)
+            val previousState = this.isPlaying
+            
             holders.forEach { holder ->
                 holder.isPlaying = false
             }
-            this.isPlaying = true
+            
+            this.isPlaying = !previousState
+            
+            if(this.isPlaying)
+            {
+                themeClickListener.onPlayClicked(item)
+            }
+            else
+            {
+                themeClickListener.onStopClicked(item)
+            }
         }
         
         this.itemView.setOnClickListener {
