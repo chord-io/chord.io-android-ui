@@ -1,5 +1,6 @@
 package io.chord.ui.components
 
+import android.animation.LayoutTransition
 import android.content.ClipData
 import android.content.Context
 import android.database.DataSetObserver
@@ -47,8 +48,10 @@ abstract class ListView<TModel, TViewModel: ListViewModel, TViewHolder: ListView
 				{
 					return@OnDragListener false
 				}
+				this.animateOnChangeLayout(true)
 				this.removeView(this.draggedItem)
 				this.addView(this.draggedItem, index)
+				this.animateOnChangeLayout(false)
 				return@OnDragListener true
 			}
 			DragEvent.ACTION_DRAG_ENDED -> {
@@ -381,6 +384,18 @@ abstract class ListView<TModel, TViewModel: ListViewModel, TViewHolder: ListView
 		if(orientation == ViewOrientation.Vertical)
 		{
 			this.zoomBehavior.setFactorHeight(factor, animate)
+		}
+	}
+	
+	private fun animateOnChangeLayout(state: Boolean)
+	{
+		if(state)
+		{
+			this.layoutTransition = LayoutTransition()
+		}
+		else
+		{
+			this.layoutTransition = null
 		}
 	}
 }

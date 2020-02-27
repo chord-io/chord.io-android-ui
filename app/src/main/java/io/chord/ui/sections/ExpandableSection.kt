@@ -2,7 +2,7 @@ package io.chord.ui.sections
 
 import android.view.View
 
-class ExpandableSection<TItem, THolder: ViewHolderBase<TItem, THolder>>: Section<TItem, THolder>
+open class ExpandableSection<TItem, THolder: ViewHolderBase<TItem, THolder>>: Section<TItem, THolder>
 {
 	private var _isExpanded = true
 	private var items: MutableList<TItem>? = null

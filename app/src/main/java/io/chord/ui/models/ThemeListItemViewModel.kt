@@ -4,9 +4,19 @@ import androidx.databinding.BaseObservable
 import io.chord.clients.models.Theme
 
 class ThemeListItemViewModel(
-	model: Theme
+	var isPlaying: Boolean
 ) : BaseObservable()
 {
-	var name: String = model.name
-	var sequences: Int = model.sequences.size
+	var name: String = ""
+	var sequences: Int = 0
+	
+	lateinit var model: Theme
+	
+	fun fromModel(model: Theme)
+	{
+		this.name = model.name
+		this.sequences = model.sequences.size
+		this.model = model
+		this.notifyChange()
+	}
 }

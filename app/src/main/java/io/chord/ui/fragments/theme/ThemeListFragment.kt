@@ -22,12 +22,11 @@ import io.chord.ui.components.Listable
 import io.chord.ui.dialogs.cudc.CudcOperation
 import io.chord.ui.dialogs.customs.SelectCudcOperationDialog
 import io.chord.ui.dialogs.flows.ThemeFlow
-import io.chord.ui.sections.ExpandableSection
 import io.chord.ui.sections.Section
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter
 import java.util.*
 
-class ThemeListFragment : Fragment(), ThemeClickListener<Theme, ThemeViewHolder>, Listable<Track>
+class ThemeListFragment : Fragment(), ThemeClickListener<ThemeSectionItem, ThemeViewHolder>, Listable<Track>
 {
     private val bindableBehavior = BindableBehavior(this)
     private lateinit var flow: ThemeFlow
@@ -71,7 +70,7 @@ class ThemeListFragment : Fragment(), ThemeClickListener<Theme, ThemeViewHolder>
         return view
     }
 
-    override fun onItemClicked(item: Theme, holder: ThemeViewHolder)
+    override fun onItemClicked(item: ThemeSectionItem, holder: ThemeViewHolder)
     {
 //        ProjectManager.setCurrent(item)
 //        this.startActivity(
@@ -82,7 +81,7 @@ class ThemeListFragment : Fragment(), ThemeClickListener<Theme, ThemeViewHolder>
 //        )
     }
 
-    override fun onItemLongClicked(item: Theme, holder: ThemeViewHolder): Boolean
+    override fun onItemLongClicked(item: ThemeSectionItem, holder: ThemeViewHolder): Boolean
     {
         val dialog = SelectCudcOperationDialog(
             this.context as AppCompatActivity,
@@ -93,32 +92,21 @@ class ThemeListFragment : Fragment(), ThemeClickListener<Theme, ThemeViewHolder>
             )
         )
 
-        dialog.onDeleteSelected = { this.delete(item) }
-        dialog.onUpdateSelected = { this.update(item) }
-        dialog.onCloneSelected = { this.clone(item) }
+        dialog.onDeleteSelected = { this.delete(item.theme) }
+        dialog.onUpdateSelected = { this.update(item.theme) }
+        dialog.onCloneSelected = { this.clone(item.theme) }
 
         dialog.show()
         return true
     }
     
-    override fun onFailedViewClicked(section: Section<Theme, ThemeViewHolder>)
+    override fun onFailedViewClicked(section: Section<ThemeSectionItem, ThemeViewHolder>)
     {
     }
     
-    override fun onPlayClicked(item: Theme)
+    override fun onPlayClicked(item: ThemeSectionItem)
     {
-        val count = this.recyclerView.childCount
-        
-        for(index in 0 until count)
-        {
-            val child = this.recyclerView.getChildAt(index)
-            val holder = this.recyclerView.getChildViewHolder(child)
-            
-            if(holder is ThemeViewHolder)
-            {
-                holder.isPlaying = false
-            }
-        }
+        // TODO play theme with midi engine
     }
     
     fun create()
@@ -174,51 +162,37 @@ class ThemeListFragment : Fragment(), ThemeClickListener<Theme, ThemeViewHolder>
     
     override fun setDataSet(dataset: List<Track>)
     {
-        val states = this.viewAdapter.copyOfSectionsMap.map {
-            it.key to (it.value as ExpandableSection<*, *>).isExpanded
+        val tracks = this.getTracks()
+        val sections = this.viewAdapter.copyOfSectionsMap
+        val states = sections.map {
+            it.key to (it.value as ThemeSection).isExpanded
         }
+        
         this.viewAdapter.removeAllSections()
         this.recyclerView.adapter = null
         this.recyclerView.layoutManager = null
-    
+        
         dataset.forEach { track ->
             val state = states.firstOrNull { it.first == track.name }
             val isExpanded = state?.second ?: false
-            val themes = ProjectManager.getCurrent()!!.tracks
+            val section = ThemeSection(
+                track,
+                isExpanded,
+                this
+            )
+            val themes = tracks
                 .first {
                     it.name == track.name
                 }
                 .themes
-            val section = ExpandableSection(
-                track.name,
-                R.layout.theme_list_item,
-                R.layout.theme_list_header,
-                R.layout.section_mini_empty,
-                R.layout.section_mini_loading,
-                R.layout.section_mini_failed,
-                { view -> ThemeViewHolder(track.color, view) },
-                { view -> ThemeHeaderViewHolder(track.color, isExpanded, view) },
-                this
-            )
     
             this.viewAdapter.addSection(track.name, section)
             section.setAdapter(this.viewAdapter)
-            section.setDataset(themes)
-            
-            if(isExpanded)
-            {
-                section.isExpanded = states
-                    .first {
-                        it.first == track.name
-                    }
-                    .second
-            }
-            else
-            {
-                section.isExpanded = false
-            }
+            section.setDataset(themes.map {
+                ThemeSectionItem(tracks, track, it)
+            })
         }
-        
+    
         this.recyclerView.adapter = this.viewAdapter
         this.recyclerView.layoutManager = this.viewManager
         this.viewAdapter.notifyDataSetChanged()

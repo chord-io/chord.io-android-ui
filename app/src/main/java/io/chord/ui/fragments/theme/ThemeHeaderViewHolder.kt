@@ -6,7 +6,6 @@ import android.view.View
 import androidx.databinding.DataBindingUtil
 import com.mikepenz.iconics.typeface.library.fontawesome.FontAwesome
 import com.mikepenz.iconics.utils.colorInt
-import io.chord.clients.models.Theme
 import io.chord.databinding.ThemeListHeaderBinding
 import io.chord.ui.extensions.dpToPixel
 import io.chord.ui.extensions.toTransparent
@@ -19,7 +18,7 @@ class ThemeHeaderViewHolder(
     private val color: Int,
     isExpanded: Boolean,
     view: View
-) : HeaderViewHolder<Theme, ThemeViewHolder>(view)
+) : HeaderViewHolder<ThemeSectionItem, ThemeViewHolder>(view)
 {
     val binding = DataBindingUtil.bind<ThemeListHeaderBinding>(this.itemView)!!
     
@@ -35,8 +34,8 @@ class ThemeHeaderViewHolder(
     }
     
     override fun bind(
-        item: Theme,
-        clickListener: ClickListener<Theme, ThemeViewHolder>
+        item: ThemeSectionItem,
+        clickListener: ClickListener<ThemeSectionItem, ThemeViewHolder>
     )
     {
         throw NotImplementedError()
@@ -44,8 +43,8 @@ class ThemeHeaderViewHolder(
     
     override fun bind(
         title: String,
-        section: Section<Theme, ThemeViewHolder>,
-        clickListener: ClickListener<Theme, ThemeViewHolder>
+        section: Section<ThemeSectionItem, ThemeViewHolder>,
+        clickListener: ClickListener<ThemeSectionItem, ThemeViewHolder>
     )
     {
         val expandableSection = section as ExpandableSection

@@ -93,6 +93,7 @@ open class Section<TItem, THolder: ViewHolderBase<TItem, THolder>>: Section
 		
 		when
 		{
+			state == previousState -> return
 			state != State.LOADED ->
 			{
 				this.adapter.notifyStateChangedFromLoaded(this.contentItemsTotal)
@@ -135,6 +136,11 @@ open class Section<TItem, THolder: ViewHolderBase<TItem, THolder>>: Section
 	
 	fun setDataset(dataset: List<TItem>)
 	{
+		if(this.dataset == dataset)
+		{
+			return
+		}
+		
 		this.dataset.clear()
 		this.dataset.addAll(dataset)
 		
