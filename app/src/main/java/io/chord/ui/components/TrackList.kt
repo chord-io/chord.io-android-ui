@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import io.chord.R
 import io.chord.clients.models.Track
+import io.chord.services.managers.ProjectManager
 import io.chord.ui.fragments.track.TrackListItemViewHolder
 import io.chord.ui.models.tracks.TrackListItemViewModel
 
@@ -68,10 +69,25 @@ class TrackList : ListView<Track, TrackListItemViewModel, TrackListItemViewHolde
 		this.adapter.viewModelFactory = {
 			TrackListItemViewModel(it)
 		}
+		
+		ProjectManager.addOnUpdateListener(this::update)
+		ProjectManager.addOnDeleteListener(this::update)
 	}
 	
 	override fun onViewHolder(holder: TrackListItemViewHolder)
 	{
 		holder.trackControlMaster = this.trackControlMaster
+	}
+	
+	private fun update()
+	{
+		val tracks = ProjectManager.getCurrent()!!.tracks.toMutableList()
+		val notifyOnChange = this.adapter.getNotifyOnChange()
+		this.adapter.setNotifyOnChange(false)
+		this.adapter.clear()
+		this.adapter.addAll(tracks)
+		this.adapter.notifyDataSetChanged()
+		this.bindBehavior.requestDispatchEvent()
+		this.adapter.setNotifyOnChange(notifyOnChange)
 	}
 }

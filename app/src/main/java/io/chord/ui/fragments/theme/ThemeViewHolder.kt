@@ -9,6 +9,7 @@ import com.mikepenz.iconics.utils.colorInt
 import io.chord.clients.models.Theme
 import io.chord.clients.models.Track
 import io.chord.databinding.ThemeListItemBinding
+import io.chord.ui.extensions.toHexaDecimalString
 import io.chord.ui.extensions.toTransparent
 import io.chord.ui.models.ThemeListItemViewModel
 import io.chord.ui.sections.ClickListener
@@ -47,7 +48,9 @@ class ThemeViewHolder(
     
     private fun getStateKey(): String
     {
-        return "${this.track.referenceId}-${this.theme.referenceId}"
+        val trackKey = this.track.referenceId.toHexaDecimalString()
+        val themeKey = this.theme.referenceId.toHexaDecimalString()
+        return "$trackKey-$themeKey"
     }
     
     private fun getStateValue(): Boolean
@@ -58,12 +61,12 @@ class ThemeViewHolder(
             val themeKey = components[1]
             
             val isTrackNotExist = !this.tracks.any {
-                val referenceId = it.referenceId.toString()
+                val referenceId = it.referenceId.toHexaDecimalString()
                 trackKey == referenceId
             }
             val isThemeNotExist = !this.tracks.any { track ->
                 track.themes.any {
-                    val referenceId = it.referenceId.toString()
+                    val referenceId = it.referenceId.toHexaDecimalString()
                     themeKey == referenceId
                 }
             }

@@ -10,29 +10,16 @@ import io.chord.databinding.ThemeListHeaderBinding
 import io.chord.ui.extensions.dpToPixel
 import io.chord.ui.extensions.toTransparent
 import io.chord.ui.sections.ClickListener
-import io.chord.ui.sections.ExpandableSection
 import io.chord.ui.sections.HeaderViewHolder
 import io.chord.ui.sections.Section
 
 class ThemeHeaderViewHolder(
-    private val color: Int,
-    isExpanded: Boolean,
     view: View
 ) : HeaderViewHolder<ThemeSectionItem, ThemeViewHolder>(view)
 {
     val binding = DataBindingUtil.bind<ThemeListHeaderBinding>(this.itemView)!!
     
-    init
-    {
-        this.binding.icon.icon!!
-            .colorInt(this.color)
-        this.toggle(isExpanded)
-        val background = this.binding.layout.background as LayerDrawable
-        val drawable = background.getDrawable(0) as GradientDrawable
-        drawable.setColor(this.color.toTransparent(0.1f))
-        drawable.setStroke(2f.dpToPixel().toInt(), this.color.toTransparent(0.2f))
-    }
-    
+    // TODO: remove this
     override fun bind(
         item: ThemeSectionItem,
         clickListener: ClickListener<ThemeSectionItem, ThemeViewHolder>
@@ -47,13 +34,24 @@ class ThemeHeaderViewHolder(
         clickListener: ClickListener<ThemeSectionItem, ThemeViewHolder>
     )
     {
-        val expandableSection = section as ExpandableSection
+        val themeSection = section as ThemeSection
+        this.initialise(themeSection)
         this.binding.title.text = title
-        this.binding.counter.text = expandableSection.getRealContentItemsTotal().toString()
+        this.binding.counter.text = themeSection.getRealContentItemsTotal().toString()
         this.binding.layout.setOnClickListener {
-            expandableSection.toggle()
-            this.toggle(expandableSection.isExpanded)
+            themeSection.toggle()
+            this.toggle(themeSection.isExpanded)
         }
+    }
+    
+    private fun initialise(section: ThemeSection)
+    {
+        this.binding.icon.icon!!.colorInt(section.track.color)
+        this.toggle(section.isExpanded)
+        val background = this.binding.layout.background as LayerDrawable
+        val drawable = background.getDrawable(0) as GradientDrawable
+        drawable.setColor(section.track.color.toTransparent(0.1f))
+        drawable.setStroke(2f.dpToPixel().toInt(), section.track.color.toTransparent(0.2f))
     }
     
     private fun toggle(isExpanded: Boolean)

@@ -7,7 +7,15 @@ import io.chord.ui.sections.ExpandableSection
 
 class ThemeSection : ExpandableSection<ThemeSectionItem, ThemeViewHolder>
 {
-	val track: Track
+	private var _track: Track
+	
+	var track: Track
+		get() = this._track
+		set(value) {
+			this._track = value
+			this.title = value.name
+			this.adapter.notifyHeaderChanged()
+		}
 	
 	constructor(
 		track: Track,
@@ -21,11 +29,11 @@ class ThemeSection : ExpandableSection<ThemeSectionItem, ThemeViewHolder>
 		R.layout.section_mini_loading,
 		R.layout.section_mini_failed,
 		{ view -> ThemeViewHolder(view) },
-		{ view -> ThemeHeaderViewHolder(track.color, isExpanded, view) },
+		{ view -> ThemeHeaderViewHolder(view) },
 		clickListener
 	)
 	{
 		this.isExpanded = isExpanded
-		this.track = track
+		this._track = track
 	}
 }

@@ -11,12 +11,19 @@ import io.github.luizgrp.sectionedrecyclerviewadapter.utils.EmptyViewHolder
 
 open class Section<TItem, THolder: ViewHolderBase<TItem, THolder>>: Section
 {
-	private var title: String? = null
+	private var _title: String? = null
 	private val dataset: MutableList<TItem> = mutableListOf()
 	protected lateinit var adapter: SectionAdapter
 	private val holderFactory: ((view: View) -> THolder)
 	private var headerHolderFactory: ((view: View) -> HeaderViewHolder<TItem, THolder>)? = null
 	private val clickListener: ClickListener<TItem, THolder>
+	
+	var title: String
+		get() = this._title!!
+		set(value) {
+			this._title = value
+			this.adapter.notifyHeaderChanged()
+		}
 	
 	constructor(
 		title: String,
@@ -40,7 +47,7 @@ open class Section<TItem, THolder: ViewHolderBase<TItem, THolder>>: Section
 	)
 	{
 		this.state = State.EMPTY
-		this.title = title
+		this._title = title
 		this.holderFactory = holderFactory
 		this.headerHolderFactory = headerHolderFactory
 		this.clickListener = clickListener
@@ -205,7 +212,7 @@ open class Section<TItem, THolder: ViewHolderBase<TItem, THolder>>: Section
 	
 	override fun getHeaderViewHolder(view: View): RecyclerView.ViewHolder
 	{
-		return if(this.title == null) EmptyViewHolder(view) else this.headerHolderFactory!!(view)
+		return if(this._title == null) EmptyViewHolder(view) else this.headerHolderFactory!!(view)
 	}
 	
 	override fun getLoadingViewHolder(view: View): RecyclerView.ViewHolder
@@ -248,7 +255,7 @@ open class Section<TItem, THolder: ViewHolderBase<TItem, THolder>>: Section
 	override fun onBindHeaderViewHolder(holder: RecyclerView.ViewHolder?)
 	{
 		(holder as? HeaderViewHolder<TItem, THolder>)?.bind(
-			this.title!!,
+			this._title!!,
 			this,
 			this.clickListener
 		)

@@ -84,26 +84,26 @@ abstract class ListView<TModel, TViewModel: ListViewModel, TViewHolder: ListView
 	}
 	
 	private class ListViewDataSetObserver(
-		private val trackList: ListView<*, *, *>
+		private val list: ListView<*, *, *>
 	) : DataSetObserver()
 	{
 		override fun onChanged()
 		{
-			this.trackList.populateLayout()
-			this.trackList.bindBehavior.requestDispatchEvent()
+			this.list.populateLayout()
+			this.list.bindBehavior.requestDispatchEvent()
 		}
 		
 		override fun onInvalidated()
 		{
-			this.trackList.populateLayout()
-			this.trackList.bindBehavior.requestDispatchEvent()
+			this.list.populateLayout()
+			this.list.bindBehavior.requestDispatchEvent()
 		}
 	}
 	
 	private var draggedItem: View? = null
 	private val zoomBehavior: ZoomBehavior = ZoomBehavior()
 	private val bindableBehavior = BindableBehavior(this)
-	private val bindBehavior = BindBehavior<Listable<TModel>>(this)
+	protected val bindBehavior = BindBehavior<Listable<TModel>>(this)
 	private val divider: ShapeDrawable = ShapeDrawable()
 	protected val adapter: ListAdapter<TModel, TViewModel> = ListAdapter(this.context)
 	

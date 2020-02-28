@@ -22,6 +22,8 @@ import io.chord.ui.components.Listable
 import io.chord.ui.dialogs.cudc.CudcOperation
 import io.chord.ui.dialogs.customs.SelectCudcOperationDialog
 import io.chord.ui.dialogs.flows.ThemeFlow
+import io.chord.ui.extensions.toHexaDecimalString
+import io.chord.ui.models.comparables.toComparable
 import io.chord.ui.sections.Section
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter
 import java.util.*
@@ -174,13 +176,45 @@ class ThemeListFragment : Fragment(), ThemeClickListener, Listable<Track>
         val states = sections.map {
             it.key to (it.value as ThemeSection).isExpanded
         }
+    
+        // TODO : move condition into foreach
+        if(sections.isNotEmpty() && dataset.toComparable() == tracks.toComparable())
+        {
+            val referenceIds = dataset.map {
+                it.referenceId.toHexaDecimalString()
+            }
+            
+            sections.filterKeys {
+                !referenceIds.contains(it)
+            }
+            .forEach {
+                sections.remove(it.key)
+            }
+            
+            dataset.forEach { track ->
+                val referenceId = track.referenceId.toHexaDecimalString()
+                val section = this.viewAdapter.getSection(referenceId) as ThemeSection
+                val themes = tracks.first {
+                    it.referenceId.toHexaDecimalString() == referenceId
+                }
+                .themes
+                section.track = track
+                section.setDataset(themes.map {
+                    ThemeSectionItem(dataset, track, it)
+                })
+            }
+            
+            this.viewAdapter.notifyDataSetChanged()
+            
+            return
+        }
         
         this.viewAdapter.removeAllSections()
         this.recyclerView.adapter = null
         this.recyclerView.layoutManager = null
         
         dataset.forEach { track ->
-            val referenceId = track.referenceId.toString()
+            val referenceId = track.referenceId.toHexaDecimalString()
             val state = states.firstOrNull { it.first == referenceId }
             val isExpanded = state?.second ?: false
             val section = ThemeSection(
@@ -189,9 +223,9 @@ class ThemeListFragment : Fragment(), ThemeClickListener, Listable<Track>
                 this
             )
             val themes = tracks.first {
-                    it.referenceId.toString() == referenceId
-                }
-                .themes
+                it.referenceId.toHexaDecimalString() == referenceId
+            }
+            .themes
     
             this.viewAdapter.addSection(referenceId, section)
             section.setAdapter(this.viewAdapter)
