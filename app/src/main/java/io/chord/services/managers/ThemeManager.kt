@@ -65,12 +65,22 @@ class ThemeManager
 			this.manager.staging(project)
 		}
 		
-		fun indexOf(theme: Theme): Int
+		fun indexOf(item: Theme): Int
 		{
-			val track = this.manager.getCurrent()!!.tracks.first()
-			return track.themes.indexOfFirst {
-				it.referenceId == theme.referenceId
+			val tracks = this.manager.getCurrent()!!.tracks
+			
+			for(track in tracks)
+			{
+				for(theme in track.themes)
+				{
+					if(theme.referenceId == item.referenceId)
+					{
+						return track.themes.indexOf(theme)
+					}
+				}
 			}
+			
+			return -1
 		}
 	}
 }
