@@ -1,6 +1,5 @@
 package io.chord.clients.models
 
-
 import io.chord.clients.models.Sequence
 import org.threeten.bp.LocalDateTime
 import com.squareup.moshi.Json
@@ -10,6 +9,7 @@ import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
+import io.chord.clients.BaseModel
 
 /**
     * @property name
@@ -19,7 +19,7 @@ import java.io.Serializable
 open class Theme(
     @Json(name = "name") @field:Json(name = "name") var name: String,
     @Json(name = "sequences") @field:Json(name = "sequences") var sequences: List<Sequence>
-): Serializable
+): Serializable, BaseModel()
 {
     open fun copy(): Theme
     {

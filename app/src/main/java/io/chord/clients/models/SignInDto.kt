@@ -8,6 +8,7 @@ import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
+import io.chord.clients.BaseModel
 
 /**
     * @property username
@@ -17,7 +18,7 @@ import java.io.Serializable
 open class SignInDto(
     @Json(name = "username") @field:Json(name = "username") var username: String,
     @Json(name = "password") @field:Json(name = "password") var password: String
-): Serializable
+): Serializable, BaseModel()
 {
     open fun copy(): SignInDto
     {

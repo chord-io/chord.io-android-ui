@@ -1,7 +1,6 @@
 package {{modelPackage}}
 
-{{#imports}}{{#-first}}
-{{/-first}}import {{import}}
+{{#imports}}{{#-first}}{{/-first}}import {{import}}
 {{/imports}}
 {{#threetenbp}}
 import org.threeten.bp.LocalDateTime
@@ -13,6 +12,7 @@ import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
+{{#parent}}{{/parent}}{{^parent}}import io.chord.clients.BaseModel{{/parent}}
 
 {{#models}}
 {{#model}}

@@ -69,7 +69,7 @@ class ThemeManager
 		{
 			val track = this.manager.getCurrent()!!.tracks.first()
 			return track.themes.indexOfFirst {
-				it.name == theme.name
+				it.referenceId == theme.referenceId
 			}
 		}
 	}

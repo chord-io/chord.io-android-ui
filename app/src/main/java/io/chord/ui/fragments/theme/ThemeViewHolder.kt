@@ -47,7 +47,7 @@ class ThemeViewHolder(
     
     private fun getStateKey(): String
     {
-        return "${this.track.name}-${this.theme.name}"
+        return "${this.track.referenceId}-${this.theme.referenceId}"
     }
     
     private fun getStateValue(): Boolean
@@ -58,11 +58,13 @@ class ThemeViewHolder(
             val themeKey = components[1]
             
             val isTrackNotExist = !this.tracks.any {
-                trackKey == it.name
+                val referenceId = it.referenceId.toString()
+                trackKey == referenceId
             }
             val isThemeNotExist = !this.tracks.any { track ->
                 track.themes.any {
-                    themeKey == it.name
+                    val referenceId = it.referenceId.toString()
+                    themeKey == referenceId
                 }
             }
             isTrackNotExist || isThemeNotExist

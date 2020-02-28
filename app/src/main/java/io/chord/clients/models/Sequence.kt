@@ -1,6 +1,5 @@
 package io.chord.clients.models
 
-
 import io.chord.clients.models.SequenceLength
 import org.threeten.bp.LocalDateTime
 import com.squareup.moshi.Json
@@ -10,6 +9,7 @@ import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
+import io.chord.clients.BaseModel
 
 /**
     * @property length
@@ -17,7 +17,7 @@ import java.io.Serializable
 
 abstract class Sequence(
     @Json(name = "length") @field:Json(name = "length") var length: SequenceLength
-): Serializable
+): Serializable, BaseModel()
 {
     open fun copy(): Sequence
     {

@@ -1,6 +1,5 @@
 package io.chord.clients.models
 
-
 import io.chord.clients.models.Object
 import org.threeten.bp.LocalDateTime
 import com.squareup.moshi.Json
@@ -10,6 +9,7 @@ import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
+import io.chord.clients.BaseModel
 
 /**
     * @property errors
@@ -29,7 +29,7 @@ open class ValidationProblemDetails(
     @Json(name = "status") @field:Json(name = "status") var status: Int? = null,
     @Json(name = "detail") @field:Json(name = "detail") var detail: String? = null,
     @Json(name = "instance") @field:Json(name = "instance") var instance: String? = null,
-    @Json(name = "extensions") @field:Json(name = "extensions") var extensions: Map<String, Object>? = null): Serializable
+    @Json(name = "extensions") @field:Json(name = "extensions") var extensions: Map<String, Object>? = null): Serializable, BaseModel()
 {
     open fun copy(): ValidationProblemDetails
     {

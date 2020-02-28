@@ -8,6 +8,7 @@ import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
+import io.chord.clients.BaseModel
 
 /**
     * @property position
@@ -19,7 +20,7 @@ open class FingeringEntry(
     @Json(name = "position") @field:Json(name = "position") var position: Double,
     @Json(name = "length") @field:Json(name = "length") var length: Double,
     @Json(name = "pitch") @field:Json(name = "pitch") var pitch: Int
-): Serializable
+): Serializable, BaseModel()
 {
     open fun copy(): FingeringEntry
     {

@@ -1,6 +1,5 @@
 package io.chord.clients.models
 
-
 import io.chord.clients.models.IntervalQuality
 import org.threeten.bp.LocalDateTime
 import com.squareup.moshi.Json
@@ -10,6 +9,7 @@ import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
+import io.chord.clients.BaseModel
 
 /**
     * @property quality
@@ -21,7 +21,7 @@ open class DegreeAndSemitonesIntervalDto(
     @Json(name = "quality") @field:Json(name = "quality") var quality: IntervalQuality,
     @Json(name = "degree") @field:Json(name = "degree") var degree: Int,
     @Json(name = "semitones") @field:Json(name = "semitones") var semitones: Int
-): Serializable
+): Serializable, BaseModel()
 {
     open fun copy(): DegreeAndSemitonesIntervalDto
     {

@@ -8,12 +8,13 @@ import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
+import io.chord.clients.BaseModel
 
 /**
 */
 
 open class Object(
-): Serializable
+): Serializable, BaseModel()
 {
     open fun copy(): Object
     {

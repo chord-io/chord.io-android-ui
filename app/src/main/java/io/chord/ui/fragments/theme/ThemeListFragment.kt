@@ -180,24 +180,23 @@ class ThemeListFragment : Fragment(), ThemeClickListener, Listable<Track>
         this.recyclerView.layoutManager = null
         
         dataset.forEach { track ->
-            val hashCode = track.hashCode().toString()
-            val state = states.firstOrNull { it.first == hashCode }
+            val referenceId = track.referenceId.toString()
+            val state = states.firstOrNull { it.first == referenceId }
             val isExpanded = state?.second ?: false
             val section = ThemeSection(
                 track,
                 isExpanded,
                 this
             )
-            val themes = tracks
-                .first {
-                    it.name == track.name
+            val themes = tracks.first {
+                    it.referenceId.toString() == referenceId
                 }
                 .themes
     
-            this.viewAdapter.addSection(hashCode, section)
+            this.viewAdapter.addSection(referenceId, section)
             section.setAdapter(this.viewAdapter)
             section.setDataset(themes.map {
-                ThemeSectionItem(tracks, track, it)
+                ThemeSectionItem(dataset, track, it)
             })
         }
     

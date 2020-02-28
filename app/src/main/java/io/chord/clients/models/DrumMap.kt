@@ -8,6 +8,7 @@ import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
+import io.chord.clients.BaseModel
 
 /**
     * @property id
@@ -19,7 +20,7 @@ open class DrumMap(
     @Json(name = "id") @field:Json(name = "id") var id: String,
     @Json(name = "name") @field:Json(name = "name") var name: String,
     @Json(name = "map") @field:Json(name = "map") var map: Map<String, String>
-): Serializable
+): Serializable, BaseModel()
 {
     open fun copy(): DrumMap
     {

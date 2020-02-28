@@ -57,7 +57,7 @@ class TrackManager
 		{
 			val tracks = this.manager.getCurrent()!!.tracks
 			return tracks.indexOfFirst {
-				it.name == track.name
+				it.referenceId == track.referenceId
 			}
 		}
 	}

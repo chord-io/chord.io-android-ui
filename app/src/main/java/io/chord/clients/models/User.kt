@@ -8,6 +8,7 @@ import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
+import io.chord.clients.BaseModel
 
 /**
     * @property id
@@ -19,7 +20,7 @@ open class User(
     @Json(name = "id") @field:Json(name = "id") var id: String,
     @Json(name = "username") @field:Json(name = "username") var username: String,
     @Json(name = "email") @field:Json(name = "email") var email: String
-): Serializable
+): Serializable, BaseModel()
 {
     open fun copy(): User
     {

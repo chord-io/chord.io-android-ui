@@ -1,6 +1,5 @@
 package io.chord.clients.models
 
-
 import io.chord.clients.models.ThemeLength
 import org.threeten.bp.LocalDateTime
 import com.squareup.moshi.Json
@@ -10,6 +9,7 @@ import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
+import io.chord.clients.BaseModel
 
 /**
     * @property index
@@ -19,7 +19,7 @@ import java.io.Serializable
 open class ThemeEntry(
     @Json(name = "index") @field:Json(name = "index") var index: Int,
     @Json(name = "length") @field:Json(name = "length") var length: ThemeLength
-): Serializable
+): Serializable, BaseModel()
 {
     open fun copy(): ThemeEntry
     {

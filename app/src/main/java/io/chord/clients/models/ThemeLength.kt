@@ -8,6 +8,7 @@ import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
+import io.chord.clients.BaseModel
 
 /**
     * @property start
@@ -17,7 +18,7 @@ import java.io.Serializable
 open class ThemeLength(
     @Json(name = "start") @field:Json(name = "start") var start: Double,
     @Json(name = "end") @field:Json(name = "end") var end: Double
-): Serializable
+): Serializable, BaseModel()
 {
     open fun copy(): ThemeLength
     {

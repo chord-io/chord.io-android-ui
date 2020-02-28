@@ -1,6 +1,5 @@
 package io.chord.clients.models
 
-
 import io.chord.clients.models.FingeringEntry
 import org.threeten.bp.LocalDateTime
 import com.squareup.moshi.Json
@@ -10,6 +9,7 @@ import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
+import io.chord.clients.BaseModel
 
 /**
     * @property entries
@@ -17,7 +17,7 @@ import java.io.Serializable
 
 open class InnerFingering(
 
-    @Json(name = "entries") @field:Json(name = "entries") var entries: List<FingeringEntry>? = null): Serializable
+    @Json(name = "entries") @field:Json(name = "entries") var entries: List<FingeringEntry>? = null): Serializable, BaseModel()
 {
     open fun copy(): InnerFingering
     {

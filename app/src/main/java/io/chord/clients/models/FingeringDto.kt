@@ -1,6 +1,5 @@
 package io.chord.clients.models
 
-
 import io.chord.clients.models.FingeringEntry
 import io.chord.clients.models.FingeringType
 import org.threeten.bp.LocalDateTime
@@ -11,6 +10,7 @@ import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
+import io.chord.clients.BaseModel
 
 /**
     * @property editedFrom
@@ -28,7 +28,7 @@ open class FingeringDto(
     @Json(name = "tags") @field:Json(name = "tags") var tags: List<String>,
     @Json(name = "evaluations") @field:Json(name = "evaluations") var evaluations: Map<String, Int>,
     @Json(name = "entries") @field:Json(name = "entries") var entries: List<FingeringEntry>
-): Serializable
+): Serializable, BaseModel()
 {
     open fun copy(): FingeringDto
     {

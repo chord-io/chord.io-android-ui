@@ -26,7 +26,7 @@
     {{name}}{{^-last}},
 {{/-last}}
 {{/parentVars}}
-){{/parent}}
+){{/parent}}{{^parent}}, BaseModel(){{/parent}}
 {
 {{#hasEnums}}
 {{#vars}}

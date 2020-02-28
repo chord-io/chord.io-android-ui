@@ -1,11 +1,7 @@
 package io.chord.clients.models
 
-
-import io.chord.clients.models.Theme
-import io.chord.clients.models.ThemeEntry
-import org.threeten.bp.LocalDateTime
 import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import io.chord.clients.BaseModel
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
@@ -24,7 +20,7 @@ abstract class Track(
     @Json(name = "color") @field:Json(name = "color") var color: Int,
     @Json(name = "themes") @field:Json(name = "themes") var themes: List<Theme>,
     @Json(name = "entries") @field:Json(name = "entries") var entries: List<ThemeEntry>
-): Serializable
+): Serializable, BaseModel()
 {
     open fun copy(): Track
     {
