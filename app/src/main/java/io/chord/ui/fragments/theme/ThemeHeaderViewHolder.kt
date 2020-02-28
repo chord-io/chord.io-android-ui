@@ -64,7 +64,7 @@ class ThemeHeaderViewHolder(
         }
         else
         {
-            FontAwesome.Icon.faw_caret_up
+            FontAwesome.Icon.faw_caret_right
         }
         this.binding.icon.icon!!.icon(icon)
     }
