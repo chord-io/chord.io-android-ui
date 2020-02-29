@@ -12,6 +12,7 @@ import com.mikepenz.iconics.utils.sizeRes
 import io.chord.R
 import io.chord.databinding.ActivitySequencerBinding
 import io.chord.ui.behaviors.ToolbarEditorBehavior
+import io.chord.ui.extensions.addIcon
 import io.chord.ui.fragments.theme.ThemeListFragment
 import io.chord.ui.fragments.track.TrackListFragment
 
@@ -56,6 +57,8 @@ class SequencerActivity : AppCompatActivity()
 		this.binding.library.addItemButton.setOnClickListener {
 			themeList.create()
 		}
+		
+		this.binding.addBarButton.addIcon(this)
 		
 		this.toolBarBehavior = ToolbarEditorBehavior(
 			this,

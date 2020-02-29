@@ -11,6 +11,7 @@ import io.chord.R
 import io.chord.clients.ClientApi
 import io.chord.clients.apis.ProjectsApi
 import io.chord.services.authentication.storage.SharedPreferencesAuthenticationStorage
+import io.chord.ui.extensions.addIcon
 import io.chord.ui.fragments.project.ProjectListFragment
 import org.koin.android.ext.android.inject
 
@@ -21,16 +22,13 @@ class MainActivity : AppCompatActivity()
 	
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
+		// TODO use binding
 		super.onCreate(savedInstanceState)
 		this.setContentView(R.layout.activity_main)
 		this.setSupportActionBar(this.findViewById(R.id.toolbar))
 		
 		val addProjectButton = this.findViewById<FloatingActionButton>(R.id.addProjectButton)
-		addProjectButton.setImageDrawable(
-			IconicsDrawable(this)
-				.icon(FontAwesome.Icon.faw_plus)
-				.colorRes(R.color.backgroundPrimary)
-		)
+		addProjectButton.addIcon(this)
 		addProjectButton.setOnClickListener { this.showCreateProjectDialog() }
 	}
 	
