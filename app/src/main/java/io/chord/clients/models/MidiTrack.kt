@@ -23,7 +23,7 @@ open class MidiTrack(
     themes,
     entries)
 {
-    override fun copy(): MidiTrack
+    override fun copy(regenerate: Boolean): MidiTrack
     {
         val byteArrayOutputStream = ByteArrayOutputStream()
         val objectOutputStream = ObjectOutputStream(byteArrayOutputStream)
@@ -31,6 +31,13 @@ open class MidiTrack(
         objectOutputStream.close()
         val byteArrayInputStream = ByteArrayInputStream(byteArrayOutputStream.toByteArray())
         val objectInputStream = ObjectInputStream(byteArrayInputStream)
-        return objectInputStream.readObject() as MidiTrack
+        val obj = objectInputStream.readObject() as MidiTrack
+
+        if(regenerate)
+        {
+            obj.regenerate()
+        }
+
+        return obj
     }
 }

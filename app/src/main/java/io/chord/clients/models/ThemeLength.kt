@@ -1,14 +1,12 @@
 package io.chord.clients.models
 
-import org.threeten.bp.LocalDateTime
 import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import io.chord.clients.BaseModel
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
-import io.chord.clients.BaseModel
 
 /**
     * @property start
@@ -20,7 +18,7 @@ open class ThemeLength(
     @Json(name = "end") @field:Json(name = "end") var end: Double
 ): Serializable, BaseModel()
 {
-    open fun copy(): ThemeLength
+    open fun copy(regenerate: Boolean = false): ThemeLength
     {
         val byteArrayOutputStream = ByteArrayOutputStream()
         val objectOutputStream = ObjectOutputStream(byteArrayOutputStream)
@@ -28,6 +26,13 @@ open class ThemeLength(
         objectOutputStream.close()
         val byteArrayInputStream = ByteArrayInputStream(byteArrayOutputStream.toByteArray())
         val objectInputStream = ObjectInputStream(byteArrayInputStream)
-        return objectInputStream.readObject() as ThemeLength
+        val obj = objectInputStream.readObject() as ThemeLength
+
+        if(regenerate)
+        {
+            obj.regenerate()
+        }
+
+        return obj
     }
 }

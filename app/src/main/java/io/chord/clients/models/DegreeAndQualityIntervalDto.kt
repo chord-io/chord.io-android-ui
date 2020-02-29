@@ -23,7 +23,7 @@ open class DegreeAndQualityIntervalDto(
     @Json(name = "quality") @field:Json(name = "quality") var quality: IntervalQuality
 ): Serializable, BaseModel()
 {
-    open fun copy(): DegreeAndQualityIntervalDto
+    open fun copy(regenerate: Boolean = false): DegreeAndQualityIntervalDto
     {
         val byteArrayOutputStream = ByteArrayOutputStream()
         val objectOutputStream = ObjectOutputStream(byteArrayOutputStream)
@@ -31,6 +31,13 @@ open class DegreeAndQualityIntervalDto(
         objectOutputStream.close()
         val byteArrayInputStream = ByteArrayInputStream(byteArrayOutputStream.toByteArray())
         val objectInputStream = ObjectInputStream(byteArrayInputStream)
-        return objectInputStream.readObject() as DegreeAndQualityIntervalDto
+        val obj = objectInputStream.readObject() as DegreeAndQualityIntervalDto
+
+        if(regenerate)
+        {
+            obj.regenerate()
+        }
+
+        return obj
     }
 }

@@ -28,7 +28,7 @@ open class Authentication(
     @Json(name = "expiration_date") @field:Json(name = "expiration_date") var expirationDate: org.threeten.bp.ZonedDateTime? = null,
     @Json(name = "refresh_expiration_date") @field:Json(name = "refresh_expiration_date") var refreshExpirationDate: org.threeten.bp.ZonedDateTime? = null): Serializable, BaseModel()
 {
-    open fun copy(): Authentication
+    open fun copy(regenerate: Boolean = false): Authentication
     {
         val byteArrayOutputStream = ByteArrayOutputStream()
         val objectOutputStream = ObjectOutputStream(byteArrayOutputStream)
@@ -36,6 +36,13 @@ open class Authentication(
         objectOutputStream.close()
         val byteArrayInputStream = ByteArrayInputStream(byteArrayOutputStream.toByteArray())
         val objectInputStream = ObjectInputStream(byteArrayInputStream)
-        return objectInputStream.readObject() as Authentication
+        val obj = objectInputStream.readObject() as Authentication
+
+        if(regenerate)
+        {
+            obj.regenerate()
+        }
+
+        return obj
     }
 }

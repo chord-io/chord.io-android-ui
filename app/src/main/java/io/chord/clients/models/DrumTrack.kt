@@ -29,7 +29,7 @@ open class DrumTrack(
     entries,
     channel)
 {
-    override fun copy(): DrumTrack
+    override fun copy(regenerate: Boolean): DrumTrack
     {
         val byteArrayOutputStream = ByteArrayOutputStream()
         val objectOutputStream = ObjectOutputStream(byteArrayOutputStream)
@@ -37,6 +37,13 @@ open class DrumTrack(
         objectOutputStream.close()
         val byteArrayInputStream = ByteArrayInputStream(byteArrayOutputStream.toByteArray())
         val objectInputStream = ObjectInputStream(byteArrayInputStream)
-        return objectInputStream.readObject() as DrumTrack
+        val obj = objectInputStream.readObject() as DrumTrack
+
+        if(regenerate)
+        {
+            obj.regenerate()
+        }
+
+        return obj
     }
 }

@@ -31,7 +31,7 @@ open class ValidationProblemDetails(
     @Json(name = "instance") @field:Json(name = "instance") var instance: String? = null,
     @Json(name = "extensions") @field:Json(name = "extensions") var extensions: Map<String, Object>? = null): Serializable, BaseModel()
 {
-    open fun copy(): ValidationProblemDetails
+    open fun copy(regenerate: Boolean = false): ValidationProblemDetails
     {
         val byteArrayOutputStream = ByteArrayOutputStream()
         val objectOutputStream = ObjectOutputStream(byteArrayOutputStream)
@@ -39,6 +39,13 @@ open class ValidationProblemDetails(
         objectOutputStream.close()
         val byteArrayInputStream = ByteArrayInputStream(byteArrayOutputStream.toByteArray())
         val objectInputStream = ObjectInputStream(byteArrayInputStream)
-        return objectInputStream.readObject() as ValidationProblemDetails
+        val obj = objectInputStream.readObject() as ValidationProblemDetails
+
+        if(regenerate)
+        {
+            obj.regenerate()
+        }
+
+        return obj
     }
 }

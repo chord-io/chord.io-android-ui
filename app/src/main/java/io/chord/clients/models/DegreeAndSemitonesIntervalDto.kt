@@ -23,7 +23,7 @@ open class DegreeAndSemitonesIntervalDto(
     @Json(name = "semitones") @field:Json(name = "semitones") var semitones: Int
 ): Serializable, BaseModel()
 {
-    open fun copy(): DegreeAndSemitonesIntervalDto
+    open fun copy(regenerate: Boolean = false): DegreeAndSemitonesIntervalDto
     {
         val byteArrayOutputStream = ByteArrayOutputStream()
         val objectOutputStream = ObjectOutputStream(byteArrayOutputStream)
@@ -31,6 +31,13 @@ open class DegreeAndSemitonesIntervalDto(
         objectOutputStream.close()
         val byteArrayInputStream = ByteArrayInputStream(byteArrayOutputStream.toByteArray())
         val objectInputStream = ObjectInputStream(byteArrayInputStream)
-        return objectInputStream.readObject() as DegreeAndSemitonesIntervalDto
+        val obj = objectInputStream.readObject() as DegreeAndSemitonesIntervalDto
+
+        if(regenerate)
+        {
+            obj.regenerate()
+        }
+
+        return obj
     }
 }

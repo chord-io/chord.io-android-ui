@@ -19,7 +19,7 @@ abstract class Sequence(
     @Json(name = "length") @field:Json(name = "length") var length: SequenceLength
 ): Serializable, BaseModel()
 {
-    open fun copy(): Sequence
+    open fun copy(regenerate: Boolean = false): Sequence
     {
         val byteArrayOutputStream = ByteArrayOutputStream()
         val objectOutputStream = ObjectOutputStream(byteArrayOutputStream)
@@ -27,6 +27,13 @@ abstract class Sequence(
         objectOutputStream.close()
         val byteArrayInputStream = ByteArrayInputStream(byteArrayOutputStream.toByteArray())
         val objectInputStream = ObjectInputStream(byteArrayInputStream)
-        return objectInputStream.readObject() as Sequence
+        val obj = objectInputStream.readObject() as Sequence
+
+        if(regenerate)
+        {
+            obj.regenerate()
+        }
+
+        return obj
     }
 }

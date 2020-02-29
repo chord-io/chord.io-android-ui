@@ -21,7 +21,7 @@ open class Theme(
     @Json(name = "sequences") @field:Json(name = "sequences") var sequences: List<Sequence>
 ): Serializable, BaseModel()
 {
-    open fun copy(): Theme
+    open fun copy(regenerate: Boolean = false): Theme
     {
         val byteArrayOutputStream = ByteArrayOutputStream()
         val objectOutputStream = ObjectOutputStream(byteArrayOutputStream)
@@ -29,6 +29,13 @@ open class Theme(
         objectOutputStream.close()
         val byteArrayInputStream = ByteArrayInputStream(byteArrayOutputStream.toByteArray())
         val objectInputStream = ObjectInputStream(byteArrayInputStream)
-        return objectInputStream.readObject() as Theme
+        val obj = objectInputStream.readObject() as Theme
+
+        if(regenerate)
+        {
+            obj.regenerate()
+        }
+
+        return obj
     }
 }

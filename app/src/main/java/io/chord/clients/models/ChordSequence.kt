@@ -26,7 +26,7 @@ open class ChordSequence(
     length,
     fingering)
 {
-    override fun copy(): ChordSequence
+    override fun copy(regenerate: Boolean): ChordSequence
     {
         val byteArrayOutputStream = ByteArrayOutputStream()
         val objectOutputStream = ObjectOutputStream(byteArrayOutputStream)
@@ -34,6 +34,13 @@ open class ChordSequence(
         objectOutputStream.close()
         val byteArrayInputStream = ByteArrayInputStream(byteArrayOutputStream.toByteArray())
         val objectInputStream = ObjectInputStream(byteArrayInputStream)
-        return objectInputStream.readObject() as ChordSequence
+        val obj = objectInputStream.readObject() as ChordSequence
+
+        if(regenerate)
+        {
+            obj.regenerate()
+        }
+
+        return obj
     }
 }

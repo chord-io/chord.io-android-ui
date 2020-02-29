@@ -30,7 +30,7 @@ open class FingeringDto(
     @Json(name = "entries") @field:Json(name = "entries") var entries: List<FingeringEntry>
 ): Serializable, BaseModel()
 {
-    open fun copy(): FingeringDto
+    open fun copy(regenerate: Boolean = false): FingeringDto
     {
         val byteArrayOutputStream = ByteArrayOutputStream()
         val objectOutputStream = ObjectOutputStream(byteArrayOutputStream)
@@ -38,6 +38,13 @@ open class FingeringDto(
         objectOutputStream.close()
         val byteArrayInputStream = ByteArrayInputStream(byteArrayOutputStream.toByteArray())
         val objectInputStream = ObjectInputStream(byteArrayInputStream)
-        return objectInputStream.readObject() as FingeringDto
+        val obj = objectInputStream.readObject() as FingeringDto
+
+        if(regenerate)
+        {
+            obj.regenerate()
+        }
+
+        return obj
     }
 }

@@ -21,7 +21,7 @@ open class DrumSequence(
     length,
     fingering)
 {
-    override fun copy(): DrumSequence
+    override fun copy(regenerate: Boolean): DrumSequence
     {
         val byteArrayOutputStream = ByteArrayOutputStream()
         val objectOutputStream = ObjectOutputStream(byteArrayOutputStream)
@@ -29,6 +29,13 @@ open class DrumSequence(
         objectOutputStream.close()
         val byteArrayInputStream = ByteArrayInputStream(byteArrayOutputStream.toByteArray())
         val objectInputStream = ObjectInputStream(byteArrayInputStream)
-        return objectInputStream.readObject() as DrumSequence
+        val obj = objectInputStream.readObject() as DrumSequence
+
+        if(regenerate)
+        {
+            obj.regenerate()
+        }
+
+        return obj
     }
 }

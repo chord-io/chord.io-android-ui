@@ -22,7 +22,7 @@ open class NoteDto(
     @Json(name = "alteration") @field:Json(name = "alteration") var alteration: Int
 ): Serializable, BaseModel()
 {
-    open fun copy(): NoteDto
+    open fun copy(regenerate: Boolean = false): NoteDto
     {
         val byteArrayOutputStream = ByteArrayOutputStream()
         val objectOutputStream = ObjectOutputStream(byteArrayOutputStream)
@@ -30,6 +30,13 @@ open class NoteDto(
         objectOutputStream.close()
         val byteArrayInputStream = ByteArrayInputStream(byteArrayOutputStream.toByteArray())
         val objectInputStream = ObjectInputStream(byteArrayInputStream)
-        return objectInputStream.readObject() as NoteDto
+        val obj = objectInputStream.readObject() as NoteDto
+
+        if(regenerate)
+        {
+            obj.regenerate()
+        }
+
+        return obj
     }
 }

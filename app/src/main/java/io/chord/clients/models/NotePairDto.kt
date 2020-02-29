@@ -21,7 +21,7 @@ open class NotePairDto(
     @Json(name = "b") @field:Json(name = "b") var b: NoteDto
 ): Serializable, BaseModel()
 {
-    open fun copy(): NotePairDto
+    open fun copy(regenerate: Boolean = false): NotePairDto
     {
         val byteArrayOutputStream = ByteArrayOutputStream()
         val objectOutputStream = ObjectOutputStream(byteArrayOutputStream)
@@ -29,6 +29,13 @@ open class NotePairDto(
         objectOutputStream.close()
         val byteArrayInputStream = ByteArrayInputStream(byteArrayOutputStream.toByteArray())
         val objectInputStream = ObjectInputStream(byteArrayInputStream)
-        return objectInputStream.readObject() as NotePairDto
+        val obj = objectInputStream.readObject() as NotePairDto
+
+        if(regenerate)
+        {
+            obj.regenerate()
+        }
+
+        return obj
     }
 }

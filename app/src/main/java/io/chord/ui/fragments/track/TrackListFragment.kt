@@ -6,10 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import io.chord.R
-import io.chord.clients.doOnSuccess
 import io.chord.clients.models.MidiTrack
 import io.chord.clients.models.Track
-import io.chord.clients.observe
 import io.chord.services.managers.ProjectManager
 import io.chord.ui.behaviors.Binder
 import io.chord.ui.components.ListClickListener
@@ -90,10 +88,6 @@ class TrackListFragment : Fragment(), ListClickListener<Track>, Binder
 		dialog.onValidate = {}
 		dialog.onMidiSelected = {
 			this.flow.midi.create()
-				.doOnSuccess {
-					this.list.add(it)
-				}
-				.observe()
 		}
 		
 		dialog.show()
@@ -102,28 +96,16 @@ class TrackListFragment : Fragment(), ListClickListener<Track>, Binder
 	private fun update(item: Track)
 	{
 		this.flow.fromModel(item).update(item as MidiTrack)
-			.doOnSuccess {
-				this.list.update(it)
-			}
-			.observe()
 	}
 	
 	private fun delete(item: Track)
 	{
 		this.flow.fromModel(item).delete(item as MidiTrack)
-			.doOnSuccess {
-				this.list.remove(item)
-			}
-			.observe()
 	}
 	
 	private fun clone(item: Track)
 	{
 		this.flow.fromModel(item).clone(item as MidiTrack)
-			.doOnSuccess {
-				this.list.add(it)
-			}
-			.observe()
 	}
 	
 	private fun loadTracks()

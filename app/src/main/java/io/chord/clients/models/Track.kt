@@ -1,12 +1,16 @@
 package io.chord.clients.models
 
+import io.chord.clients.models.Theme
+import io.chord.clients.models.ThemeEntry
+import org.threeten.bp.LocalDateTime
 import com.squareup.moshi.Json
-import io.chord.clients.BaseModel
+import com.squareup.moshi.JsonClass
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
+import io.chord.clients.BaseModel
 
 /**
     * @property name
@@ -22,7 +26,7 @@ abstract class Track(
     @Json(name = "entries") @field:Json(name = "entries") var entries: List<ThemeEntry>
 ): Serializable, BaseModel()
 {
-    open fun copy(): Track
+    open fun copy(regenerate: Boolean = false): Track
     {
         val byteArrayOutputStream = ByteArrayOutputStream()
         val objectOutputStream = ObjectOutputStream(byteArrayOutputStream)
@@ -30,6 +34,13 @@ abstract class Track(
         objectOutputStream.close()
         val byteArrayInputStream = ByteArrayInputStream(byteArrayOutputStream.toByteArray())
         val objectInputStream = ObjectInputStream(byteArrayInputStream)
-        return objectInputStream.readObject() as Track
+        val obj = objectInputStream.readObject() as Track
+
+        if(regenerate)
+        {
+            obj.regenerate()
+        }
+
+        return obj
     }
 }

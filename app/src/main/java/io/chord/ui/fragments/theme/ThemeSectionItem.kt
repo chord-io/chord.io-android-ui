@@ -8,3 +8,19 @@ class ThemeSectionItem(
 	val track: Track,
 	val theme: Theme
 )
+{
+	override fun equals(other: Any?): Boolean
+	{
+		if(other is ThemeSectionItem)
+		{
+			return this.theme.name == other.theme.name
+		}
+		
+		return false
+	}
+	
+	override fun hashCode(): Int
+	{
+		return super.hashCode()
+	}
+}

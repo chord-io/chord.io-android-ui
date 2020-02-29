@@ -22,7 +22,7 @@ open class UserDto(
     @Json(name = "password") @field:Json(name = "password") var password: String
 ): Serializable, BaseModel()
 {
-    open fun copy(): UserDto
+    open fun copy(regenerate: Boolean = false): UserDto
     {
         val byteArrayOutputStream = ByteArrayOutputStream()
         val objectOutputStream = ObjectOutputStream(byteArrayOutputStream)
@@ -30,6 +30,13 @@ open class UserDto(
         objectOutputStream.close()
         val byteArrayInputStream = ByteArrayInputStream(byteArrayOutputStream.toByteArray())
         val objectInputStream = ObjectInputStream(byteArrayInputStream)
-        return objectInputStream.readObject() as UserDto
+        val obj = objectInputStream.readObject() as UserDto
+
+        if(regenerate)
+        {
+            obj.regenerate()
+        }
+
+        return obj
     }
 }

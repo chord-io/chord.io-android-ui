@@ -22,7 +22,7 @@ open class DrumMapDto(
     @Json(name = "map") @field:Json(name = "map") var map: Map<String, String>
 ): Serializable, BaseModel()
 {
-    open fun copy(): DrumMapDto
+    open fun copy(regenerate: Boolean = false): DrumMapDto
     {
         val byteArrayOutputStream = ByteArrayOutputStream()
         val objectOutputStream = ObjectOutputStream(byteArrayOutputStream)
@@ -30,6 +30,13 @@ open class DrumMapDto(
         objectOutputStream.close()
         val byteArrayInputStream = ByteArrayInputStream(byteArrayOutputStream.toByteArray())
         val objectInputStream = ObjectInputStream(byteArrayInputStream)
-        return objectInputStream.readObject() as DrumMapDto
+        val obj = objectInputStream.readObject() as DrumMapDto
+
+        if(regenerate)
+        {
+            obj.regenerate()
+        }
+
+        return obj
     }
 }

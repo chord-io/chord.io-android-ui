@@ -20,7 +20,7 @@ open class SignInDto(
     @Json(name = "password") @field:Json(name = "password") var password: String
 ): Serializable, BaseModel()
 {
-    open fun copy(): SignInDto
+    open fun copy(regenerate: Boolean = false): SignInDto
     {
         val byteArrayOutputStream = ByteArrayOutputStream()
         val objectOutputStream = ObjectOutputStream(byteArrayOutputStream)
@@ -28,6 +28,13 @@ open class SignInDto(
         objectOutputStream.close()
         val byteArrayInputStream = ByteArrayInputStream(byteArrayOutputStream.toByteArray())
         val objectInputStream = ObjectInputStream(byteArrayInputStream)
-        return objectInputStream.readObject() as SignInDto
+        val obj = objectInputStream.readObject() as SignInDto
+
+        if(regenerate)
+        {
+            obj.regenerate()
+        }
+
+        return obj
     }
 }

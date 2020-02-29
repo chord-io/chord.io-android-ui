@@ -85,7 +85,15 @@ class MidiTrackFlow(
 		}
 		
 		dialog.onValidate = { binding ->
+			val tracks = this.manager.getCurrent()!!.tracks
 			val trackToAdd = binding.track!!.toModel() as MidiTrack
+			val themes = tracks.first().themes.map {
+				val theme = it.copy(true)
+				theme.sequences = listOf()
+				theme
+			}
+			trackToAdd.themes = themes
+			trackToAdd.entries = listOf()
 			this.manager.tracks.add(trackToAdd)
 			this.save(
 				dialog,
@@ -155,7 +163,7 @@ class MidiTrackFlow(
 		val dialog = this.createDialog(CudcOperation.CLONE)
 		
 		dialog.onBind = { binding ->
-			binding.track = this.createViewModel(model.copy())
+			binding.track = this.createViewModel(model.copy(true))
 		}
 		
 		dialog.onValidate = { binding ->

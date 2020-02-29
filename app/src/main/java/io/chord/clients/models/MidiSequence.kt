@@ -23,7 +23,7 @@ open class MidiSequence(
 ): Serializable, Sequence(
     length)
 {
-    override fun copy(): MidiSequence
+    override fun copy(regenerate: Boolean): MidiSequence
     {
         val byteArrayOutputStream = ByteArrayOutputStream()
         val objectOutputStream = ObjectOutputStream(byteArrayOutputStream)
@@ -31,6 +31,13 @@ open class MidiSequence(
         objectOutputStream.close()
         val byteArrayInputStream = ByteArrayInputStream(byteArrayOutputStream.toByteArray())
         val objectInputStream = ObjectInputStream(byteArrayInputStream)
-        return objectInputStream.readObject() as MidiSequence
+        val obj = objectInputStream.readObject() as MidiSequence
+
+        if(regenerate)
+        {
+            obj.regenerate()
+        }
+
+        return obj
     }
 }

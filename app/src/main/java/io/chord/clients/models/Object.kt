@@ -16,7 +16,7 @@ import io.chord.clients.BaseModel
 open class Object(
 ): Serializable, BaseModel()
 {
-    open fun copy(): Object
+    open fun copy(regenerate: Boolean = false): Object
     {
         val byteArrayOutputStream = ByteArrayOutputStream()
         val objectOutputStream = ObjectOutputStream(byteArrayOutputStream)
@@ -24,6 +24,13 @@ open class Object(
         objectOutputStream.close()
         val byteArrayInputStream = ByteArrayInputStream(byteArrayOutputStream.toByteArray())
         val objectInputStream = ObjectInputStream(byteArrayInputStream)
-        return objectInputStream.readObject() as Object
+        val obj = objectInputStream.readObject() as Object
+
+        if(regenerate)
+        {
+            obj.regenerate()
+        }
+
+        return obj
     }
 }

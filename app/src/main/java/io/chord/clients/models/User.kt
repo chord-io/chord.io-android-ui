@@ -22,7 +22,7 @@ open class User(
     @Json(name = "email") @field:Json(name = "email") var email: String
 ): Serializable, BaseModel()
 {
-    open fun copy(): User
+    open fun copy(regenerate: Boolean = false): User
     {
         val byteArrayOutputStream = ByteArrayOutputStream()
         val objectOutputStream = ObjectOutputStream(byteArrayOutputStream)
@@ -30,6 +30,13 @@ open class User(
         objectOutputStream.close()
         val byteArrayInputStream = ByteArrayInputStream(byteArrayOutputStream.toByteArray())
         val objectInputStream = ObjectInputStream(byteArrayInputStream)
-        return objectInputStream.readObject() as User
+        val obj = objectInputStream.readObject() as User
+
+        if(regenerate)
+        {
+            obj.regenerate()
+        }
+
+        return obj
     }
 }

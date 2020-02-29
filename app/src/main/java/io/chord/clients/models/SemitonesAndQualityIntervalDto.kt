@@ -23,7 +23,7 @@ open class SemitonesAndQualityIntervalDto(
     @Json(name = "quality") @field:Json(name = "quality") var quality: IntervalQuality
 ): Serializable, BaseModel()
 {
-    open fun copy(): SemitonesAndQualityIntervalDto
+    open fun copy(regenerate: Boolean = false): SemitonesAndQualityIntervalDto
     {
         val byteArrayOutputStream = ByteArrayOutputStream()
         val objectOutputStream = ObjectOutputStream(byteArrayOutputStream)
@@ -31,6 +31,13 @@ open class SemitonesAndQualityIntervalDto(
         objectOutputStream.close()
         val byteArrayInputStream = ByteArrayInputStream(byteArrayOutputStream.toByteArray())
         val objectInputStream = ObjectInputStream(byteArrayInputStream)
-        return objectInputStream.readObject() as SemitonesAndQualityIntervalDto
+        val obj = objectInputStream.readObject() as SemitonesAndQualityIntervalDto
+
+        if(regenerate)
+        {
+            obj.regenerate()
+        }
+
+        return obj
     }
 }

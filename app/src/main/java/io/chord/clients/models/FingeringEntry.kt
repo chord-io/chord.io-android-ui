@@ -22,7 +22,7 @@ open class FingeringEntry(
     @Json(name = "pitch") @field:Json(name = "pitch") var pitch: Int
 ): Serializable, BaseModel()
 {
-    open fun copy(): FingeringEntry
+    open fun copy(regenerate: Boolean = false): FingeringEntry
     {
         val byteArrayOutputStream = ByteArrayOutputStream()
         val objectOutputStream = ObjectOutputStream(byteArrayOutputStream)
@@ -30,6 +30,13 @@ open class FingeringEntry(
         objectOutputStream.close()
         val byteArrayInputStream = ByteArrayInputStream(byteArrayOutputStream.toByteArray())
         val objectInputStream = ObjectInputStream(byteArrayInputStream)
-        return objectInputStream.readObject() as FingeringEntry
+        val obj = objectInputStream.readObject() as FingeringEntry
+
+        if(regenerate)
+        {
+            obj.regenerate()
+        }
+
+        return obj
     }
 }

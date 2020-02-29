@@ -41,7 +41,7 @@
     {{/isEnum}}
 {{/vars}}
 {{/hasEnums}}
-    {{#parentSchema}}override {{/parentSchema}}{{^parentSchema}}open {{/parentSchema}}fun copy(): {{classname}}
+    {{#parentSchema}}override {{/parentSchema}}{{^parentSchema}}open {{/parentSchema}}fun copy(regenerate: Boolean{{^parentSchema}} = false{{/parentSchema}}): {{classname}}
     {
         val byteArrayOutputStream = ByteArrayOutputStream()
         val objectOutputStream = ObjectOutputStream(byteArrayOutputStream)
@@ -49,6 +49,13 @@
         objectOutputStream.close()
         val byteArrayInputStream = ByteArrayInputStream(byteArrayOutputStream.toByteArray())
         val objectInputStream = ObjectInputStream(byteArrayInputStream)
-        return objectInputStream.readObject() as {{classname}}
+        val obj = objectInputStream.readObject() as {{classname}}
+
+        if(regenerate)
+        {
+            obj.regenerate()
+        }
+
+        return obj
     }
 }

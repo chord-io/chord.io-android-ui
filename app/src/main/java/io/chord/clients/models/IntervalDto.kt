@@ -23,7 +23,7 @@ open class IntervalDto(
     @Json(name = "quality") @field:Json(name = "quality") var quality: IntervalQuality
 ): Serializable, BaseModel()
 {
-    open fun copy(): IntervalDto
+    open fun copy(regenerate: Boolean = false): IntervalDto
     {
         val byteArrayOutputStream = ByteArrayOutputStream()
         val objectOutputStream = ObjectOutputStream(byteArrayOutputStream)
@@ -31,6 +31,13 @@ open class IntervalDto(
         objectOutputStream.close()
         val byteArrayInputStream = ByteArrayInputStream(byteArrayOutputStream.toByteArray())
         val objectInputStream = ObjectInputStream(byteArrayInputStream)
-        return objectInputStream.readObject() as IntervalDto
+        val obj = objectInputStream.readObject() as IntervalDto
+
+        if(regenerate)
+        {
+            obj.regenerate()
+        }
+
+        return obj
     }
 }

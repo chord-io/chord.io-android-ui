@@ -19,7 +19,7 @@ open class InnerFingering(
 
     @Json(name = "entries") @field:Json(name = "entries") var entries: List<FingeringEntry>? = null): Serializable, BaseModel()
 {
-    open fun copy(): InnerFingering
+    open fun copy(regenerate: Boolean = false): InnerFingering
     {
         val byteArrayOutputStream = ByteArrayOutputStream()
         val objectOutputStream = ObjectOutputStream(byteArrayOutputStream)
@@ -27,6 +27,13 @@ open class InnerFingering(
         objectOutputStream.close()
         val byteArrayInputStream = ByteArrayInputStream(byteArrayOutputStream.toByteArray())
         val objectInputStream = ObjectInputStream(byteArrayInputStream)
-        return objectInputStream.readObject() as InnerFingering
+        val obj = objectInputStream.readObject() as InnerFingering
+
+        if(regenerate)
+        {
+            obj.regenerate()
+        }
+
+        return obj
     }
 }

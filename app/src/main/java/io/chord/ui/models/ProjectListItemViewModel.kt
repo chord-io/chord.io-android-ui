@@ -21,4 +21,5 @@ class ProjectListItemViewModel(
 			it.themes.size
 		}
 		.sum()
+		.div(model.tracks.size)
 }

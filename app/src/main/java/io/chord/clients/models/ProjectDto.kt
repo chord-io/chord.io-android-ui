@@ -26,7 +26,7 @@ open class ProjectDto(
     @Json(name = "tracks") @field:Json(name = "tracks") var tracks: List<Track>
 ): Serializable, BaseModel()
 {
-    open fun copy(): ProjectDto
+    open fun copy(regenerate: Boolean = false): ProjectDto
     {
         val byteArrayOutputStream = ByteArrayOutputStream()
         val objectOutputStream = ObjectOutputStream(byteArrayOutputStream)
@@ -34,6 +34,13 @@ open class ProjectDto(
         objectOutputStream.close()
         val byteArrayInputStream = ByteArrayInputStream(byteArrayOutputStream.toByteArray())
         val objectInputStream = ObjectInputStream(byteArrayInputStream)
-        return objectInputStream.readObject() as ProjectDto
+        val obj = objectInputStream.readObject() as ProjectDto
+
+        if(regenerate)
+        {
+            obj.regenerate()
+        }
+
+        return obj
     }
 }

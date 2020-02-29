@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.chord.R
@@ -23,9 +23,9 @@ import io.chord.ui.dialogs.cudc.CudcOperation
 import io.chord.ui.dialogs.customs.SelectCudcOperationDialog
 import io.chord.ui.dialogs.flows.ThemeFlow
 import io.chord.ui.extensions.toHexaDecimalString
-import io.chord.ui.models.comparables.toComparable
 import io.chord.ui.sections.Section
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter
+import jp.wasabeef.recyclerview.animators.SlideInRightAnimator
 import java.util.*
 
 class ThemeListFragment : Fragment(), ThemeClickListener, Listable<Track>
@@ -63,11 +63,10 @@ class ThemeListFragment : Fragment(), ThemeClickListener, Listable<Track>
         this.recyclerView = view
 
         this.recyclerView.apply {
-            layoutManager = viewManager
-            adapter = viewAdapter
+            this.layoutManager = viewManager
+            this.adapter = viewAdapter
+            this.itemAnimator = SlideInRightAnimator(FastOutSlowInInterpolator())
         }
-
-        this.recyclerView.itemAnimator = DefaultItemAnimator()
 
         return view
     }
@@ -173,69 +172,60 @@ class ThemeListFragment : Fragment(), ThemeClickListener, Listable<Track>
         
         val tracks = this.getTracks()
         val sections = this.viewAdapter.copyOfSectionsMap
-        val states = sections.map {
-            it.key to (it.value as ThemeSection).isExpanded
+    
+        val referenceIds = dataset.map {
+            it.referenceId.toHexaDecimalString()
         }
     
-        // TODO : move condition into foreach
-        if(sections.isNotEmpty() && dataset.toComparable() == tracks.toComparable())
-        {
-            val referenceIds = dataset.map {
-                it.referenceId.toHexaDecimalString()
-            }
-            
-            sections.filterKeys {
-                !referenceIds.contains(it)
-            }
-            .forEach {
-                sections.remove(it.key)
-            }
-            
-            dataset.forEach { track ->
-                val referenceId = track.referenceId.toHexaDecimalString()
-                val section = this.viewAdapter.getSection(referenceId) as ThemeSection
-                val themes = tracks.first {
-                    it.referenceId.toHexaDecimalString() == referenceId
-                }
-                .themes
-                section.track = track
-                section.setDataset(themes.map {
-                    ThemeSectionItem(dataset, track, it)
-                })
-            }
-            
-            this.viewAdapter.notifyDataSetChanged()
-            
-            return
+        sections.filterKeys {
+            !referenceIds.contains(it)
         }
-        
-        this.viewAdapter.removeAllSections()
-        this.recyclerView.adapter = null
-        this.recyclerView.layoutManager = null
+        .forEach {
+            val index = sections.keys.indexOf(it.key)
+            sections.remove(it.key)
+            this.viewAdapter.notifyItemRemoved(index)
+        }
         
         dataset.forEach { track ->
             val referenceId = track.referenceId.toHexaDecimalString()
-            val state = states.firstOrNull { it.first == referenceId }
-            val isExpanded = state?.second ?: false
-            val section = ThemeSection(
-                track,
-                isExpanded,
-                this
-            )
             val themes = tracks.first {
                 it.referenceId.toHexaDecimalString() == referenceId
             }
             .themes
+            val sectionIndex = sections.entries.indexOfFirst {
+                it.key == referenceId
+            }
+            
+            if(sectionIndex == -1)
+            {
+                val section = ThemeSection(
+                    track,
+                    false,
+                    this
+                )
     
-            this.viewAdapter.addSection(referenceId, section)
-            section.setAdapter(this.viewAdapter)
-            section.setDataset(themes.map {
-                ThemeSectionItem(dataset, track, it)
-            })
+                this.viewAdapter.addSection(referenceId, section)
+                section.setAdapter(this.viewAdapter)
+                section.setDataset(themes.map {
+                    ThemeSectionItem(dataset, track, it)
+                })
+            }
+            else
+            {
+                val trackIndex = dataset.indexOf(track)
+                val section = this.viewAdapter.getSection(referenceId) as ThemeSection
+                section.track = track
+                section.setDataset(themes.map {
+                    ThemeSectionItem(dataset, track, it)
+                })
+                
+                if(sectionIndex != trackIndex)
+                {
+                    this.viewAdapter.removeSection(referenceId)
+                    this.viewAdapter.addSection(referenceId, section)
+                    this.viewAdapter.notifyItemMoved(sectionIndex, trackIndex)
+                }
+            }
         }
-    
-        this.recyclerView.adapter = this.viewAdapter
-        this.recyclerView.layoutManager = this.viewManager
-        this.viewAdapter.notifyDataSetChanged()
     }
 }
