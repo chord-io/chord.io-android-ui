@@ -8,11 +8,11 @@ import com.mikepenz.iconics.utils.sizeRes
 import io.chord.R
 import io.chord.databinding.SectionDialogItemBinding
 import io.chord.ui.sections.ClickListener
-import io.chord.ui.sections.ViewHolderBase
+import io.chord.ui.sections.ViewHolder
 
 class SectionDialogItemViewHolder(
     view: View
-) : ViewHolderBase<SectionDialogItem, SectionDialogItemViewHolder>(view)
+) : ViewHolder<SectionDialogItem, SectionDialogItemViewHolder>(view)
 {
     val binding = DataBindingUtil.bind<SectionDialogItemBinding>(this.itemView)!!
 

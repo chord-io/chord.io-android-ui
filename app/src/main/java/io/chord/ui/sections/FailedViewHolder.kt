@@ -3,9 +3,9 @@ package io.chord.ui.sections
 import android.view.View
 import io.chord.R
 
-class FailedViewHolder<TItem, THolder: ViewHolderBase<TItem, THolder>>(
+class FailedViewHolder<TItem, THolder: ViewHolder<TItem, THolder>>(
     view: View
-) : ViewHolderBase<TItem, THolder>(view)
+) : ViewHolder<TItem, THolder>(view)
 {
     private val rootView: View = this.itemView.findViewById(R.id.rootView)
     

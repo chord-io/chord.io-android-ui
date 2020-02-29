@@ -9,7 +9,7 @@ import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter
 import io.github.luizgrp.sectionedrecyclerviewadapter.utils.EmptyViewHolder
 
-open class Section<TItem, THolder: ViewHolderBase<TItem, THolder>>: Section
+open class Section<TItem, THolder: ViewHolder<TItem, THolder>>: Section
 {
 	private var _title: String? = null
 	private val dataset: MutableList<TItem> = mutableListOf()
@@ -236,7 +236,7 @@ open class Section<TItem, THolder: ViewHolderBase<TItem, THolder>>: Section
 		position: Int
 	)
 	{
-		(holder as? ViewHolderBase<TItem, THolder>)?.bind(
+		(holder as? ViewHolder<TItem, THolder>)?.bind(
 			this.dataset[position],
 			this.clickListener
 		)

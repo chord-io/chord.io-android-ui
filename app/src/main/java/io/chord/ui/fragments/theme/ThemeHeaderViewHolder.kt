@@ -19,28 +19,31 @@ class ThemeHeaderViewHolder(
 {
     val binding = DataBindingUtil.bind<ThemeListHeaderBinding>(this.itemView)!!
     
-    // TODO: remove this
-    override fun bind(
-        item: ThemeSectionItem,
-        clickListener: ClickListener<ThemeSectionItem, ThemeViewHolder>
-    )
-    {
-        throw NotImplementedError()
-    }
-    
     override fun bind(
         title: String,
         section: Section<ThemeSectionItem, ThemeViewHolder>,
         clickListener: ClickListener<ThemeSectionItem, ThemeViewHolder>
     )
     {
-        val themeSection = section as ThemeSection
-        this.initialise(themeSection)
+        this.bind(
+            title,
+            section as ThemeSection,
+            clickListener as ThemeClickListener
+        )
+    }
+    
+    private fun bind(
+        title: String,
+        section: ThemeSection,
+        clickListener: ThemeClickListener
+    )
+    {
+        this.initialise(section)
         this.binding.title.text = title
-        this.binding.counter.text = themeSection.getRealContentItemsTotal().toString()
+        this.binding.counter.text = section.getRealContentItemsTotal().toString()
         this.binding.layout.setOnClickListener {
-            themeSection.toggle()
-            this.toggle(themeSection.isExpanded)
+            section.toggle()
+            this.toggle(section.isExpanded)
         }
     }
     

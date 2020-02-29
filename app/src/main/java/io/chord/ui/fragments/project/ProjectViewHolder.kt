@@ -11,11 +11,11 @@ import io.chord.clients.models.Visibility
 import io.chord.databinding.ProjectListItemBinding
 import io.chord.ui.models.ProjectListItemViewModel
 import io.chord.ui.sections.ClickListener
-import io.chord.ui.sections.ViewHolderBase
+import io.chord.ui.sections.ViewHolder
 
 class ProjectViewHolder(
     view: View
-) : ViewHolderBase<Project, ProjectViewHolder>(view)
+) : ViewHolder<Project, ProjectViewHolder>(view)
 {
     val binding = DataBindingUtil.bind<ProjectListItemBinding>(this.itemView)!!
     

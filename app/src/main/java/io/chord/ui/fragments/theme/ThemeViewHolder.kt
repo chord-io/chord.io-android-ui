@@ -13,12 +13,12 @@ import io.chord.ui.extensions.toHexaDecimalString
 import io.chord.ui.extensions.toTransparent
 import io.chord.ui.models.ThemeListItemViewModel
 import io.chord.ui.sections.ClickListener
-import io.chord.ui.sections.ViewHolderBase
+import io.chord.ui.sections.ViewHolder
 import io.chord.ui.utils.RippleDrawableUtils
 
 class ThemeViewHolder(
     view: View
-) : ViewHolderBase<ThemeSectionItem, ThemeViewHolder>(view)
+) : ViewHolder<ThemeSectionItem, ThemeViewHolder>(view)
 {
     private companion object
     {

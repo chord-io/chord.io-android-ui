@@ -1,19 +1,12 @@
 package io.chord.ui.sections
 
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 
-abstract class HeaderViewHolder<TItem, THolder: ViewHolderBase<TItem, THolder>>(
+abstract class HeaderViewHolder<TItem, THolder: ViewHolder<TItem, THolder>>(
     view: View
-) : ViewHolderBase<TItem, THolder>(view)
+) : RecyclerView.ViewHolder(view)
 {
-    override fun bind(
-        item: TItem,
-        clickListener: ClickListener<TItem, THolder>
-    )
-    {
-        throw NotImplementedError()
-    }
-    
     abstract fun bind(
         title: String,
         section: Section<TItem, THolder>,

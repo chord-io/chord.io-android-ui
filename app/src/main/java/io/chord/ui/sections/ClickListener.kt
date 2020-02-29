@@ -1,6 +1,6 @@
 package io.chord.ui.sections
 
-interface ClickListener<TItem, THolder: ViewHolderBase<TItem, THolder>>
+interface ClickListener<TItem, THolder: ViewHolder<TItem, THolder>>
 {
     fun onItemClicked(item: TItem, holder: THolder)
     
