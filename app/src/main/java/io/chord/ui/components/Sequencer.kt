@@ -16,12 +16,12 @@ import io.chord.ui.behaviors.Bindable
 import io.chord.ui.behaviors.BindableBehavior
 import io.chord.ui.behaviors.QuantizeBehavior
 import io.chord.ui.behaviors.ZoomBehavior
-import io.chord.ui.extensions.getOptimalTextSize
 import io.chord.ui.extensions.getTextBounds
 import io.chord.ui.extensions.getTextCentered
 import io.chord.ui.extensions.toTransparent
+import io.chord.ui.utils.QuantizeUtils
 
-class Sequencer : View, Zoomable, Listable<Track>
+class Sequencer : View, Zoomable, Listable<Track>, Quantifiable
 {
 	private class SequencerDataSetObserver(
 		private val sequencer: Sequencer
@@ -303,11 +303,19 @@ class Sequencer : View, Zoomable, Listable<Track>
 		this.invalidate()
 	}
 	
+	override fun setQuantization(quantization: QuantizeUtils.Quantization)
+	{
+		this.quantizeBehavior.quantization = quantization
+		this.requestLayout()
+		this.invalidate()
+	}
+	
 	override fun onDraw(canvas: Canvas)
 	{
 		if(this.barBehavior.count() == 0)
 		{
 			this.drawEmpty(canvas)
+			return
 		}
 		
 		this.drawLane(canvas).forEach {
@@ -353,11 +361,7 @@ class Sequencer : View, Zoomable, Listable<Track>
 		val position = label.getTextCentered(bounds.centerX(), 0, this.painter)
 		
 		this.painter.color = this.textColor
-		this.painter.textSize = label.getOptimalTextSize(
-			this.textSize,
-			height,
-			this.painter
-		)
+		this.painter.textSize = this.textSize
 		
 		canvas.drawText(
 			label,

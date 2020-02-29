@@ -34,14 +34,21 @@ class SequencerActivity : AppCompatActivity()
 			)
 		
 		this.binding = DataBindingUtil.bind(view)!!
+		
 		this.binding.toolbarSequencer.editor.toolbar
 		this.binding.horizontalScrollBar.attach(R.id.rulerScrollview)
+		
 		this.binding.verticalScrollBar.attach(R.id.trackListScrollView)
 		this.binding.verticalScrollBar.attach(R.id.sequencerScrollview)
+		
 		this.binding.horizontalZoomBar.attach(R.id.ruler)
+		
 		this.binding.verticalZoomBar.attach(R.id.trackList)
 		this.binding.verticalZoomBar.attach(R.id.sequencer)
+		
 		this.binding.toolbarSequencer.quantize.attach(R.id.ruler)
+		this.binding.toolbarSequencer.quantize.attach(R.id.sequencer)
+		
 		this.setSupportActionBar(this.binding.toolbarSequencer.editor.toolbar)
 		this.setContentView(view)
 		

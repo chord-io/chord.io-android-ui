@@ -322,11 +322,7 @@ class Ruler : View, Zoomable, Quantifiable, Bindable
 		val position = label.getTextCentered(bounds.centerX(), 0, this.painter)
 		
 		this.painter.color = this.textColor
-		this.painter.textSize = label.getOptimalTextSize(
-			this.textSize,
-			height,
-			this.painter
-		)
+		this.painter.textSize = this.textSize
 		
 		canvas.drawText(
 			label,

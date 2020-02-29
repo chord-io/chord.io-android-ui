@@ -98,7 +98,7 @@
                         android:background="@color/backgroundTernary">
                         <io.chord.ui.components.Ruler
                             android:id="@+id/ruler"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="24dp" />
                     </io.chord.ui.components.TwoDimensionalScrollView>
 
@@ -121,7 +121,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_alignBottom="@id/rulerScrollview"
                         android:layout_marginBottom="-24dp"
-                        android:layout_marginEnd="0dp"
+                        android:layout_marginEnd="-6dp"
                         android:clickable="true"
                         android:scaleType="center"
                         app:fabCustomSize="24dp"
