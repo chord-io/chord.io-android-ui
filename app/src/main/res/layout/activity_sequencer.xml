@@ -82,34 +82,50 @@
                     </ScrollView>
                 </LinearLayout>
 
-                <io.chord.ui.components.TwoDimensionalScrollView
-                    android:id="@+id/scrollview"
-                    android:layout_width="0dp"
-                    android:layout_height="24dp"
-                    android:layout_columnWeight="1"
-                    android:layout_rowWeight="0"
-                    android:layout_column="1"
-                    android:layout_row="0"
-                    android:background="@color/backgroundTernary">
-                    <io.chord.ui.components.Ruler
-                        android:id="@+id/ruler"
-                        android:layout_width="wrap_content"
-                        android:layout_height="24dp" />
-                </io.chord.ui.components.TwoDimensionalScrollView>
-
-                <io.chord.ui.components.TwoDimensionalScrollView
-                    android:id="@+id/scrollview2"
+                <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_columnWeight="1"
                     android:layout_rowWeight="1"
                     android:layout_column="1"
-                    android:layout_row="1"
-                    android:background="@color/backgroundPrimary">
-                    <io.chord.ui.components.Sequencer
+                    android:layout_row="0"
+                    android:layout_rowSpan="2">
+
+                    <io.chord.ui.components.TwoDimensionalScrollView
+                        android:id="@+id/rulerScrollview"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-                </io.chord.ui.components.TwoDimensionalScrollView>
+                        android:layout_height="24dp"
+                        android:background="@color/backgroundTernary">
+                        <io.chord.ui.components.Ruler
+                            android:id="@+id/ruler"
+                            android:layout_width="wrap_content"
+                            android:layout_height="24dp" />
+                    </io.chord.ui.components.TwoDimensionalScrollView>
+
+                    <io.chord.ui.components.TwoDimensionalScrollView
+                        android:id="@+id/sequencerScrollview"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_below="@+id/rulerScrollview"
+                        android:background="@color/backgroundPrimary">
+                        <io.chord.ui.components.Sequencer
+                            android:id="@+id/sequencer"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+                    </io.chord.ui.components.TwoDimensionalScrollView>
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/addBarButton"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignBottom="@id/rulerScrollview"
+                        android:layout_marginBottom="-12dp"
+                        android:layout_marginEnd="10dp"
+                        android:clickable="true"
+                        android:scaleType="center"
+                        app:maxImageSize="12dp" />
+                </RelativeLayout>
 
                 <LinearLayout
                     android:layout_width="@dimen/scrollbar_default_thickness"

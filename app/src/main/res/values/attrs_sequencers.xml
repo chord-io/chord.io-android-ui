@@ -3,11 +3,13 @@
     <declare-styleable name="Sequencer">
         <attr name="cio_sq_zoomDuration" format="integer"/>
         <attr name="cio_sq_dividerColor" format="color"/>
+        <attr name="cio_sq_textColor" format="color"/>
         <attr name="cio_sq_dividerThickness" format="dimension"/>
         <attr name="cio_sq_rowHeight" format="dimension"/>
         <attr name="cio_sq_rowPadding" format="dimension"/>
         <attr name="cio_sq_barWidth" format="dimension"/>
         <attr name="cio_sq_ticksThickness" format="dimension"/>
+        <attr name="cio_sq_textSize" format="dimension"/>
     </declare-styleable>
 
     <dimen name="sequencer_divider_thickness">2dp</dimen>
@@ -15,5 +17,6 @@
     <dimen name="sequencer_row_padding">4dp</dimen>
     <dimen name="sequencer_bar_width">200dp</dimen>
     <dimen name="sequencer_tick_thickness">1dp</dimen>
+    <dimen name="sequencer_text_size">14sp</dimen>
     <integer name="sequencer_zoom_duration">500</integer>
 </resources>

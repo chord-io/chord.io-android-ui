@@ -2,6 +2,9 @@ package io.chord.ui.components
 
 import android.content.Context
 import android.database.DataSetObserver
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
 import io.chord.R
@@ -13,6 +16,10 @@ import io.chord.ui.behaviors.Bindable
 import io.chord.ui.behaviors.BindableBehavior
 import io.chord.ui.behaviors.QuantizeBehavior
 import io.chord.ui.behaviors.ZoomBehavior
+import io.chord.ui.extensions.getOptimalTextSize
+import io.chord.ui.extensions.getTextBounds
+import io.chord.ui.extensions.getTextCentered
+import io.chord.ui.extensions.toTransparent
 
 class Sequencer : View, Zoomable, Listable<Track>
 {
@@ -38,14 +45,17 @@ class Sequencer : View, Zoomable, Listable<Track>
 	private val quantizeBehavior = QuantizeBehavior()
 	private val barBehavior = BarBehavior()
 	private var tracks: List<Track> = listOf()
+	private val painter: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
 	
 	private var _zoomDuration: Long = -1
 	private var _dividerColor: Int = -1
+	private var _textColor: Int = -1
 	private var _dividerThickness: Float = -1f
 	private var _rowHeight: Float = -1f
 	private var _rowPadding: Float = -1f
 	private var _barWidth: Float = -1f
 	private var _ticksThickness: Float = -1f
+	private var _textSize: Float = -1f
 	
 	var zoomDuration: Long
 		get() = this._zoomDuration
@@ -58,6 +68,13 @@ class Sequencer : View, Zoomable, Listable<Track>
 		get() = this._dividerColor
 		set(value) {
 			this._dividerColor = value
+			this.invalidate()
+		}
+	
+	var textColor: Int
+		get() = this._textColor
+		set(value) {
+			this._textColor = value
 			this.invalidate()
 		}
 	
@@ -105,6 +122,13 @@ class Sequencer : View, Zoomable, Listable<Track>
 		set(value) {
 			this._ticksThickness = value
 			this.quantizeBehavior.offset = value / 2f
+			this.invalidate()
+		}
+	
+	var textSize: Float
+		get() = this._textSize
+		set(value) {
+			this._textSize = value
 			this.invalidate()
 		}
 	
@@ -158,6 +182,11 @@ class Sequencer : View, Zoomable, Listable<Track>
 			this.resources.getColor(R.color.backgroundPrimary, theme)
 		)
 		
+		this._textColor = typedArray.getColor(
+			R.styleable.Sequencer_cio_sq_textColor,
+			this.resources.getColor(R.color.textColor, theme)
+		)
+		
 		this._dividerThickness = typedArray.getDimension(
 			R.styleable.Sequencer_cio_sq_dividerThickness,
 			this.resources.getDimension(R.dimen.sequencer_divider_thickness)
@@ -183,14 +212,22 @@ class Sequencer : View, Zoomable, Listable<Track>
 			this.resources.getDimension(R.dimen.sequencer_tick_thickness)
 		)
 		
+		this._textSize = typedArray.getDimension(
+			R.styleable.Sequencer_cio_sq_textSize,
+			this.resources.getDimension(R.dimen.sequencer_text_size)
+		)
+		
 		typedArray.recycle()
 		
 		this.zoomBehavior.widthAnimator.duration = this.zoomDuration
 		this.zoomBehavior.heightAnimator.duration = this.zoomDuration
 		this.zoomBehavior.onEvaluateHeight = {
-			this.rowHeight + this.dividerThickness
+			this.rowHeight
 		}
-		this.zoomBehavior.onMeasureHeight = {}
+		this.zoomBehavior.onMeasureHeight = {
+			this.requestLayout()
+			this.invalidate()
+		}
 		this.zoomBehavior.onEvaluateWidth = this::barWidth
 		this.zoomBehavior.onMeasureWidth = {}
 		
@@ -222,9 +259,29 @@ class Sequencer : View, Zoomable, Listable<Track>
 	)
 	{
 		this.quantizeBehavior.generate()
-		val width = this.zoomBehavior.factorizedWidth * this.barBehavior.count()
-		val height = this.zoomBehavior.factorizedHeight * this.tracks.size - this.dividerThickness
-		this.setMeasuredDimension(width.toInt(), height.toInt())
+		val count = this.barBehavior.count()
+		
+		val width = if(count == 0)
+		{
+			MeasureSpec.getSize(widthMeasureSpec)
+		}
+		else
+		{
+			(this.zoomBehavior.factorizedWidth * count).toInt()
+		}
+		
+		val height = if(this.tracks.isEmpty())
+		{
+			MeasureSpec.getSize(heightMeasureSpec)
+		}
+		else
+		{
+			val divider = (this.tracks.size - 1) * this.dividerThickness.toInt()
+			val lanes = this.zoomBehavior.factorizedHeight.toInt() * this.tracks.size
+			lanes + divider
+		}
+		
+		this.setMeasuredDimension(width, height)
 	}
 	
 	override fun setZoomFactor(orientation: ViewOrientation, factor: Float, animate: Boolean)
@@ -244,5 +301,69 @@ class Sequencer : View, Zoomable, Listable<Track>
 		this.tracks = dataset
 		this.requestLayout()
 		this.invalidate()
+	}
+	
+	override fun onDraw(canvas: Canvas)
+	{
+		if(this.barBehavior.count() == 0)
+		{
+			this.drawEmpty(canvas)
+		}
+		
+		this.drawLane(canvas).forEach {
+			this.painter.color = it.second
+			canvas.drawRect(it.first, this.painter)
+		}
+	}
+	
+	private fun drawLane(canvas: Canvas): List<Pair<Rect, Int>>
+	{
+		val lanes = mutableListOf<Pair<Rect, Int>>()
+		val bounds = canvas.clipBounds
+		this.tracks.indices.forEach { index ->
+			val divider = if(index > 0)
+			{
+				this.dividerThickness
+			}
+			else
+			{
+				0f
+			}
+			val height = this.zoomBehavior.factorizedHeight
+			val top = (height * index + divider).toInt()
+			val bottom = (top + height + divider).toInt()
+			val track = this.tracks[index]
+			val color = track.color.toTransparent(0.1f)
+			val lane = Rect(
+				bounds.left,
+				top,
+				bounds.right,
+				bottom
+			)
+			lanes.add(lane to color)
+		}
+		return lanes
+	}
+	
+	private fun drawEmpty(canvas: Canvas)
+	{
+		val label = "..."
+		val height = label.getTextBounds(this.painter).height().toFloat()
+		val bounds = Rect(canvas.clipBounds)
+		val position = label.getTextCentered(bounds.centerX(), 0, this.painter)
+		
+		this.painter.color = this.textColor
+		this.painter.textSize = label.getOptimalTextSize(
+			this.textSize,
+			height,
+			this.painter
+		)
+		
+		canvas.drawText(
+			label,
+			position.x,
+			bounds.centerY() + height / 2f,
+			this.painter
+		)
 	}
 }

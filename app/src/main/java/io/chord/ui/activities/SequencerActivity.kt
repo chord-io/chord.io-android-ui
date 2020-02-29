@@ -32,19 +32,22 @@ class SequencerActivity : AppCompatActivity()
 				false
 			)
 		
-		val themeList = this.supportFragmentManager.findFragmentById(R.id.themeList) as ThemeListFragment
-		val trackList = this.supportFragmentManager.findFragmentById(R.id.trackList) as TrackListFragment
-		trackList.attach(themeList)
-		
 		this.binding = DataBindingUtil.bind(view)!!
 		this.binding.toolbarSequencer.editor.toolbar
-		this.binding.horizontalScrollBar.attach(R.id.scrollview)
+		this.binding.horizontalScrollBar.attach(R.id.rulerScrollview)
 		this.binding.verticalScrollBar.attach(R.id.trackListScrollView)
+		this.binding.verticalScrollBar.attach(R.id.sequencerScrollview)
 		this.binding.horizontalZoomBar.attach(R.id.ruler)
 		this.binding.verticalZoomBar.attach(R.id.trackList)
+		this.binding.verticalZoomBar.attach(R.id.sequencer)
 		this.binding.toolbarSequencer.quantize.attach(R.id.ruler)
 		this.setSupportActionBar(this.binding.toolbarSequencer.editor.toolbar)
 		this.setContentView(view)
+		
+		val themeList = this.supportFragmentManager.findFragmentById(R.id.themeList) as ThemeListFragment
+		val trackList = this.supportFragmentManager.findFragmentById(R.id.trackList) as TrackListFragment
+		trackList.attach(themeList)
+		trackList.attach(this.binding.sequencer)
 		
 		this.binding.addTrackButton.setOnClickListener {
 			trackList.create()

@@ -3,6 +3,7 @@ package io.chord.ui.components
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.Rect
 import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.View
@@ -16,6 +17,8 @@ import io.chord.ui.behaviors.BindableBehavior
 import io.chord.ui.behaviors.QuantizeBehavior
 import io.chord.ui.behaviors.ZoomBehavior
 import io.chord.ui.extensions.getOptimalTextSize
+import io.chord.ui.extensions.getTextBounds
+import io.chord.ui.extensions.getTextCentered
 import io.chord.ui.utils.QuantizeUtils
 
 class Ruler : View, Zoomable, Quantifiable, Bindable
@@ -256,9 +259,19 @@ class Ruler : View, Zoomable, Quantifiable, Bindable
 	)
 	{
 		this.quantizeBehavior.generate()
-		val width = this.zoomBehavior.factorizedWidth * this.barBehavior.count()
+		val count = this.barBehavior.count()
+		
+		val width = if(count == 0)
+		{
+			MeasureSpec.getSize(widthMeasureSpec)
+		}
+		else
+		{
+			(this.zoomBehavior.factorizedWidth * count).toInt()
+		}
+		
 		val height = MeasureSpec.getSize(heightMeasureSpec)
-		this.setMeasuredDimension(width.toInt(), height)
+		this.setMeasuredDimension(width, height)
 	}
 	
 	override fun onLayout(
@@ -282,6 +295,12 @@ class Ruler : View, Zoomable, Quantifiable, Bindable
 	
 	override fun onDraw(canvas: Canvas)
 	{
+		if(this.barBehavior.count() == 0)
+		{
+			this.drawEmpty(canvas)
+			return
+		}
+		
 		val points = mutableListOf<Float>()
 		
 		for(i in 0 until this.quantizeBehavior.segmentCount)
@@ -293,6 +312,28 @@ class Ruler : View, Zoomable, Quantifiable, Bindable
 		this.painter.strokeWidth = this.ticksThickness
 		
 		canvas.drawLines(points.toFloatArray(), this.painter)
+	}
+	
+	private fun drawEmpty(canvas: Canvas)
+	{
+		val label = "..."
+		val height = label.getTextBounds(this.painter).height().toFloat()
+		val bounds = Rect(canvas.clipBounds)
+		val position = label.getTextCentered(bounds.centerX(), 0, this.painter)
+		
+		this.painter.color = this.textColor
+		this.painter.textSize = label.getOptimalTextSize(
+			this.textSize,
+			height,
+			this.painter
+		)
+		
+		canvas.drawText(
+			label,
+			position.x,
+			bounds.centerY() + height / 2f,
+			this.painter
+		)
 	}
 	
 	private fun drawBar(canvas: Canvas, pointsToDraw: MutableList<Float>, index: Int)
