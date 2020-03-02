@@ -59,12 +59,15 @@ class Ruler : View, Zoomable, Quantifiable, Bindable
 				this.zoomBehavior.getFactorWidth(),
 				true
 			)
+			this.requestLayout()
+			this.invalidate()
 		}
 	
 	var ticksColor: Int
 		get() = this._ticksColor
 		set(value) {
 			this._ticksColor = value
+			this.requestLayout()
 			this.invalidate()
 		}
 	
@@ -72,6 +75,7 @@ class Ruler : View, Zoomable, Quantifiable, Bindable
 		get() = this._textColor
 		set(value) {
 			this._textColor = value
+			this.requestLayout()
 			this.invalidate()
 		}
 	
@@ -80,6 +84,7 @@ class Ruler : View, Zoomable, Quantifiable, Bindable
 		set(value) {
 			this._ticksThickness = value
 			this.quantizeBehavior.offset = value / 2f
+			this.requestLayout()
 			this.invalidate()
 		}
 	
@@ -92,6 +97,7 @@ class Ruler : View, Zoomable, Quantifiable, Bindable
 				value < 0f -> 0f
 				else -> value
 			}
+			this.requestLayout()
 			this.invalidate()
 		}
 	
@@ -99,6 +105,7 @@ class Ruler : View, Zoomable, Quantifiable, Bindable
 		get() = this._textSize
 		set(value) {
 			this._textSize = value
+			this.requestLayout()
 			this.invalidate()
 		}
 	
@@ -106,6 +113,7 @@ class Ruler : View, Zoomable, Quantifiable, Bindable
 		get() = this._textMargin
 		set(value) {
 			this._textMargin = value
+			this.requestLayout()
 			this.invalidate()
 		}
 	
@@ -113,6 +121,7 @@ class Ruler : View, Zoomable, Quantifiable, Bindable
 		get() = this._textPadding
 		set(value) {
 			this._textPadding = value
+			this.requestLayout()
 			this.invalidate()
 		}
 	
@@ -217,10 +226,6 @@ class Ruler : View, Zoomable, Quantifiable, Bindable
 			this.requestLayout()
 			this.invalidate()
 		}
-		
-		this.quantizeBehavior.segmentCount = this.barBehavior.count()
-		this.quantizeBehavior.segmentLength = this.defaultWidth
-		this.quantizeBehavior.offset = this._ticksThickness / 2f
 	}
 	
 	override fun attach(controller: BindBehavior<Bindable>)
@@ -258,7 +263,6 @@ class Ruler : View, Zoomable, Quantifiable, Bindable
 		heightMeasureSpec: Int
 	)
 	{
-		this.quantizeBehavior.generate()
 		val count = this.barBehavior.count()
 		
 		val width = if(count == 0)
@@ -267,7 +271,11 @@ class Ruler : View, Zoomable, Quantifiable, Bindable
 		}
 		else
 		{
-			(this.zoomBehavior.factorizedWidth * count).toInt()
+			this.quantizeBehavior.segmentCount = count
+			this.quantizeBehavior.segmentLength = this.zoomBehavior.factorizedWidth
+			this.quantizeBehavior.offset = this._ticksThickness / 2f
+			this.quantizeBehavior.generate()
+			this.zoomBehavior.factorizedWidth.toInt() * count
 		}
 		
 		val height = MeasureSpec.getSize(heightMeasureSpec)

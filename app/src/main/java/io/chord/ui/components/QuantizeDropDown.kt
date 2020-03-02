@@ -50,14 +50,14 @@ class QuantizeDropDown : DropDown, AdapterView.OnItemSelectedListener, Binder
 		super.init(attrs, defStyle)
 		
 		this.selectedQuantization = QuantizeUtils.Quantization(
-			QuantizeUtils.QuantizeValue.First,
+			QuantizeUtils.QuantizeValue.Fourth,
 			QuantizeUtils.QuantizeMode.Natural
 		)
 		
 		this.adapter = QuantizeDropDownAdapter(this.context, R.layout.quantize_dropdown_item)
-		this.dropdownView.setSelection(0)
 		this.dropdownView.onItemSelectedListener = this
 		this.dropdownView.adapter = this.adapter
+		this.dropdownView.setSelection(2)
 		
 		this.bindBehavior.onAttach = {}
 		this.bindBehavior.onDispatchEvent = {

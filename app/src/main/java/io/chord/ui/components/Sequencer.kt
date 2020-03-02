@@ -7,6 +7,7 @@ import android.graphics.Paint
 import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.graphics.toRectF
 import io.chord.R
 import io.chord.clients.models.Track
 import io.chord.services.managers.ProjectManager
@@ -50,6 +51,7 @@ class Sequencer : View, Zoomable, Listable<Track>, Quantifiable
 	private var _zoomDuration: Long = -1
 	private var _dividerColor: Int = -1
 	private var _textColor: Int = -1
+	private var _ticksColor: Int = -1
 	private var _dividerThickness: Float = -1f
 	private var _rowHeight: Float = -1f
 	private var _rowPadding: Float = -1f
@@ -68,6 +70,7 @@ class Sequencer : View, Zoomable, Listable<Track>, Quantifiable
 		get() = this._dividerColor
 		set(value) {
 			this._dividerColor = value
+			this.requestLayout()
 			this.invalidate()
 		}
 	
@@ -75,6 +78,15 @@ class Sequencer : View, Zoomable, Listable<Track>, Quantifiable
 		get() = this._textColor
 		set(value) {
 			this._textColor = value
+			this.requestLayout()
+			this.invalidate()
+		}
+	
+	var ticksColor: Int
+		get() = this._ticksColor
+		set(value) {
+			this._ticksColor = value
+			this.requestLayout()
 			this.invalidate()
 		}
 	
@@ -82,6 +94,7 @@ class Sequencer : View, Zoomable, Listable<Track>, Quantifiable
 		get() = this._dividerThickness
 		set(value) {
 			this._dividerThickness = value
+			this.requestLayout()
 			this.invalidate()
 		}
 	
@@ -94,6 +107,7 @@ class Sequencer : View, Zoomable, Listable<Track>, Quantifiable
 				this.zoomBehavior.getFactorHeight(),
 				true
 			)
+			this.requestLayout()
 			this.invalidate()
 		}
 	
@@ -101,6 +115,7 @@ class Sequencer : View, Zoomable, Listable<Track>, Quantifiable
 		get() = this._rowPadding
 		set(value) {
 			this._rowPadding = value
+			this.requestLayout()
 			this.invalidate()
 		}
 	
@@ -114,6 +129,7 @@ class Sequencer : View, Zoomable, Listable<Track>, Quantifiable
 				this.zoomBehavior.getFactorWidth(),
 				true
 			)
+			this.requestLayout()
 			this.invalidate()
 		}
 	
@@ -122,6 +138,7 @@ class Sequencer : View, Zoomable, Listable<Track>, Quantifiable
 		set(value) {
 			this._ticksThickness = value
 			this.quantizeBehavior.offset = value / 2f
+			this.requestLayout()
 			this.invalidate()
 		}
 	
@@ -129,6 +146,7 @@ class Sequencer : View, Zoomable, Listable<Track>, Quantifiable
 		get() = this._textSize
 		set(value) {
 			this._textSize = value
+			this.requestLayout()
 			this.invalidate()
 		}
 	
@@ -187,6 +205,11 @@ class Sequencer : View, Zoomable, Listable<Track>, Quantifiable
 			this.resources.getColor(R.color.textColor, theme)
 		)
 		
+		this._ticksColor = typedArray.getColor(
+			R.styleable.Sequencer_cio_sq_ticksColor,
+			this.resources.getColor(R.color.textColor, theme)
+		)
+		
 		this._dividerThickness = typedArray.getDimension(
 			R.styleable.Sequencer_cio_sq_dividerThickness,
 			this.resources.getDimension(R.dimen.sequencer_divider_thickness)
@@ -221,6 +244,12 @@ class Sequencer : View, Zoomable, Listable<Track>, Quantifiable
 		
 		this.zoomBehavior.widthAnimator.duration = this.zoomDuration
 		this.zoomBehavior.heightAnimator.duration = this.zoomDuration
+		this.zoomBehavior.onEvaluateWidth = this::barWidth
+		this.zoomBehavior.onMeasureWidth = {
+			this.quantizeBehavior.segmentLength = this.zoomBehavior.factorizedWidth
+			this.requestLayout()
+			this.invalidate()
+		}
 		this.zoomBehavior.onEvaluateHeight = {
 			this.rowHeight
 		}
@@ -228,8 +257,6 @@ class Sequencer : View, Zoomable, Listable<Track>, Quantifiable
 			this.requestLayout()
 			this.invalidate()
 		}
-		this.zoomBehavior.onEvaluateWidth = this::barWidth
-		this.zoomBehavior.onMeasureWidth = {}
 		
 		this.barBehavior.onCount = {
 			ProjectManager.getCurrent()!!.tracks.flatMap {
@@ -253,6 +280,7 @@ class Sequencer : View, Zoomable, Listable<Track>, Quantifiable
 		this.bindableBehavior.selfDetach()
 	}
 	
+	@ExperimentalUnsignedTypes
 	override fun onMeasure(
 		widthMeasureSpec: Int,
 		heightMeasureSpec: Int
@@ -267,7 +295,11 @@ class Sequencer : View, Zoomable, Listable<Track>, Quantifiable
 		}
 		else
 		{
-			(this.zoomBehavior.factorizedWidth * count).toInt()
+			this.quantizeBehavior.segmentCount = count
+			this.quantizeBehavior.segmentLength = this.zoomBehavior.factorizedWidth
+			this.quantizeBehavior.offset = this._ticksThickness / 2f
+			this.quantizeBehavior.generate()
+			this.zoomBehavior.factorizedWidth.toInt() * count
 		}
 		
 		val height = if(this.tracks.isEmpty())
@@ -322,35 +354,18 @@ class Sequencer : View, Zoomable, Listable<Track>, Quantifiable
 			this.painter.color = it.second
 			canvas.drawRect(it.first, this.painter)
 		}
-	}
-	
-	private fun drawLane(canvas: Canvas): List<Pair<Rect, Int>>
-	{
-		val lanes = mutableListOf<Pair<Rect, Int>>()
-		val bounds = canvas.clipBounds
-		this.tracks.indices.forEach { index ->
-			val divider = if(index > 0)
-			{
-				this.dividerThickness
-			}
-			else
-			{
-				0f
-			}
-			val height = this.zoomBehavior.factorizedHeight
-			val top = (height * index + divider).toInt()
-			val bottom = (top + height + divider).toInt()
-			val track = this.tracks[index]
-			val color = track.color.toTransparent(0.1f)
-			val lane = Rect(
-				bounds.left,
-				top,
-				bounds.right,
-				bottom
-			)
-			lanes.add(lane to color)
+		
+		val points = mutableListOf<Float>()
+		
+		for(i in 0 until this.quantizeBehavior.segmentCount)
+		{
+			this.drawBar(canvas, points, i)
 		}
-		return lanes
+		
+		this.painter.color = this.ticksColor.toTransparent(0.2f)
+		this.painter.strokeWidth = this.ticksThickness
+		
+		canvas.drawLines(points.toFloatArray(), this.painter)
 	}
 	
 	private fun drawEmpty(canvas: Canvas)
@@ -369,5 +384,48 @@ class Sequencer : View, Zoomable, Listable<Track>, Quantifiable
 			bounds.centerY() + height / 2f,
 			this.painter
 		)
+	}
+	
+	private fun drawLane(canvas: Canvas): List<Pair<Rect, Int>>
+	{
+		val lanes = mutableListOf<Pair<Rect, Int>>()
+		val bounds = canvas.clipBounds
+		this.tracks.indices.forEach { index ->
+			val divider = if(index > 0)
+			{
+				this.dividerThickness.toInt()
+			}
+			else
+			{
+				0
+			}
+			val height = this.zoomBehavior.factorizedHeight.toInt()
+			val top = (height + divider) * index
+			val bottom = top + height
+			val track = this.tracks[index]
+			val color = track.color.toTransparent(0.1f)
+			val lane = Rect(
+				bounds.left,
+				top,
+				bounds.right,
+				bottom
+			)
+			lanes.add(lane to color)
+		}
+		return lanes
+	}
+	
+	private fun drawBar(canvas: Canvas, pointsToDraw: MutableList<Float>, index: Int)
+	{
+		val points = this.quantizeBehavior.points[index]
+		val bounds = canvas.clipBounds.toRectF()
+		
+		points.indices.forEach { i ->
+			val x = points[i]
+			pointsToDraw.add(x)
+			pointsToDraw.add(bounds.top)
+			pointsToDraw.add(x)
+			pointsToDraw.add(bounds.bottom)
+		}
 	}
 }

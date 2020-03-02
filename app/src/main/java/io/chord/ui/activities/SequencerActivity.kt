@@ -43,6 +43,7 @@ class SequencerActivity : AppCompatActivity()
 		this.binding.verticalScrollBar.attach(R.id.sequencerScrollview)
 		
 		this.binding.horizontalZoomBar.attach(R.id.ruler)
+		this.binding.horizontalZoomBar.attach(R.id.sequencer)
 		
 		this.binding.verticalZoomBar.attach(R.id.trackList)
 		this.binding.verticalZoomBar.attach(R.id.sequencer)

@@ -4,6 +4,7 @@
         <attr name="cio_sq_zoomDuration" format="integer"/>
         <attr name="cio_sq_dividerColor" format="color"/>
         <attr name="cio_sq_textColor" format="color"/>
+        <attr name="cio_sq_ticksColor" format="color"/>
         <attr name="cio_sq_dividerThickness" format="dimension"/>
         <attr name="cio_sq_rowHeight" format="dimension"/>
         <attr name="cio_sq_rowPadding" format="dimension"/>

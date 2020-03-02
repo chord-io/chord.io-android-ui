@@ -8,7 +8,7 @@ class QuantizeBehavior
 	private var _segmentCount: Int = 0
 	private var _segmentLength: Float = 0f
 	private var _quantization: QuantizeUtils.Quantization = QuantizeUtils.Quantization(
-		QuantizeUtils.QuantizeValue.First,
+		QuantizeUtils.QuantizeValue.Fourth,
 		QuantizeUtils.QuantizeMode.Natural
 	)
 	private lateinit var _points: List<List<Float>>

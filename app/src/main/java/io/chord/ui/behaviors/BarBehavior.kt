@@ -5,6 +5,7 @@ import java.util.Collections.max
 
 class BarBehavior
 {
+	var headRoom: UInt = 1U
 	lateinit var onCount: (() -> List<ThemeEntry>)
 	
 	fun count(): Int
@@ -15,11 +16,16 @@ class BarBehavior
 		}
 		.distinct()
 		
-		if(bars.isEmpty())
+		if(this.headRoom == 0U)
 		{
-			return 0
+			this.headRoom = 1U
 		}
 		
-		return max(bars)
+		if(bars.isEmpty())
+		{
+			return this.headRoom.toInt()
+		}
+		
+		return max(bars) + this.headRoom.toInt()
 	}
 }
