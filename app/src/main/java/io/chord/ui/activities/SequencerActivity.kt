@@ -37,6 +37,7 @@ class SequencerActivity : AppCompatActivity()
 		
 		this.binding.toolbarSequencer.editor.toolbar
 		this.binding.horizontalScrollBar.attach(R.id.rulerScrollview)
+		this.binding.horizontalScrollBar.attach(R.id.sequencerScrollview)
 		
 		this.binding.verticalScrollBar.attach(R.id.trackListScrollView)
 		this.binding.verticalScrollBar.attach(R.id.sequencerScrollview)

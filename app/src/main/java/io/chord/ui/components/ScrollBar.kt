@@ -163,6 +163,7 @@ class ScrollBar : View, Binder
 			if(scrollViewContentSize <= scrollViewSize)
 			{
 				this.size = scrollBarSize
+				this.position = 0f
 			}
 			else
 			{
@@ -177,15 +178,15 @@ class ScrollBar : View, Binder
 				{
 					this.size = size
 				}
+				
+				this.position = MathUtils.map(
+					scrollViewPosition,
+					0f,
+					scrollViewContentSize - scrollViewSize,
+					0f,
+					scrollBarSize - this.size
+				)
 			}
-			
-			this.position = MathUtils.map(
-				scrollViewPosition,
-				0f,
-				scrollViewContentSize - scrollViewSize,
-				0f,
-				scrollBarSize - this.size
-			)
 		}
 	}
 	
