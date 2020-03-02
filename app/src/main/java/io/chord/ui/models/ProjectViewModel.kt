@@ -5,8 +5,7 @@ import androidx.databinding.BaseObservable
 import io.chord.clients.models.Project
 import io.chord.clients.models.Visibility
 
-class ProjectViewModel(
-) : BaseObservable()
+class ProjectViewModel : BaseObservable()
 {
 	var name: String = ""
 	

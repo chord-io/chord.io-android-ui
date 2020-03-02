@@ -20,7 +20,7 @@
             android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="@dimen/section_dialog_layout_size"
-            android:layout_toRightOf="@id/icon"
+            android:layout_toEndOf="@id/icon"
             android:layoutDirection="rtl"
             android:text="@{item.name}"
             android:textAlignment="textStart"

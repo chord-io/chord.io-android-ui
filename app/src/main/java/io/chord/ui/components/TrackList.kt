@@ -87,7 +87,7 @@ class TrackList : ListView<Track, TrackListItemViewModel, TrackListItemViewHolde
 		this.adapter.clear()
 		this.adapter.addAll(tracks)
 		this.adapter.notifyDataSetChanged()
-		this.bindBehavior.requestDispatchEvent()
+		this.requestDispatchEvent()
 		this.adapter.setNotifyOnChange(notifyOnChange)
 	}
 }

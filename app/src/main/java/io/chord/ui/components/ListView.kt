@@ -102,9 +102,9 @@ abstract class ListView<TModel, TViewModel: ListViewModel, TViewHolder: ListView
 	
 	private var draggedItem: View? = null
 	private val zoomBehavior: ZoomBehavior = ZoomBehavior()
-	private val bindableBehavior = BindableBehavior(this)
-	protected val bindBehavior = BindBehavior<Listable<TModel>>(this)
+	private lateinit var bindableBehavior: BindableBehavior
 	private val divider: ShapeDrawable = ShapeDrawable()
+	private lateinit var bindBehavior: BindBehavior<Listable<TModel>>
 	protected val adapter: ListAdapter<TModel, TViewModel> = ListAdapter(this.context)
 	
 	var listener: ListClickListener<TModel>
@@ -230,6 +230,9 @@ abstract class ListView<TModel, TViewModel: ListViewModel, TViewHolder: ListView
 		
 		this.adapter.registerDataSetObserver(ListViewDataSetObserver(this))
 		
+		this.bindableBehavior = BindableBehavior(this)
+		
+		this.bindBehavior = BindBehavior(this)
 		this.bindBehavior.onAttach = {}
 		this.bindBehavior.onDispatchEvent = {
 			it.setDataSet(this.adapter.items)
@@ -273,6 +276,11 @@ abstract class ListView<TModel, TViewModel: ListViewModel, TViewHolder: ListView
 	override fun detachAll()
 	{
 		this.bindBehavior.detachAll()
+	}
+	
+	fun requestDispatchEvent()
+	{
+		this.bindBehavior.requestDispatchEvent()
 	}
 	
 	override fun attach(controller: BindBehavior<Bindable>)
