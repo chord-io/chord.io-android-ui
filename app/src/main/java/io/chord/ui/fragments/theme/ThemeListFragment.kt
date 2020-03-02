@@ -170,9 +170,7 @@ class ThemeListFragment : Fragment(), ThemeClickListener, Listable<Track>
     {
         // TODO: stop playing theme when dataset changed
         
-        val tracks = this.getTracks()
         val sections = this.viewAdapter.copyOfSectionsMap
-    
         val referenceIds = dataset.map {
             it.referenceId.toHexaDecimalString()
         }
@@ -188,10 +186,7 @@ class ThemeListFragment : Fragment(), ThemeClickListener, Listable<Track>
         
         dataset.forEach { track ->
             val referenceId = track.referenceId.toHexaDecimalString()
-            val themes = tracks.first {
-                it.referenceId.toHexaDecimalString() == referenceId
-            }
-            .themes
+            val themes = track.themes
             val sectionIndex = sections.entries.indexOfFirst {
                 it.key == referenceId
             }
@@ -224,6 +219,10 @@ class ThemeListFragment : Fragment(), ThemeClickListener, Listable<Track>
                     this.viewAdapter.removeSection(referenceId)
                     this.viewAdapter.addSection(referenceId, section)
                     this.viewAdapter.notifyItemMoved(sectionIndex, trackIndex)
+                }
+                else
+                {
+                    this.viewAdapter.notifyDataSetChanged()
                 }
             }
         }

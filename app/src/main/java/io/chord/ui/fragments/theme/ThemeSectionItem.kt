@@ -13,7 +13,9 @@ class ThemeSectionItem(
 	{
 		if(other is ThemeSectionItem)
 		{
-			return this.theme.name == other.theme.name
+			val trackEqual = this.track.color == other.track.color
+			val themeEqual = this.theme.name == other.theme.name
+			return trackEqual && themeEqual
 		}
 		
 		return false
