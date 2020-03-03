@@ -272,7 +272,17 @@ class ScrollBar : View, Binder
 				}
 			}
 			
-			scrollView.setOnScrollChangeListener { _, _, _, _, _ ->
+			scrollView.setOnScrollChangeListener { _, scrollX, scrollY, _, _ ->
+				val position = if(this.scrollBar.orientation == ViewOrientation.Horizontal)
+				{
+					scrollX
+				}
+				else
+				{
+					scrollY
+				}
+				
+				this.scrollBar.positionBehavior.setValue(position)
 				this.scrollBar.invalidate()
 			}
 			
