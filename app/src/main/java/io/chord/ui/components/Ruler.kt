@@ -275,7 +275,18 @@ class Ruler : View, Zoomable, Quantifiable, Bindable
 			this.quantizeBehavior.segmentLength = this.zoomBehavior.factorizedWidth
 			this.quantizeBehavior.offset = this._ticksThickness / 2f
 			this.quantizeBehavior.generate()
-			this.zoomBehavior.factorizedWidth.toInt() * count
+			
+			val viewport = MeasureSpec.getSize(widthMeasureSpec)
+			val content = this.zoomBehavior.factorizedWidth.toInt() * count
+			
+			if(content < viewport)
+			{
+				viewport
+			}
+			else
+			{
+				content
+			}
 		}
 		
 		val height = MeasureSpec.getSize(heightMeasureSpec)

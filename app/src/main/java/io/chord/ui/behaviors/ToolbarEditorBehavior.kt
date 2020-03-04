@@ -10,6 +10,7 @@ import com.mikepenz.iconics.utils.sizeRes
 import com.mikepenz.iconics.view.IconicsImageView
 import io.chord.R
 import io.chord.databinding.ToolbarEditorBinding
+import io.chord.ui.components.EditorMode
 import io.chord.ui.extensions.getChildOfType
 
 class ToolbarEditorBehavior(
@@ -18,11 +19,7 @@ class ToolbarEditorBehavior(
 {
 	private var isPlaying: Boolean = false
 	
-	lateinit var onMoveMode: (() -> Unit)
-	lateinit var onSelectMode: (() -> Unit)
-	lateinit var onEditMode: (() -> Unit)
-	lateinit var onEraseMode: (() -> Unit)
-	lateinit var onCloneMode: (() -> Unit)
+	lateinit var onModeChanged: ((EditorMode) -> Unit)
 	lateinit var onPlay: (() -> Unit)
 	lateinit var onStop: (() -> Unit)
 	lateinit var onUndo: (() -> Unit)
@@ -39,11 +36,11 @@ class ToolbarEditorBehavior(
 				this.setSelectedIconColor(mode)
 				when(view.id)
 				{
-					R.id.move -> this.onMoveMode()
-					R.id.select -> this.onSelectMode()
-					R.id.edit -> this.onEditMode()
-					R.id.erase -> this.onEraseMode()
-					R.id.clone -> this.onCloneMode()
+					R.id.move -> this.onModeChanged(EditorMode.Move)
+					R.id.select -> this.onModeChanged(EditorMode.Select)
+					R.id.edit -> this.onModeChanged(EditorMode.Edit)
+					R.id.erase -> this.onModeChanged(EditorMode.Erase)
+					R.id.clone -> this.onModeChanged(EditorMode.Clone)
 				}
 			}
 		}

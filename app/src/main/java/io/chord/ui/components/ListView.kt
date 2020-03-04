@@ -325,6 +325,39 @@ abstract class ListView<TModel, TViewModel: ListViewModel, TViewHolder: ListView
 		this.dividerDrawable = this.divider
 	}
 	
+	override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int)
+	{
+		val width = MeasureSpec.getSize(widthMeasureSpec)
+		val height = if(this.adapter.count == 0)
+		{
+			MeasureSpec.getSize(heightMeasureSpec)
+		}
+		else
+		{
+			val divider = (this.adapter.count - 1) * this.dividerThickness.toInt()
+			val items = this.zoomBehavior.factorizedHeight.toInt() * this.adapter.count
+			val viewport = MeasureSpec.getSize(heightMeasureSpec)
+			val content = items + divider
+
+			if(content < viewport)
+			{
+				viewport
+			}
+			else
+			{
+				content
+			}
+		}
+
+		this.setMeasuredDimension(width, height)
+		this.onMeasureChange()
+		
+		val childWidthSpec = MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY)
+		val childHeightSpec = MeasureSpec.makeMeasureSpec(this.zoomBehavior.factorizedHeight.toInt(), MeasureSpec.EXACTLY)
+		this.measureChildren(childWidthSpec, childHeightSpec)
+		
+	}
+	
 	@Suppress("UNCHECKED_CAST")
 	protected fun populateLayout()
 	{
@@ -380,6 +413,7 @@ abstract class ListView<TModel, TViewModel: ListViewModel, TViewHolder: ListView
 	private fun adjustItemViewDimension(holder: ListViewHolder<TModel, TViewModel>, height: Int, padding: Int)
 	{
 		holder.view.setPadding(padding, padding, padding, padding)
+		holder.view.layoutParams.width = LayoutParams.MATCH_PARENT
 		holder.view.layoutParams.height = height
 	}
 	

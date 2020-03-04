@@ -6,8 +6,6 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.drawable.RippleDrawable
-import android.graphics.drawable.ShapeDrawable
-import android.graphics.drawable.shapes.RoundRectShape
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
@@ -26,7 +24,6 @@ import io.chord.ui.extensions.setBackgroundColor
 import io.chord.ui.extensions.setRoundness
 import io.chord.ui.extensions.toTransparent
 import io.chord.ui.utils.RippleDrawableUtils
-import java.util.*
 
 
 class TrackControl : View, Binder, Bindable
@@ -170,15 +167,10 @@ class TrackControl : View, Binder, Bindable
 			)
 			this.animatorSet.duration = this.trackControl.animationDuration
 			
-			val radius = FloatArray(8)
-			Arrays.fill(radius, this.trackControl.roundness)
-			val shape = RoundRectShape(radius, null, null)
-			val mask = ShapeDrawable(shape)
-			
-			this.ripple = RippleDrawableUtils.create(
+			this.ripple = RippleDrawableUtils.createRound(
 				this.trackControl.backgroundNormalColor,
 				this.trackControl.backgroundNormalColor,
-				mask
+				this.trackControl.roundness
 			)
 			
 			this.trackControl.background = this.ripple

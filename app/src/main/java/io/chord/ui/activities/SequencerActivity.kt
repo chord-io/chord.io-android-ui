@@ -12,7 +12,6 @@ import com.mikepenz.iconics.utils.sizeRes
 import io.chord.R
 import io.chord.databinding.ActivitySequencerBinding
 import io.chord.ui.behaviors.ToolbarEditorBehavior
-import io.chord.ui.extensions.addIcon
 import io.chord.ui.fragments.theme.ThemeListFragment
 import io.chord.ui.fragments.track.TrackListFragment
 
@@ -67,18 +66,14 @@ class SequencerActivity : AppCompatActivity()
 			themeList.create()
 		}
 		
-		this.binding.addBarButton.addIcon(this)
-		
 		this.toolBarBehavior = ToolbarEditorBehavior(
 			this,
 			this.binding.toolbarSequencer.editor
 		)
 		
-		this.toolBarBehavior.onMoveMode = {}
-		this.toolBarBehavior.onSelectMode = {}
-		this.toolBarBehavior.onEditMode = {}
-		this.toolBarBehavior.onEraseMode = {}
-		this.toolBarBehavior.onCloneMode = {}
+		this.toolBarBehavior.onModeChanged = {
+			this.binding.sequencer.setMode(it)
+		}
 		this.toolBarBehavior.onPlay = {}
 		this.toolBarBehavior.onStop = {}
 		this.toolBarBehavior.onUndo = {}

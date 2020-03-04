@@ -5,12 +5,33 @@ import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.RippleDrawable
+import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.shapes.RoundRectShape
+import java.util.*
 
 
 class RippleDrawableUtils
 {
 	companion object
 	{
+		fun createRound(
+			normalColor: Int,
+			pressedColor: Int,
+			roundness: Float
+		): RippleDrawable
+		{
+			val radius = FloatArray(8)
+			Arrays.fill(radius, roundness)
+			val shape = RoundRectShape(radius, null, null)
+			val mask = ShapeDrawable(shape)
+			
+			return RippleDrawableUtils.create(
+				normalColor,
+				pressedColor,
+				mask
+			)
+		}
+		
 		fun create(
 			normalColor: Int,
 			pressedColor: Int,

@@ -12,6 +12,12 @@ fun RippleDrawable.setBackgroundColor(color: Int)
 	content.setColorFilter(color, PorterDuff.Mode.SRC_IN)
 }
 
+fun RippleDrawable.setMaskBackgroundColor(color: Int)
+{
+	val content = this.getDrawable(1)
+	content.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+}
+
 fun RippleDrawable.setRoundness(value: Float)
 {
 	val radius = FloatArray(8)

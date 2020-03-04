@@ -1,6 +1,5 @@
 package io.chord.ui.components
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
@@ -29,8 +28,12 @@ class VerticalScrollView : ScrollView
 		defStyleRes: Int
 	) : super(context, attrs, defStyleAttr, defStyleRes)
 	
-	@SuppressLint("ClickableViewAccessibility")
 	override fun onTouchEvent(event: MotionEvent?): Boolean
+	{
+		return false
+	}
+	
+	override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean
 	{
 		return false
 	}

@@ -9,4 +9,9 @@ open class SimpleOnGestureListener : GestureDetector.SimpleOnGestureListener()
 	{
 		return false
 	}
+	
+	open fun onMove(event: MotionEvent): Boolean
+	{
+		return false
+	}
 }

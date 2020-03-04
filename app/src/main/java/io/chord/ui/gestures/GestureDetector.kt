@@ -50,6 +50,10 @@ class GestureDetector : GestureDetector
 		{
 			this.listener!!.onUp(event)
 		}
+		else if(event.action == MotionEvent.ACTION_MOVE && this.listener != null)
+		{
+			this.listener!!.onMove(event)
+		}
 		
 		return super.onTouchEvent(event)
 	}
