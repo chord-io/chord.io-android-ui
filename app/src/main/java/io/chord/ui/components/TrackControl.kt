@@ -26,7 +26,7 @@ import io.chord.ui.extensions.toTransparent
 import io.chord.ui.utils.RippleDrawableUtils
 
 
-class TrackControl : View, Binder, Bindable
+class TrackControl : View, Binder, Bindable, Controllable<TrackControlState>
 {
 	private class StateContext(
 		private val trackControl: TrackControl
@@ -61,8 +61,6 @@ class TrackControl : View, Binder, Bindable
 					context.trackControl.backgroundNormalColor,
 					context.trackControl.backgroundNormalColor
 				))
-				
-				context.animatorSet.start()
 			}
 		}
 		
@@ -90,8 +88,6 @@ class TrackControl : View, Binder, Bindable
 					context.trackControl.backgroundNormalColor,
 					context.trackControl.backgroundMuteColor
 				))
-				
-				context.animatorSet.start()
 			}
 		}
 		
@@ -119,8 +115,6 @@ class TrackControl : View, Binder, Bindable
 					context.trackControl.backgroundNormalColor,
 					context.trackControl.backgroundSoloColor
 				))
-				
-				context.animatorSet.start()
 			}
 		}
 		
@@ -132,6 +126,7 @@ class TrackControl : View, Binder, Bindable
 		private val textMuteAnimator: ValueAnimator = FastOutSlowInValueAnimator()
 		private val backgroundSoloAnimator: ValueAnimator = FastOutSlowInValueAnimator()
 		private val textSoloAnimator: ValueAnimator = FastOutSlowInValueAnimator()
+		var animate: Boolean = true
 		val animatorSet: AnimatorSet = AnimatorSet()
 		var backgroundMuteOpacity: Float = 0f
 		var textMuteColor: Int = 0
@@ -241,6 +236,13 @@ class TrackControl : View, Binder, Bindable
 		fun invalidate()
 		{
 			this.state.changeColor(this)
+			
+			if(!this.animate)
+			{
+				this.animatorSet.currentPlayTime = this.animatorSet.duration
+			}
+			
+			this.animatorSet.start()
 		}
 		
 		private fun requestInvalidate()
@@ -257,10 +259,17 @@ class TrackControl : View, Binder, Bindable
 		}
 	}
 	
+	var onStateChanged: ((TrackControlState) -> Unit)? = null
 	private lateinit var stateContext: StateContext
 	private val bindBehavior = BindBehavior<TrackControl>(this)
 	private val bindableBehavior = BindableBehavior(this)
 	private val painter: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
+	
+	var animate: Boolean
+		get() = this.stateContext.animate
+		set(value) {
+			this.stateContext.animate = value
+		}
 
 	private var _state: TrackControlState = TrackControlState.Normal
 	private var _animationDuration: Long = -1
@@ -281,6 +290,7 @@ class TrackControl : View, Binder, Bindable
 			this.bindBehavior.requestDispatchEvent()
 			this.stateContext.setState(value)
 			this.stateContext.invalidate()
+			this.onStateChanged?.invoke(value)
 		}
 	
 	var animationDuration: Long
@@ -466,11 +476,9 @@ class TrackControl : View, Binder, Bindable
 		
 		this.state = this._state
 		
-		this.bindBehavior.onAttach = {
-			it.detachAll()
-		}
+		this.bindBehavior.onAttach = {}
 		this.bindBehavior.onDispatchEvent = {
-			it.state = this.state
+			it.setControlState(this.state)
 		}
 	}
 	
@@ -517,6 +525,11 @@ class TrackControl : View, Binder, Bindable
 	override fun detachAll()
 	{
 		this.bindBehavior.detachAll()
+	}
+	
+	override fun setControlState(state: TrackControlState)
+	{
+		this.state = state
 	}
 	
 	override fun onTouchEvent(event: MotionEvent): Boolean

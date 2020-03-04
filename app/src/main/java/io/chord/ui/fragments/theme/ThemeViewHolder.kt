@@ -42,7 +42,6 @@ class ThemeViewHolder(
     init
     {
         holders.add(this)
-    
         this.binding.theme = ThemeListItemViewModel(false)
     }
     

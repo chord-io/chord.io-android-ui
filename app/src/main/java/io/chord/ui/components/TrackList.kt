@@ -67,7 +67,7 @@ class TrackList : ListView<Track, TrackListItemViewModel, TrackListItemViewHolde
 		}
 		
 		this.adapter.viewModelFactory = {
-			TrackListItemViewModel(it)
+			TrackListItemViewModel(it, this.adapter.items)
 		}
 		
 		ProjectManager.addOnUpdateListener(this::update)

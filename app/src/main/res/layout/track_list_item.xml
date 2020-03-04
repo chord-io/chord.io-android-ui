@@ -27,7 +27,6 @@
         </io.chord.ui.components.TrackControl>
 
         <TextView
-            tools:text="@tools:sample/first_names"
             android:id="@+id/name"
             android:layout_width="0dp"
             android:layout_height="match_parent"

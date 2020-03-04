@@ -5,7 +5,8 @@ import io.chord.clients.models.Track
 import io.chord.ui.components.ListViewModel
 
 class TrackListItemViewModel(
-	val model: Track
+	val model: Track,
+	val tracks: List<Track>
 ) : BaseObservable(), ListViewModel
 {
 	var name: String = model.name
