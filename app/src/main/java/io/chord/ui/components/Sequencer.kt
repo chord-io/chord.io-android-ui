@@ -423,7 +423,7 @@ class Sequencer : View, Zoomable, Listable<Track>, Quantifiable, Modulable
 		
 		this._ticksColor = typedArray.getColor(
 			R.styleable.Sequencer_cio_sq_ticksColor,
-			this.resources.getColor(R.color.textColor, theme)
+			this.resources.getColor(R.color.borderColor, theme)
 		)
 		
 		this._dividerThickness = typedArray.getDimension(
@@ -616,6 +616,10 @@ class Sequencer : View, Zoomable, Listable<Track>, Quantifiable, Modulable
 			canvas.drawRect(it.first, this.painter)
 		}
 		
+		this.painter.color = this.dividerColor
+		
+		canvas.drawLines(this.drawDivider(canvas), this.painter)
+		
 		val points = mutableListOf<Float>()
 		
 		for(i in 0 until this.quantizeBehavior.segmentCount)
@@ -623,7 +627,7 @@ class Sequencer : View, Zoomable, Listable<Track>, Quantifiable, Modulable
 			this.drawBar(canvas, points, i)
 		}
 		
-		this.painter.color = this.ticksColor.toTransparent(0.2f)
+		this.painter.color = this.ticksColor
 		this.painter.strokeWidth = this.ticksThickness
 		
 		canvas.drawLines(points.toFloatArray(), this.painter)
@@ -679,6 +683,36 @@ class Sequencer : View, Zoomable, Listable<Track>, Quantifiable, Modulable
 			lanes.add(lane to color)
 		}
 		return lanes
+	}
+	
+	private fun drawDivider(canvas: Canvas): FloatArray
+	{
+		val points = mutableListOf<Float>()
+		val bounds = canvas.clipBounds.toRectF()
+		val divider = this.dividerThickness.toInt()
+		val halfDivider = divider / 2f
+		val height = this.zoomBehavior.factorizedHeight.toInt()
+		
+		for(index in 1 until this.tracks.size)
+		{
+			val point = if(points.isEmpty())
+			{
+				height.toFloat() + halfDivider
+			}
+			else
+			{
+				points.last() + divider + height
+			}
+			
+			val y = point
+			
+			points.add(bounds.left)
+			points.add(y)
+			points.add(bounds.right)
+			points.add(y)
+		}
+		
+		return points.toFloatArray()
 	}
 	
 	private fun drawBar(canvas: Canvas, pointsToDraw: MutableList<Float>, index: Int)
