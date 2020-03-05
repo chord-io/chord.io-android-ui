@@ -1,6 +1,6 @@
 package io.chord.ui.components
 
-interface Modulable
+interface Modulable<T>
 {
-	fun setMode(mode: EditorMode)
+	fun setMode(mode: T)
 }

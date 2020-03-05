@@ -6,12 +6,9 @@ import android.graphics.Paint
 import android.graphics.PointF
 import android.graphics.Rect
 import android.graphics.RectF
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import androidx.core.graphics.toRect
 import androidx.core.graphics.toRectF
 import io.chord.R
 import io.chord.clients.models.Track
@@ -22,236 +19,56 @@ import io.chord.ui.behaviors.Bindable
 import io.chord.ui.behaviors.BindableBehavior
 import io.chord.ui.behaviors.QuantizeBehavior
 import io.chord.ui.behaviors.ZoomBehavior
-import io.chord.ui.extensions.clamp
-import io.chord.ui.extensions.dpToPixel
 import io.chord.ui.extensions.getTextBounds
 import io.chord.ui.extensions.getTextCentered
 import io.chord.ui.extensions.toTransparent
-import io.chord.ui.gestures.GestureDetector
 import io.chord.ui.gestures.SimpleOnGestureListener
 import io.chord.ui.utils.QuantizeUtils
 
-class Sequencer : View, Zoomable, Listable<Track>, Quantifiable, Modulable
+class Sequencer : View, Zoomable, Listable<Track>, Quantifiable, Modulable<EditorMode>
 {
-	private class StateModeContext(
-		private val sequencer: Sequencer
-	)
+	private class SelectState(
+		private val context: EditorState
+	) : EditorState.State, SimpleOnGestureListener()
 	{
-		private interface State
+		private var rectangle: EditorGesture.Rectangle? = null
 		
-		private class MoveStateMode(
-			private val context: StateModeContext
-		) : State, SimpleOnGestureListener()
+		override fun onDown(event: MotionEvent): Boolean
 		{
-		}
-		
-		private class SelectStateMode(
-			private val context: StateModeContext
-		) : State, SimpleOnGestureListener()
-		{
-			private var rectangle: GestureController.Rectangle? = null
-			
-			override fun onDown(event: MotionEvent): Boolean
-			{
-				this.rectangle = GestureController.Rectangle(
-					PointF(
-						event.x,
-						event.y
-					),
-					PointF(
-						event.x,
-						event.y
-					)
+			this.rectangle = EditorGesture.Rectangle(
+				PointF(
+					event.x,
+					event.y
+				),
+				PointF(
+					event.x,
+					event.y
 				)
-				this.context.sequencer.gesture.drawer.draw(this.rectangle!!.toSurface())
-				this.context.sequencer.gesture.intersect(this.rectangle!!.toSurface())
-				return true
-			}
-			
-			override fun onUp(event: MotionEvent): Boolean
-			{
-				this.rectangle = null
-				this.context.sequencer.gesture.drawer.clear()
-				return true
-			}
-			
-			override fun onMove(event: MotionEvent): Boolean
-			{
-				this.rectangle = GestureController.Rectangle(
-					this.rectangle!!.a,
-					PointF(
-						event.x,
-						event.y
-					)
-				)
-				this.context.sequencer.gesture.drawer.draw(this.rectangle!!.toSurface())
-				this.context.sequencer.gesture.intersect(this.rectangle!!.toSurface())
-				return true
-			}
-		}
-		
-		private class EditStateMode(
-			private val context: StateModeContext
-		) : State, SimpleOnGestureListener()
-		{
-		}
-		
-		private class EraseStateMode(
-			private val context: StateModeContext
-		) : State, SimpleOnGestureListener()
-		{
-		}
-		
-		private class CloneStateMode(
-			private val context: StateModeContext
-		) : State, SimpleOnGestureListener()
-		{
-		}
-		
-		private var _state: State = MoveStateMode(this)
-		
-		val state: State
-			get() = this._state
-		
-		fun setMode(mode: EditorMode)
-		{
-			this._state = when(mode)
-			{
-				EditorMode.Move -> MoveStateMode(this)
-				EditorMode.Select -> SelectStateMode(this)
-				EditorMode.Edit -> EditStateMode(this)
-				EditorMode.Erase -> EraseStateMode(this)
-				EditorMode.Clone -> CloneStateMode(this)
-			}
-			
-			this.sequencer.gesture.setListener(this._state as SimpleOnGestureListener)
-		}
-	}
-	
-	private class GestureController(
-		private val sequencer: Sequencer
-	)
-	{
-		internal class Rectangle(
-			val a: PointF,
-			val b: PointF
-		)
-		{
-			fun toSurface(): TouchSurface
-			{
-				val rect = RectF()
-				
-				if(this.a.x.compareTo(this.b.x) > 0)
-				{
-					rect.left = this.b.x
-					rect.right = this.a.x
-				}
-				else
-				{
-					rect.left = this.a.x
-					rect.right = this.b.x
-				}
-				
-				if(this.a.y.compareTo(this.b.y) > 0)
-				{
-					rect.top = this.b.y
-					rect.bottom = this.a.y
-				}
-				else
-				{
-					rect.top = this.a.y
-					rect.bottom = this.b.y
-				}
-				
-				return TouchSurface(rect)
-			}
-		}
-		
-		internal open class TouchSurface(
-			val surface: RectF,
-			var isSelected: Boolean = false
-		)
-		
-		internal class BarTouchSurface(
-			surface: RectF,
-			val index: Int
-		) : TouchSurface(surface)
-		
-		internal class SequenceTouchSurface(
-			surface: RectF,
-			val track: Track,
-			val index: Int
-		) : TouchSurface(surface)
-		
-		internal class SurfaceDrawer(
-			private val sequencer: Sequencer
-		)
-		{
-			private var _frame: GradientDrawable? = null
-			
-			val frame: Drawable?
-				get() = this._frame
-				
-			fun draw(surface: TouchSurface)
-			{
-				if(this._frame == null)
-				{
-					// TODO : this as parameter
-					val color = this.sequencer.resources.getColor(
-						R.color.colorAccent,
-						this.sequencer.context.theme
-					)
-					this._frame = GradientDrawable()
-					// TODO : made this as parameter
-					this._frame!!.setStroke(1f.dpToPixel().toInt(), color.toTransparent(0.5f))
-					this._frame!!.setColor(color.toTransparent(0.25f))
-				}
-				
-				this._frame!!.bounds = surface.surface.toRect().clamp(this.sequencer.gesture.bounds)
-				this.sequencer.invalidate()
-			}
-			
-			fun clear()
-			{
-				this._frame = null
-				this.sequencer.invalidate()
-			}
-		}
-		
-		var bounds: Rect = Rect()
-		val surfaces: MutableList<TouchSurface> = mutableListOf()
-		val drawer = SurfaceDrawer(this.sequencer)
-		private var detector: GestureDetector? = null
-		
-		fun onTouchEvent(event: MotionEvent): Boolean
-		{
-			if(this.detector != null)
-			{
-				return this.detector!!.onTouchEvent(event)
-			}
-			
-			return false
-		}
-		
-		fun intersect(surface: TouchSurface)
-		{
-			this.surfaces.forEach {
-				it.isSelected = false
-			}
-			this.surfaces.filter {
-				RectF.intersects(it.surface, surface.surface)
-			}
-			.forEach {
-				it.isSelected = true
-			}
-		}
-		
-		fun setListener(listener: SimpleOnGestureListener)
-		{
-			this.detector = GestureDetector(
-				this.sequencer.context,
-				listener
 			)
+			this.context.gesture.drawer.draw(this.rectangle!!.toSurface())
+			this.context.gesture.intersect(this.rectangle!!.toSurface())
+			return true
+		}
+		
+		override fun onUp(event: MotionEvent): Boolean
+		{
+			this.rectangle = null
+			this.context.gesture.drawer.clear()
+			return true
+		}
+		
+		override fun onMove(event: MotionEvent): Boolean
+		{
+			this.rectangle = EditorGesture.Rectangle(
+				this.rectangle!!.a,
+				PointF(
+					event.x,
+					event.y
+				)
+			)
+			this.context.gesture.drawer.draw(this.rectangle!!.toSurface())
+			this.context.gesture.intersect(this.rectangle!!.toSurface())
+			return true
 		}
 	}
 	
@@ -259,8 +76,8 @@ class Sequencer : View, Zoomable, Listable<Track>, Quantifiable, Modulable
 	private val bindableBehavior = BindableBehavior(this)
 	private val quantizeBehavior = QuantizeBehavior()
 	private val barBehavior = BarBehavior()
-	private val stateContext = StateModeContext(this)
-	private val gesture: GestureController = GestureController(this)
+	private val gesture = EditorGesture(this.context)
+	private val stateContext = EditorState(this.gesture)
 	private val tracks: MutableList<Track> = mutableListOf()
 	private val painter: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
 	
@@ -480,6 +297,12 @@ class Sequencer : View, Zoomable, Listable<Track>, Quantifiable, Modulable
 			}
 		}
 		
+		this.gesture.drawer.onInvalidate = {
+			this.invalidate()
+		}
+		
+		this.stateContext.modes[EditorMode.Select] = SelectState(this.stateContext)
+		
 		this.isClickable = true
 		this.isFocusable = true
 	}
@@ -591,7 +414,7 @@ class Sequencer : View, Zoomable, Listable<Track>, Quantifiable, Modulable
 	{
 		return if(this.gesture.onTouchEvent(event))
 		{
-			return true
+			true
 		}
 		else
 		{
@@ -722,7 +545,7 @@ class Sequencer : View, Zoomable, Listable<Track>, Quantifiable, Modulable
 		val left = this.quantizeBehavior.segmentLength * index
 		val right = left + this.quantizeBehavior.segmentLength
 		
-		this.gesture.surfaces.add(GestureController.BarTouchSurface(
+		this.gesture.surfaces.add(EditorGesture.BarTouchSurface(
 			RectF(
 				left,
 				bounds.top,

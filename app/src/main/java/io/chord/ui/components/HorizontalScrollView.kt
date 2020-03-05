@@ -28,6 +28,11 @@ class HorizontalScrollView : HorizontalScrollView
 		defStyleRes: Int
 	) : super(context, attrs, defStyleAttr, defStyleRes)
 	
+	fun onSuperToucEvent(event: MotionEvent): Boolean
+	{
+		return super.onTouchEvent(event)
+	}
+	
 	override fun onTouchEvent(event: MotionEvent?): Boolean
 	{
 		return false

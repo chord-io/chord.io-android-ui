@@ -34,7 +34,6 @@ class SequencerActivity : AppCompatActivity()
 		
 		this.binding = DataBindingUtil.bind(view)!!
 		
-		this.binding.toolbarSequencer.editor.toolbar
 		this.binding.horizontalScrollBar.attach(R.id.rulerScrollview)
 		this.binding.horizontalScrollBar.attach(R.id.sequencerScrollview)
 		
@@ -73,6 +72,7 @@ class SequencerActivity : AppCompatActivity()
 		
 		this.toolBarBehavior.onModeChanged = {
 			this.binding.sequencer.setMode(it)
+			this.binding.sequencerScrollview.setMode(it)
 		}
 		this.toolBarBehavior.onPlay = {}
 		this.toolBarBehavior.onStop = {}
