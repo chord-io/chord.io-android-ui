@@ -11,6 +11,7 @@
             android:layout_width="0dp"
             android:layout_height="?attr/actionBarSize"
             android:layout_weight="1"
+            app:title="placeholder"
             app:contentInsetStartWithNavigation="0dp">
         </androidx.appcompat.widget.Toolbar>
         <androidx.constraintlayout.widget.ConstraintLayout

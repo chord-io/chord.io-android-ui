@@ -94,5 +94,16 @@ class SequencerActivity : AppCompatActivity()
 			.icon(FontAwesome.Icon.faw_arrow_left)
 			.sizeRes(R.dimen.app_bar_icon_size)
 			.colorRes(R.color.backgroundPrimary)
+		
+		this.binding.toolbarSequencer.editor.toolbar.setNavigationOnClickListener {
+			this.onBackPressed()
+		}
+		
+		this.binding.toolbarSequencer.editor.toolbar.setTitle(R.string.sequencer_activity_title)
+	}
+	
+	override fun onStart()
+	{
+		super.onStart()
 	}
 }

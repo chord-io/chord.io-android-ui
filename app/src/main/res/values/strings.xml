@@ -19,6 +19,8 @@
     <string name="main_activity_title">Home</string>
     <string name="main_activity_menu_profile">Profile</string>
 
+    <string name="sequencer_activity_title">Sequencer</string>
+
     <string name="dialog_positive_button">Got it</string>
     <string name="dialog_negative_button">Cancel</string>
 
