@@ -9,13 +9,13 @@ import com.mikepenz.iconics.utils.roundedCornersDp
 import com.mikepenz.iconics.utils.sizeRes
 import com.mikepenz.iconics.view.IconicsImageView
 import io.chord.R
-import io.chord.databinding.ToolbarEditorBinding
+import io.chord.databinding.ToolbarGenericEditorBinding
 import io.chord.ui.components.EditorMode
 import io.chord.ui.extensions.getChildOfType
 
 class ToolbarEditorBehavior(
 	private val context: Context,
-	private val binding: ToolbarEditorBinding)
+	private val binding: ToolbarGenericEditorBinding)
 {
 	private var isPlaying: Boolean = false
 	

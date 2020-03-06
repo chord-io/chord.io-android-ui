@@ -18,7 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginEnd="5dp"
-        android:gravity="center_vertical" />
+        android:gravity="center_vertical|end" />
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -30,9 +30,11 @@
             android:layout_gravity="center_vertical"
             android:layout_centerInParent="true"
             android:background="@null"
-            android:spinnerMode="dialog"
+            android:spinnerMode="dropdown"
             android:clickable="false"
-            android:focusable="false"/>
+            android:focusable="false"
+            android:dropDownWidth="wrap_content"
+            android:popupBackground="@color/backgroundSecondary"/>
         <com.mikepenz.iconics.view.IconicsImageView
             android:id="@+id/iconView"
             android:layout_width="@dimen/dropdown_icon_size"

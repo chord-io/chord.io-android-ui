@@ -12,7 +12,6 @@ import android.view.View
 import androidx.core.graphics.toRectF
 import io.chord.R
 import io.chord.clients.models.Track
-import io.chord.services.managers.ProjectManager
 import io.chord.ui.behaviors.BarBehavior
 import io.chord.ui.behaviors.BindBehavior
 import io.chord.ui.behaviors.Bindable
@@ -25,7 +24,7 @@ import io.chord.ui.extensions.toTransparent
 import io.chord.ui.gestures.SimpleOnGestureListener
 import io.chord.ui.utils.QuantizeUtils
 
-class Sequencer : View, Zoomable, Listable<Track>, Quantifiable, Modulable<EditorMode>
+class Sequencer : View, Zoomable, Listable<Track>, Quantifiable, Modulable<EditorMode>, Countable
 {
 	private class SelectState(
 		private val context: EditorState
@@ -291,12 +290,6 @@ class Sequencer : View, Zoomable, Listable<Track>, Quantifiable, Modulable<Edito
 			this.invalidate()
 		}
 		
-		this.barBehavior.onCount = {
-			ProjectManager.getCurrent()!!.tracks.flatMap {
-				it.entries
-			}
-		}
-		
 		this.gesture.drawer.onInvalidate = {
 			this.invalidate()
 		}
@@ -406,6 +399,13 @@ class Sequencer : View, Zoomable, Listable<Track>, Quantifiable, Modulable<Edito
 	override fun setQuantization(quantization: QuantizeUtils.Quantization)
 	{
 		this.quantizeBehavior.quantization = quantization
+		this.requestLayout()
+		this.invalidate()
+	}
+	
+	override fun setCounter(counter: () -> List<Int>)
+	{
+		this.barBehavior.onCount = counter
 		this.requestLayout()
 		this.invalidate()
 	}

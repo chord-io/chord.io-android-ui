@@ -9,6 +9,7 @@
     <color name="backgroundSecondary">#424242</color>
     <color name="backgroundTernary">#393939</color>
     <color name="borderColor">#707070</color>
+    <color name="borderColorSecondary">#606060</color>
     <color name="errorColor">#CB9292</color>
     <color name="warningColor">#CBC292</color>
 

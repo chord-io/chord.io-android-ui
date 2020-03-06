@@ -1,5 +1,6 @@
 package io.chord.ui.fragments.theme
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,7 @@ import io.chord.clients.models.Theme
 import io.chord.clients.models.Track
 import io.chord.clients.observe
 import io.chord.services.managers.ProjectManager
+import io.chord.ui.activities.EditorActivity
 import io.chord.ui.behaviors.BindBehavior
 import io.chord.ui.behaviors.Bindable
 import io.chord.ui.behaviors.BindableBehavior
@@ -73,13 +75,15 @@ class ThemeListFragment : Fragment(), ThemeClickListener, Listable<Track>
 
     override fun onItemClicked(item: ThemeSectionItem, holder: ThemeViewHolder)
     {
-//        ProjectManager.setCurrent(item)
-//        this.startActivity(
-//            Intent(
-//                this.activity!!,
-//                SequencerActivity::class.java
-//            )
-//        )
+        val intent = Intent(
+            this.activity!!,
+            EditorActivity::class.java
+        )
+        
+        intent.putExtra("track", item.track.name)
+        intent.putExtra("theme", item.theme.name)
+        
+        this.startActivity(intent)
     }
 
     override fun onItemLongClicked(item: ThemeSectionItem, holder: ThemeViewHolder): Boolean

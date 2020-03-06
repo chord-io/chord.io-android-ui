@@ -7,7 +7,7 @@
         android:layout_height="wrap_content">
         <include
             android:id="@+id/editor"
-            layout="@layout/toolbar_editor"/>
+            layout="@layout/toolbar_generic_editor"/>
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"

@@ -11,6 +11,7 @@ import com.mikepenz.iconics.utils.colorRes
 import com.mikepenz.iconics.utils.sizeRes
 import io.chord.R
 import io.chord.databinding.ActivitySequencerBinding
+import io.chord.services.managers.ProjectManager
 import io.chord.ui.behaviors.ToolbarEditorBehavior
 import io.chord.ui.fragments.theme.ThemeListFragment
 import io.chord.ui.fragments.track.TrackListFragment
@@ -34,6 +35,9 @@ class SequencerActivity : AppCompatActivity()
 		
 		this.binding = DataBindingUtil.bind(view)!!
 		
+		this.setSupportActionBar(this.binding.toolbarSequencer.editor.toolbar)
+		this.setContentView(view)
+		
 		this.binding.horizontalScrollBar.attach(R.id.rulerScrollview)
 		this.binding.horizontalScrollBar.attach(R.id.sequencerScrollview)
 		
@@ -49,8 +53,8 @@ class SequencerActivity : AppCompatActivity()
 		this.binding.toolbarSequencer.quantize.attach(R.id.ruler)
 		this.binding.toolbarSequencer.quantize.attach(R.id.sequencer)
 		
-		this.setSupportActionBar(this.binding.toolbarSequencer.editor.toolbar)
-		this.setContentView(view)
+		this.binding.ruler.setCounter(this::counter)
+		this.binding.sequencer.setCounter(this::counter)
 		
 		val themeList = this.supportFragmentManager.findFragmentById(R.id.themeList) as ThemeListFragment
 		val trackList = this.supportFragmentManager.findFragmentById(R.id.trackList) as TrackListFragment
@@ -102,8 +106,12 @@ class SequencerActivity : AppCompatActivity()
 		this.binding.toolbarSequencer.editor.toolbar.setTitle(R.string.sequencer_activity_title)
 	}
 	
-	override fun onStart()
+	private fun counter(): List<Int>
 	{
-		super.onStart()
+		return ProjectManager.getCurrent()!!.tracks.flatMap { track ->
+			track.entries.map {
+				it.length.end.toInt()
+			}
+		}
 	}
 }

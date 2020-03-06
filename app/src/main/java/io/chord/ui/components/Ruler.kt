@@ -9,7 +9,6 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.core.graphics.toRectF
 import io.chord.R
-import io.chord.services.managers.ProjectManager
 import io.chord.ui.behaviors.BarBehavior
 import io.chord.ui.behaviors.BindBehavior
 import io.chord.ui.behaviors.Bindable
@@ -21,7 +20,7 @@ import io.chord.ui.extensions.getTextBounds
 import io.chord.ui.extensions.getTextCentered
 import io.chord.ui.utils.QuantizeUtils
 
-class Ruler : View, Zoomable, Quantifiable, Bindable
+class Ruler : View, Zoomable, Quantifiable, Bindable, Countable
 {
 	private var textSizeOptimum: Float = -1f
 	private var textPosition: Float = -1f
@@ -212,12 +211,6 @@ class Ruler : View, Zoomable, Quantifiable, Bindable
 		
 		typedArray.recycle()
 		
-		this.barBehavior.onCount = {
-			ProjectManager.getCurrent()!!.tracks.flatMap {
-				it.entries
-			}
-		}
-		
 		this.zoomBehavior.widthAnimator.duration = this.zoomDuration
 		
 		this.zoomBehavior.onEvaluateWidth = this::defaultWidth
@@ -254,6 +247,13 @@ class Ruler : View, Zoomable, Quantifiable, Bindable
 	override fun setQuantization(quantization: QuantizeUtils.Quantization)
 	{
 		this.quantizeBehavior.quantization = quantization
+		this.requestLayout()
+		this.invalidate()
+	}
+	
+	override fun setCounter(counter: () -> List<Int>)
+	{
+		this.barBehavior.onCount = counter
 		this.requestLayout()
 		this.invalidate()
 	}

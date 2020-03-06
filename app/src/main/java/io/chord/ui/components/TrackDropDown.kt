@@ -6,17 +6,18 @@ import android.view.View
 import android.widget.AdapterView
 import androidx.fragment.app.Fragment
 import io.chord.R
+import io.chord.clients.models.Track
+import io.chord.services.managers.ProjectManager
 import io.chord.ui.behaviors.BindBehavior
 import io.chord.ui.behaviors.Binder
-import io.chord.ui.extensions.dpToPixel
-import io.chord.ui.utils.QuantizeUtils
 import kotlinx.android.synthetic.main.component_dropdown.view.*
 
-class QuantizeDropDown : DropDown, AdapterView.OnItemSelectedListener, Binder
+class TrackDropDown : DropDown, AdapterView.OnItemSelectedListener, Binder
 {
-	private lateinit var adapter: QuantizeDropDownAdapter
-	private val bindBehavior = BindBehavior<Quantifiable>(this)
-	private lateinit var selectedQuantization: QuantizeUtils.Quantization
+	private lateinit var adapter: TrackDropDownAdapter
+	private val bindBehavior = BindBehavior<Selectable<Track>>(this)
+	private lateinit var selectedTrack: Track
+	private val tracks = ProjectManager.getCurrent()!!.tracks
 	
 	constructor(context: Context?) : super(context)
 	
@@ -50,21 +51,15 @@ class QuantizeDropDown : DropDown, AdapterView.OnItemSelectedListener, Binder
 	override fun init(attrs: AttributeSet?, defStyle: Int) {
 		super.init(attrs, defStyle)
 		
-		this.selectedItemTextView.minWidth = 70f.dpToPixel().toInt()
-		
-		this.selectedQuantization = QuantizeUtils.Quantization(
-			QuantizeUtils.QuantizeValue.Fourth,
-			QuantizeUtils.QuantizeMode.Natural
-		)
-		
-		this.adapter = QuantizeDropDownAdapter(this.context, R.layout.quantize_dropdown_item)
+		this.selectedTrack = this.tracks.first()
+		this.adapter = TrackDropDownAdapter(this.context, R.layout.track_dropdown_item, this.tracks)
 		this.dropdownView.onItemSelectedListener = this
 		this.dropdownView.adapter = this.adapter
-		this.dropdownView.setSelection(QuantizeUtils.QuantizeValue.Fourth.ordinal)
+		this.dropdownView.setSelection(0)
 		
 		this.bindBehavior.onAttach = {}
 		this.bindBehavior.onDispatchEvent = {
-			it.setQuantization(this.selectedQuantization)
+			it.setItem(this.selectedTrack)
 		}
 	}
 	
@@ -76,13 +71,10 @@ class QuantizeDropDown : DropDown, AdapterView.OnItemSelectedListener, Binder
 	)
 	{
 		val item = this.adapter.getItem(position)!!
-		val text = this.adapter.getText(position, true)
-		this.selectedItemTextView.text = text
+		this.selectedItemTextView.text = item.name
 		
-		this.selectedQuantization = QuantizeUtils.Quantization(
-			item.second, item.first
-		)
-		
+		this.selectedTrack = item
+
 		this.bindBehavior.requestDispatchEvent()
 	}
 	
@@ -95,29 +87,35 @@ class QuantizeDropDown : DropDown, AdapterView.OnItemSelectedListener, Binder
 	{
 		this.bindBehavior.attach(id)
 	}
-	
+
 	override fun attach(view: View)
 	{
 		this.bindBehavior.attach(view)
 	}
-	
+
 	override fun attach(fragment: Fragment)
 	{
 		this.bindBehavior.attach(fragment)
 	}
-	
+
 	override fun attachAll(views: List<View>)
 	{
 		this.bindBehavior.attachAll(views)
 	}
-	
+
 	override fun detach(id: Int)
 	{
 		this.bindBehavior.detach(id)
 	}
-	
+
 	override fun detachAll()
 	{
 		this.bindBehavior.detachAll()
+	}
+	
+	fun setCurrent(track: Track)
+	{
+		this.selectedTrack = track
+		this.dropdownView.setSelection(this.tracks.indexOf(track))
 	}
 }

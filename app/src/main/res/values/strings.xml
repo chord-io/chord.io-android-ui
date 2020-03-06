@@ -21,6 +21,8 @@
 
     <string name="sequencer_activity_title">Sequencer</string>
 
+    <string name="editor_activity_title">Editor</string>
+
     <string name="dialog_positive_button">Got it</string>
     <string name="dialog_negative_button">Cancel</string>
 

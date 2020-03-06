@@ -35,6 +35,9 @@
         <activity android:name=".ui.activities.SequencerActivity"
             android:exported="true"
             android:screenOrientation="landscape"/>
+        <activity android:name=".ui.activities.EditorActivity"
+            android:exported="true"
+            android:screenOrientation="landscape"/>
     </application>
 
 </manifest>

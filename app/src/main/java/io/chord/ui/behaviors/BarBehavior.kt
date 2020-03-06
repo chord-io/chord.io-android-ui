@@ -1,20 +1,15 @@
 package io.chord.ui.behaviors
 
-import io.chord.clients.models.ThemeEntry
 import java.util.Collections.max
 
 class BarBehavior
 {
 	var headRoom: UInt = 1U
-	lateinit var onCount: (() -> List<ThemeEntry>)
+	lateinit var onCount: (() -> List<Int>)
 	
 	fun count(): Int
 	{
-		val themes = this.onCount()
-		val bars = themes.map { theme ->
-			theme.length.end.toInt()
-		}
-		.distinct()
+		val bars = this.onCount().distinct()
 		
 		if(this.headRoom == 0U)
 		{
