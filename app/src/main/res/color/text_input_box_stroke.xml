@@ -3,5 +3,5 @@
     <item android:color="@color/colorAccent" android:state_focused="true"/>
     <item android:color="@color/colorAccent" android:state_hovered="true"/>
     <item android:color="@color/backgroundSecondary" android:state_enabled="false"/>
-    <item android:color="@color/borderColor"/>
+    <item android:color="@color/borderColorPrimary"/>
 </selector>

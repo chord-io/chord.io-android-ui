@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="Keyboard">
+        <attr name="cio_kb_orientation">
+            <enum name="horizontal" value="0" />
+            <enum name="vertical" value="1" />
+        </attr>
+        <attr name="cio_kb_zoomDuration" format="integer"/>
+        <attr name="cio_kb_whiteKeyColor" format="color"/>
+        <attr name="cio_kb_blackKeyColor" format="color"/>
+        <attr name="cio_kb_strokeColor" format="color"/>
+        <attr name="cio_kb_keyWidth" format="dimension"/>
+        <attr name="cio_kb_keyHeight" format="dimension"/>
+        <attr name="cio_kb_strokeThickness" format="dimension"/>
+    </declare-styleable>
+
+    <!-- TODO set zoom duraction default value at a global place-->
+    <integer name="keyboard_zoom_duration">500</integer>
+    <dimen name="keyboard_key_width">24dp</dimen>
+    <dimen name="keyboard_key_height">85dp</dimen>
+    <dimen name="keyboard_stroke_thickness">2dp</dimen>
+</resources>

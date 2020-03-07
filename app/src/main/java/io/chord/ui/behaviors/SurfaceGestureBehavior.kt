@@ -1,4 +1,4 @@
-package io.chord.ui.components
+package io.chord.ui.behaviors
 
 import android.content.Context
 import android.graphics.PointF
@@ -16,7 +16,7 @@ import io.chord.ui.extensions.toTransparent
 import io.chord.ui.gestures.GestureDetector
 import io.chord.ui.gestures.SimpleOnGestureListener
 
-class EditorGesture(
+class SurfaceGestureBehavior(
 	private val context: Context
 )
 {
@@ -56,23 +56,19 @@ class EditorGesture(
 	}
 	
 	open class TouchSurface(
-		val surface: RectF,
+		val rectangle: RectF,
 		var isSelected: Boolean = false
 	)
 	
-	class BarTouchSurface(
-		surface: RectF,
-		val index: Int
-	) : TouchSurface(surface)
-	
+	// TODO move this
 	class SequenceTouchSurface(
-		surface: RectF,
+		rectangle: RectF,
 		val track: Track,
 		val index: Int
-	) : TouchSurface(surface)
+	) : TouchSurface(rectangle)
 	
 	class SurfaceDrawer(
-		private val gesture: EditorGesture
+		private val gesture: SurfaceGestureBehavior
 	)
 	{
 		private var _frame: GradientDrawable? = null
@@ -96,7 +92,7 @@ class EditorGesture(
 				this._frame!!.setColor(color.toTransparent(0.25f))
 			}
 			
-			this._frame!!.bounds = surface.surface.toRect().clamp(this.gesture.bounds)
+			this._frame!!.bounds = surface.rectangle.toRect().clamp(this.gesture.bounds)
 			this.onInvalidate?.invoke()
 		}
 		
@@ -128,7 +124,20 @@ class EditorGesture(
 			it.isSelected = false
 		}
 		this.surfaces.filter {
-			RectF.intersects(it.surface, surface.surface)
+			RectF.intersects(it.rectangle, surface.rectangle)
+		}
+		.forEach {
+			it.isSelected = true
+		}
+	}
+	
+	fun contains(x: Float, y: Float)
+	{
+		this.surfaces.forEach {
+			it.isSelected = false
+		}
+		this.surfaces.filter {
+			it.rectangle.contains(x, y)
 		}
 		.forEach {
 			it.isSelected = true

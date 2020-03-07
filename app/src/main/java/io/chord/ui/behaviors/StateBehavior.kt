@@ -1,15 +1,18 @@
-package io.chord.ui.components
+package io.chord.ui.behaviors
 
+import io.chord.ui.components.EditorMode
+import io.chord.ui.components.Modulable
 import io.chord.ui.gestures.SimpleOnGestureListener
 
-class EditorState(
-	val gesture: EditorGesture
+class StateBehavior(
+	val gesture: SurfaceGestureBehavior
 ) : Modulable<EditorMode>
 {
 	interface State
 	
 	private var _state: State? = null
-	private var _mode: EditorMode = EditorMode.None
+	private var _mode: EditorMode =
+		EditorMode.None
 	val modes: MutableMap<EditorMode, State> = mutableMapOf()
 	
 	val state: State?

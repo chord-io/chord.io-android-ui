@@ -17,6 +17,8 @@ import io.chord.ui.behaviors.BindBehavior
 import io.chord.ui.behaviors.Bindable
 import io.chord.ui.behaviors.BindableBehavior
 import io.chord.ui.behaviors.QuantizeBehavior
+import io.chord.ui.behaviors.StateBehavior
+import io.chord.ui.behaviors.SurfaceGestureBehavior
 import io.chord.ui.behaviors.ZoomBehavior
 import io.chord.ui.extensions.getTextBounds
 import io.chord.ui.extensions.getTextCentered
@@ -26,15 +28,20 @@ import io.chord.ui.utils.QuantizeUtils
 
 class Sequencer : View, Zoomable, Listable<Track>, Quantifiable, Modulable<EditorMode>, Countable
 {
+	private class BarTouchSurface(
+		rectangle: RectF,
+		val index: Int
+	) : SurfaceGestureBehavior.TouchSurface(rectangle)
+	
 	private class SelectState(
-		private val context: EditorState
-	) : EditorState.State, SimpleOnGestureListener()
+		private val context: StateBehavior
+	) : StateBehavior.State, SimpleOnGestureListener()
 	{
-		private var rectangle: EditorGesture.Rectangle? = null
+		private var rectangle: SurfaceGestureBehavior.Rectangle? = null
 		
 		override fun onDown(event: MotionEvent): Boolean
 		{
-			this.rectangle = EditorGesture.Rectangle(
+			this.rectangle = SurfaceGestureBehavior.Rectangle(
 				PointF(
 					event.x,
 					event.y
@@ -58,7 +65,7 @@ class Sequencer : View, Zoomable, Listable<Track>, Quantifiable, Modulable<Edito
 		
 		override fun onMove(event: MotionEvent): Boolean
 		{
-			this.rectangle = EditorGesture.Rectangle(
+			this.rectangle = SurfaceGestureBehavior.Rectangle(
 				this.rectangle!!.a,
 				PointF(
 					event.x,
@@ -75,8 +82,8 @@ class Sequencer : View, Zoomable, Listable<Track>, Quantifiable, Modulable<Edito
 	private val bindableBehavior = BindableBehavior(this)
 	private val quantizeBehavior = QuantizeBehavior()
 	private val barBehavior = BarBehavior()
-	private val gesture = EditorGesture(this.context)
-	private val stateContext = EditorState(this.gesture)
+	private val gestureBehavior = SurfaceGestureBehavior(this.context)
+	private val stateBehavior = StateBehavior(this.gestureBehavior)
 	private val tracks: MutableList<Track> = mutableListOf()
 	private val painter: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
 	
@@ -161,6 +168,11 @@ class Sequencer : View, Zoomable, Listable<Track>, Quantifiable, Modulable<Edito
 				this.zoomBehavior.getFactorWidth(),
 				true
 			)
+			this.setZoomFactor(
+				ViewOrientation.Vertical,
+				this.zoomBehavior.getFactorHeight(),
+				true
+			)
 			this.requestLayout()
 			this.invalidate()
 		}
@@ -234,12 +246,12 @@ class Sequencer : View, Zoomable, Listable<Track>, Quantifiable, Modulable<Edito
 		
 		this._textColor = typedArray.getColor(
 			R.styleable.Sequencer_cio_sq_textColor,
-			this.resources.getColor(R.color.textColor, theme)
+			this.resources.getColor(R.color.textColorPrimary, theme)
 		)
 		
 		this._ticksColor = typedArray.getColor(
 			R.styleable.Sequencer_cio_sq_ticksColor,
-			this.resources.getColor(R.color.borderColor, theme)
+			this.resources.getColor(R.color.borderColorPrimary, theme)
 		)
 		
 		this._dividerThickness = typedArray.getDimension(
@@ -290,11 +302,11 @@ class Sequencer : View, Zoomable, Listable<Track>, Quantifiable, Modulable<Edito
 			this.invalidate()
 		}
 		
-		this.gesture.drawer.onInvalidate = {
+		this.gestureBehavior.drawer.onInvalidate = {
 			this.invalidate()
 		}
 		
-		this.stateContext.modes[EditorMode.Select] = SelectState(this.stateContext)
+		this.stateBehavior.modes[EditorMode.Select] = SelectState(this.stateBehavior)
 		
 		this.isClickable = true
 		this.isFocusable = true
@@ -373,7 +385,7 @@ class Sequencer : View, Zoomable, Listable<Track>, Quantifiable, Modulable<Edito
 	
 	override fun setMode(mode: EditorMode)
 	{
-		this.stateContext.setMode(mode)
+		this.stateBehavior.setMode(mode)
 	}
 	
 	override fun setZoomFactor(orientation: ViewOrientation, factor: Float, animate: Boolean)
@@ -412,7 +424,7 @@ class Sequencer : View, Zoomable, Listable<Track>, Quantifiable, Modulable<Edito
 	
 	override fun onTouchEvent(event: MotionEvent): Boolean
 	{
-		return if(this.gesture.onTouchEvent(event))
+		return if(this.gestureBehavior.onTouchEvent(event))
 		{
 			true
 		}
@@ -424,7 +436,7 @@ class Sequencer : View, Zoomable, Listable<Track>, Quantifiable, Modulable<Edito
 	
 	override fun onDraw(canvas: Canvas)
 	{
-		this.gesture.surfaces.clear()
+		this.gestureBehavior.surfaces.clear()
 		
 		if(this.barBehavior.count() == 0)
 		{
@@ -432,7 +444,7 @@ class Sequencer : View, Zoomable, Listable<Track>, Quantifiable, Modulable<Edito
 			return
 		}
 		
-		canvas.getClipBounds(this.gesture.bounds)
+		canvas.getClipBounds(this.gestureBehavior.bounds)
 		
 		this.drawLane(canvas).forEach {
 			this.painter.color = it.second
@@ -455,9 +467,9 @@ class Sequencer : View, Zoomable, Listable<Track>, Quantifiable, Modulable<Edito
 		
 		canvas.drawLines(points.toFloatArray(), this.painter)
 		
-		if(this.gesture.drawer.frame != null)
+		if(this.gestureBehavior.drawer.frame != null)
 		{
-			this.gesture.drawer.frame!!.draw(canvas)
+			this.gestureBehavior.drawer.frame!!.draw(canvas)
 		}
 	}
 	
@@ -545,7 +557,7 @@ class Sequencer : View, Zoomable, Listable<Track>, Quantifiable, Modulable<Edito
 		val left = this.quantizeBehavior.segmentLength * index
 		val right = left + this.quantizeBehavior.segmentLength
 		
-		this.gesture.surfaces.add(EditorGesture.BarTouchSurface(
+		this.gestureBehavior.surfaces.add(BarTouchSurface(
 			RectF(
 				left,
 				bounds.top,

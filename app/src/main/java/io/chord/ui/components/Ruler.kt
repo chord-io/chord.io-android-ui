@@ -176,12 +176,12 @@ class Ruler : View, Zoomable, Quantifiable, Bindable, Countable
 		
 		this._ticksColor = typedArray.getColor(
 			R.styleable.Ruler_cio_rl_ticksColor,
-			this.resources.getColor(R.color.textColor, theme)
+			this.resources.getColor(R.color.textColorPrimary, theme)
 		)
 		
 		this._textColor = typedArray.getColor(
 			R.styleable.Ruler_cio_rl_textColor,
-			this.resources.getColor(R.color.textColor, theme)
+			this.resources.getColor(R.color.textColorPrimary, theme)
 		)
 		
 		this._ticksThickness = typedArray.getDimension(

@@ -578,7 +578,7 @@ class ScrollBar : View, Binder
 		
 		this._trackColor = typedArray.getColor(
 			R.styleable.ScrollBar_cio_sb_trackColor,
-			this.resources.getColor(R.color.borderColor, theme)
+			this.resources.getColor(R.color.borderColorPrimary, theme)
 		)
 		
 		this._thumbColor = typedArray.getColor(

@@ -501,12 +501,12 @@ class ZoomBar : View, Binder
 		
 		this._trackColor = typedArray.getColor(
 			R.styleable.ZoomBar_cio_zb_trackColor,
-			this.resources.getColor(R.color.borderColor, theme)
+			this.resources.getColor(R.color.borderColorPrimary, theme)
 		)
 		
 		this._ticksColor = typedArray.getColor(
 			R.styleable.ZoomBar_cio_zb_ticksColor,
-			this.resources.getColor(R.color.borderColor, theme)
+			this.resources.getColor(R.color.borderColorPrimary, theme)
 		)
 		
 		this._thumbColor = typedArray.getColor(

@@ -58,7 +58,7 @@ class ColorPicker : GridLayout
 			if(this.layout.defaultColor == color)
 			{
 				val defaultStrokColor = this.context.resources.getColor(
-					R.color.textColor, this.context.theme
+					R.color.textColorPrimary, this.context.theme
 				)
 				drawable.setStroke(2f.dpToPixel().toInt(), defaultStrokColor)
 			}

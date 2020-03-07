@@ -3,11 +3,13 @@ package io.chord.ui.components
 import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
+import io.chord.ui.behaviors.StateBehavior
+import io.chord.ui.behaviors.SurfaceGestureBehavior
 
-class EditorScrollView : TwoDimensionalScrollView, Modulable<EditorMode>
+class StateScrollView : TwoDimensionalScrollView, Modulable<EditorMode>
 {
-	private val gesture = EditorGesture(this.context)
-	private val stateContext = EditorState(this.gesture)
+	private val gestureBehavior = SurfaceGestureBehavior(this.context)
+	private val stateBehavior = StateBehavior(this.gestureBehavior)
 	
 	constructor(context: Context) : super(context)
 	
@@ -31,11 +33,11 @@ class EditorScrollView : TwoDimensionalScrollView, Modulable<EditorMode>
 	
 	override fun setMode(mode: EditorMode)
 	{
-		this.stateContext.setMode(mode)
+		this.stateBehavior.setMode(mode)
 	}
 	
 	override fun onInterceptTouchEvent(event: MotionEvent): Boolean
 	{
-		return this.stateContext.mode == EditorMode.Move
+		return this.stateBehavior.mode == EditorMode.Move
 	}
 }

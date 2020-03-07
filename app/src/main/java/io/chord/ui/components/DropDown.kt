@@ -104,7 +104,7 @@ abstract class DropDown : LinearLayout
 		
 		this.textColor = typedArray.getColor(
 			R.styleable.DropDown_cio_dd_textColor,
-			this.resources.getColor(R.color.textColor, this.context.theme)
+			this.resources.getColor(R.color.textColorPrimary, this.context.theme)
 		)
 		
 		this.iconSize = typedArray.getDimension(

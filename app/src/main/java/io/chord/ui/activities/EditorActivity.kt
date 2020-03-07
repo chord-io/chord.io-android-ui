@@ -49,10 +49,12 @@ class EditorActivity : AppCompatActivity()
 //		this.binding.verticalScrollBar.attach(R.id.sequencerScrollview)
 //
 		this.binding.horizontalZoomBar.attach(R.id.ruler)
+		this.binding.horizontalZoomBar.attach(R.id.keyboard)
 //		this.binding.horizontalZoomBar.attach(R.id.sequencer)
 //
 //		this.binding.verticalZoomBar.attach(R.id.trackList)
 //		this.binding.verticalZoomBar.attach(R.id.sequencer)
+		this.binding.verticalZoomBar.attach(R.id.keyboard)
 		
 		this.binding.toolbarEditor.quantize.attach(R.id.ruler)
 //		this.binding.toolbarEditor.quantize.attach(R.id.sequencer)
