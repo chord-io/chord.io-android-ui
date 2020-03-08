@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="KeyboardList">
+        <attr name="cio_kl_orientation">
+            <enum name="horizontal" value="0" />
+            <enum name="vertical" value="1" />
+        </attr>
+        <attr name="cio_kl_zoomDuration" format="integer"/>
+        <attr name="cio_kl_whiteKeyColor" format="color"/>
+        <attr name="cio_kl_blackKeyColor" format="color"/>
+        <attr name="cio_kl_strokeColor" format="color"/>
+        <attr name="cio_kl_keyWidth" format="dimension"/>
+        <attr name="cio_kl_keyHeight" format="dimension"/>
+        <attr name="cio_kl_strokeThickness" format="dimension"/>
+        <attr name="cio_kl_octaves" format="integer"/>
+    </declare-styleable>
+
+    <integer name="keyboard_list_zoom_duration">500</integer>
+    <dimen name="keyboard_list_key_width">24dp</dimen>
+    <dimen name="keyboard_list_key_height">85dp</dimen>
+    <dimen name="keyboard_list_stroke_thickness">2dp</dimen>
+    <integer name="keyboard_list_octaves">12</integer>
+</resources>

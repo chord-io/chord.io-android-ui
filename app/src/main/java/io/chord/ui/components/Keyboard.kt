@@ -3,7 +3,6 @@ package io.chord.ui.components
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
-import android.graphics.Rect
 import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.MotionEvent
@@ -13,6 +12,7 @@ import io.chord.R
 import io.chord.ui.behaviors.BindBehavior
 import io.chord.ui.behaviors.Bindable
 import io.chord.ui.behaviors.BindableBehavior
+import io.chord.ui.behaviors.KeyboardKeyBehavior
 import io.chord.ui.behaviors.SurfaceGestureBehavior
 import io.chord.ui.behaviors.ZoomBehavior
 import io.chord.ui.gestures.SimpleOnGestureListener
@@ -88,153 +88,27 @@ class Keyboard : View, Zoomable
 		val index: Int
 	) : SurfaceGestureBehavior.TouchSurface(rectangle)
 	
-	private abstract class Key(
-		protected val keyboard: Keyboard
-	)
-	{
-		// h.r = w
-		// w/r = h
-		// w/h = r
-		// wk.R = 0.28
-		// bk.R = 0.22
-		
-		protected var _width: Float = 0f
-		protected var _height: Float = 0f
-		
-		val width: Float
-			get() = this._width
-		
-		val height: Float
-			get() = this._height
-		
-		abstract fun setBounds(width: Float, height: Float, stroke: Float)
-		
-		abstract fun translate(index: Int, bounds: RectF): RectF
-	}
-	
-	private open class WhiteKey(
-		keyboard: Keyboard
-	) : Key(keyboard)
-	{
-		override fun setBounds(width: Float, height: Float, stroke: Float)
-		{
-			this._width = width - stroke
-			this._height = height - stroke
-		}
-		
-		override fun translate(index: Int, bounds: RectF): RectF
-		{
-			// TODO: refactor components to use private class
-			// TODO: refactor codes to look like this
-			
-			val rect = RectF()
-			val halfStroke = this.keyboard.halfStrokeThickness
-			val left: Float
-			val right: Float
-			val top: Float
-			val bottom: Float
-			
-			if(this.keyboard.orientation == ViewOrientation.Horizontal)
-			{
-				left = this.width * index + bounds.left + halfStroke
-				right = left + this.width
-				top = bounds.top + halfStroke
-				bottom = top + this.height - halfStroke
-			}
-			else
-			{
-				left = bounds.left + halfStroke
-				right = left + this.width - halfStroke
-				top = this.height * index + bounds.top + halfStroke
-				bottom = top + this.height
-			}
-			
-			rect.set(
-				left,
-				top,
-				right,
-				bottom
-			)
-			
-			return rect
-		}
-	}
-	
-	private class BlackKey(
-		keyboard: Keyboard
-	) : WhiteKey(keyboard)
-	{
-		private var whiteKey = WhiteKey(keyboard)
-		
-		override fun setBounds(width: Float, height: Float, stroke: Float)
-		{
-			this.whiteKey.setBounds(width, height, stroke)
-			
-			if(this.keyboard.orientation == ViewOrientation.Horizontal)
-			{
-				this._width = this.whiteKey.width / 2f
-				this._height = this.whiteKey.height
-			}
-			else
-			{
-				this._width = this.whiteKey.width
-				this._height = this.whiteKey.height / 2f
-			}
-		}
-		
-		override fun translate(index: Int, bounds: RectF): RectF
-		{
-			val parent =  this.whiteKey.translate(index, bounds)
-			val rect = super.translate(index, bounds)
-			
-			if(this.keyboard.orientation == ViewOrientation.Horizontal)
-			{
-				val left = parent.left + (this.width * 1.5f)
-				val right = left + this.width
-				
-				rect.set(
-					left,
-					rect.top,
-					right,
-					rect.bottom
-				)
-			}
-			else
-			{
-				val top = parent.top + (this.height * 1.5f)
-				val bottom = top + this.height
-				
-				rect.set(
-					rect.left,
-					top,
-					rect.right,
-					bottom
-				)
-			}
-			
-			return rect
-		}
-	}
-	
 	private val zoomBehavior = ZoomBehavior()
 	private val bindableBehavior = BindableBehavior(this)
 	private val gestureBehavior = SurfaceGestureBehavior(this.context)
-	
-	private val bounds = Rect()
-	private val whiteKey = WhiteKey(this)
-	private val blackKey = BlackKey(this)
+	private val keyBehavior = KeyboardKeyBehavior()
 	private val painter: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
 	
 	private val halfStrokeThickness: Float
 		get() = this._strokeThickness / 2f
+	
+	var clampOutsideStroke: Boolean = false
+		set(value) {
+			field = value
+			this.requestLayout()
+			this.invalidate()
+		}
 	
 	private var _orientation: ViewOrientation = ViewOrientation.Horizontal
 	private var _zoomDuration: Long = -1
 	private var _whiteKeyColor: Int = -1
 	private var _blackKeyColor: Int = -1
 	private var _strokeColor: Int = -1
-	private var _keyWidth: Float = -1f
-	private var _keyHeight: Float = -1f
 	private var _strokeThickness: Float = 0f
 	
 	var orientation: ViewOrientation
@@ -258,6 +132,7 @@ class Keyboard : View, Zoomable
 		get() = this._zoomDuration
 		set(value) {
 			this._zoomDuration = value
+			this.zoomBehavior.widthAnimator.duration = value
 			this.zoomBehavior.heightAnimator.duration = value
 		}
 	
@@ -279,22 +154,6 @@ class Keyboard : View, Zoomable
 		get() = this._strokeColor
 		set(value) {
 			this._strokeColor = value
-			this.invalidate()
-		}
-	
-	var keyWidth: Float
-		get() = this._keyWidth
-		set(value) {
-			this._keyWidth = value
-			this.requestLayout()
-			this.invalidate()
-		}
-	
-	var keyHeight: Float
-		get() = this._keyHeight
-		set(value) {
-			this._keyHeight = value
-			this.requestLayout()
 			this.invalidate()
 		}
 	
@@ -368,16 +227,6 @@ class Keyboard : View, Zoomable
 			this.resources.getColor(R.color.borderColorTernary, theme)
 		)
 		
-		this._keyWidth = typedArray.getDimension(
-			R.styleable.Keyboard_cio_kb_keyWidth,
-			this.resources.getDimension(R.dimen.keyboard_key_width)
-		)
-		
-		this._keyHeight = typedArray.getDimension(
-			R.styleable.Keyboard_cio_kb_keyHeight,
-			this.resources.getDimension(R.dimen.keyboard_key_height)
-		)
-		
 		this._strokeThickness = typedArray.getDimension(
 			R.styleable.Keyboard_cio_kb_strokeThickness,
 			this.resources.getDimension(R.dimen.keyboard_stroke_thickness)
@@ -387,12 +236,12 @@ class Keyboard : View, Zoomable
 		
 		this.zoomBehavior.widthAnimator.duration = this.zoomDuration
 		this.zoomBehavior.heightAnimator.duration = this.zoomDuration
-		this.zoomBehavior.onEvaluateWidth = this::keyWidth
+		this.zoomBehavior.onEvaluateWidth = this::getKeyWidth
 		this.zoomBehavior.onMeasureWidth = {
 			this.requestLayout()
 			this.invalidate()
 		}
-		this.zoomBehavior.onEvaluateHeight = this::keyWidth
+		this.zoomBehavior.onEvaluateHeight = this::getKeyWidth
 		this.zoomBehavior.onMeasureHeight = {
 			this.requestLayout()
 			this.invalidate()
@@ -428,6 +277,15 @@ class Keyboard : View, Zoomable
 		}
 	}
 	
+	private fun getKeyWidth(): Float
+	{
+		if(this.layoutParams == null)
+		{
+			return 0f
+		}
+		return this.keyBehavior.getKeyWidth(this.orientation, this.layoutParams)
+	}
+	
 	override fun onTouchEvent(event: MotionEvent): Boolean
 	{
 		return this.gestureBehavior.onTouchEvent(event)
@@ -436,28 +294,41 @@ class Keyboard : View, Zoomable
 	override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int)
 	{
 		val stroke = this.strokeThickness
-		val halfStroke = stroke / 2f
+		val clampedStroke = if(this.clampOutsideStroke)
+		{
+			0f
+		}
+		else
+		{
+			stroke
+		}
 		
 		if(this.orientation == ViewOrientation.Horizontal)
 		{
-			val width = this.zoomBehavior.factorizedWidth
-			val height = this.keyHeight
-			this.whiteKey.setBounds(width, height, stroke)
-			this.blackKey.setBounds(width, height, stroke)
+			this.keyBehavior.measure(
+				this.orientation,
+				this.layoutParams,
+				heightMeasureSpec.toFloat(),
+				this.zoomBehavior.factorizedWidth,
+				stroke
+			)
 			this.setMeasuredDimension(
-				(this.whiteKey.width * 7f + this.strokeThickness).toInt(),
-				(this.whiteKey.height + halfStroke).toInt()
+				(this.keyBehavior.white.width * 7f + clampedStroke).toInt(),
+				(this.keyBehavior.white.height + stroke).toInt()
 			)
 		}
 		else
 		{
-			val width = this.keyHeight
-			val height = this.zoomBehavior.factorizedHeight
-			this.whiteKey.setBounds(width, height, stroke)
-			this.blackKey.setBounds(width, height, stroke)
+			this.keyBehavior.measure(
+				this.orientation,
+				this.layoutParams,
+				widthMeasureSpec.toFloat(),
+				this.zoomBehavior.factorizedHeight,
+				stroke
+			)
 			this.setMeasuredDimension(
-				(this.whiteKey.width + halfStroke).toInt(),
-				(this.whiteKey.height * 7f + this.strokeThickness).toInt()
+				(this.keyBehavior.white.width + stroke).toInt(),
+				(this.keyBehavior.white.height * 7f + clampedStroke).toInt()
 			)
 		}
 		
@@ -475,6 +346,7 @@ class Keyboard : View, Zoomable
 		val surfaces = this.gestureBehavior.surfaces.filterIsInstance(
 			WhiteKeyTouchSurface::class.java
 		)
+		val bounds = canvas.clipBounds.toRectF()
 		
 		this.painter.strokeWidth = this.strokeThickness
 		
@@ -483,7 +355,12 @@ class Keyboard : View, Zoomable
 			val surface = surfaces.firstOrNull {
 				it.index == index
 			}
-			val rect = this.whiteKey.translate(index, canvas.clipBounds.toRectF())
+			val rect = this.keyBehavior.white.translate(
+				this.orientation,
+				index,
+				bounds,
+				this.strokeThickness
+			)
 			
 			if(surface != null && surface.isSelected)
 			{
@@ -514,6 +391,7 @@ class Keyboard : View, Zoomable
 		val surfaces = this.gestureBehavior.surfaces.filterIsInstance(
 			BlackKeyTouchSurface::class.java
 		)
+		val bounds = canvas.clipBounds.toRectF()
 		
 		this.painter.strokeWidth = this.strokeThickness
 		
@@ -527,7 +405,12 @@ class Keyboard : View, Zoomable
 			val surface = surfaces.firstOrNull {
 				it.index == index
 			}
-			val rect = this.blackKey.translate(index, canvas.clipBounds.toRectF())
+			val rect = this.keyBehavior.black.translate(
+				this.orientation,
+				index,
+				bounds,
+				this.strokeThickness
+			)
 			
 			if(this.orientation == ViewOrientation.Horizontal)
 			{

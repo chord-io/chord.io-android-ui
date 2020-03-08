@@ -42,6 +42,11 @@
                     android:layout_column="0"
                     android:layout_row="1"
                     android:background="@color/backgroundTernary">
+                    <io.chord.ui.components.KeyboardList
+                        android:id="@+id/keyboardList"
+                        android:layout_width="match_parent"
+                        android:layout_height="24dp"
+                        app:cio_kl_orientation="vertical"/>
                 </io.chord.ui.components.StateScrollView>
 
                 <io.chord.ui.components.StateScrollView
@@ -56,7 +61,7 @@
                     <io.chord.ui.components.Ruler
                         android:id="@+id/ruler"
                         android:layout_width="match_parent"
-                        android:layout_height="24dp" />
+                        android:layout_height="32dp" />
                 </io.chord.ui.components.StateScrollView>
 
                 <io.chord.ui.components.StateScrollView
@@ -69,11 +74,11 @@
                     android:layout_row="1"
                     android:background="@color/backgroundPrimary"
                     android:clipChildren="false">
-                    <io.chord.ui.components.Keyboard
-                        android:id="@+id/keyboard"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:cio_kb_orientation="horizontal"/>
+<!--                    <io.chord.ui.components.Keyboard-->
+<!--                        android:id="@+id/keyboard"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="24dp"-->
+<!--                        app:cio_kb_orientation="vertical"/>-->
                 </io.chord.ui.components.StateScrollView>
 
                 <LinearLayout
@@ -101,8 +106,7 @@
                         android:layout_weight="0.4"
                         app:cio_zb_orientation="vertical"
                         app:cio_zb_ticksThickness="0dp"
-                        app:cio_zb_bubbleMargin="30dp"
-                        app:cio_zb_factor="0.3"/>
+                        app:cio_zb_bubbleMargin="30dp"/>
                 </LinearLayout>
 
                 <LinearLayout

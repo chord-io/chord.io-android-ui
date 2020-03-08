@@ -9,8 +9,6 @@
         <attr name="cio_kb_whiteKeyColor" format="color"/>
         <attr name="cio_kb_blackKeyColor" format="color"/>
         <attr name="cio_kb_strokeColor" format="color"/>
-        <attr name="cio_kb_keyWidth" format="dimension"/>
-        <attr name="cio_kb_keyHeight" format="dimension"/>
         <attr name="cio_kb_strokeThickness" format="dimension"/>
     </declare-styleable>
 
