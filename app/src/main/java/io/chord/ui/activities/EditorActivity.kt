@@ -47,6 +47,7 @@ class EditorActivity : AppCompatActivity()
 //
 //		this.binding.verticalScrollBar.attach(R.id.trackListScrollView)
 //		this.binding.verticalScrollBar.attach(R.id.sequencerScrollview)
+		this.binding.verticalScrollBar.attach(R.id.keyboardListScrollview)
 //
 		this.binding.horizontalZoomBar.attach(R.id.ruler)
 //		this.binding.horizontalZoomBar.attach(R.id.keyboard)

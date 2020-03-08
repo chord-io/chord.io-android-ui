@@ -16,6 +16,7 @@ class KeyboardList : LinearLayout, Zoomable
 	private val zoomBehavior = ZoomBehavior()
 	private val bindableBehavior = BindableBehavior(this)
 	private val keyBehavior = KeyboardKeyBehavior()
+	private var initialized = false
 	
 	private var _orientation: ViewOrientation = ViewOrientation.Vertical
 	private var _zoomDuration: Long = -1
@@ -228,7 +229,19 @@ class KeyboardList : LinearLayout, Zoomable
 			view.blackKeyColor = this.blackKeyColor
 			view.strokeColor = this.strokeColor
 			view.strokeThickness = this.strokeThickness
-			view.clampOutsideStroke = true
+			
+			if(index == 0)
+			{
+				view.clampOutsideLeftStroke = true
+			}
+			else if(index == this.octaves - 1)
+			{
+				view.clampOutsideRightStroke = true
+			}
+			else
+			{
+				view.clampOutsideStroke = true
+			}
 			
 			if(this.orientation == ViewOrientation.Horizontal)
 			{
@@ -264,28 +277,38 @@ class KeyboardList : LinearLayout, Zoomable
 	override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int)
 	{
 		val stroke = this.strokeThickness
-		val clampedStroke = 0f
+		val clampedStroke = -stroke
 
 		if(this.orientation == ViewOrientation.Horizontal)
 		{
 			this.keyBehavior.measure(
 				this.orientation,
 				this.layoutParams,
-				heightMeasureSpec.toFloat(),
 				this.zoomBehavior.factorizedWidth,
+				heightMeasureSpec,
 				stroke
 			)
+			val measuredWidth = this.keyBehavior.white.width * 7f
+			val measuredHeight = this.keyBehavior.white.height + stroke
 			this.setMeasuredDimension(
-				(this.keyBehavior.white.width * 7f * this.octaves + clampedStroke).toInt(),
-				(this.keyBehavior.white.height + stroke).toInt()
+				(measuredWidth * this.octaves + clampedStroke).toInt(),
+				measuredHeight.toInt()
 			)
+			
+			this.update()
+			
+			val childWidth = measuredWidth
+			val childHeight = measuredHeight
+			val childWidthSpec = MeasureSpec.makeMeasureSpec(childWidth.toInt(), MeasureSpec.EXACTLY)
+			val childHeightSpec = MeasureSpec.makeMeasureSpec(childHeight.toInt(), MeasureSpec.EXACTLY)
+			this.measureChildren(childWidthSpec, childHeightSpec)
 		}
 		else
 		{
 			this.keyBehavior.measure(
 				this.orientation,
 				this.layoutParams,
-				widthMeasureSpec.toFloat(),
+				widthMeasureSpec,
 				this.zoomBehavior.factorizedHeight,
 				stroke
 			)

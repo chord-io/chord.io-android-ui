@@ -4,6 +4,7 @@ import android.graphics.RectF
 import android.view.View
 import android.view.ViewGroup
 import io.chord.ui.components.ViewOrientation
+import io.chord.ui.extensions.translate
 
 class KeyboardKeyBehavior
 {
@@ -25,7 +26,7 @@ class KeyboardKeyBehavior
 			get() = this._height
 		
 		abstract fun setBounds(orientation: ViewOrientation, width: Float, height: Float, stroke: Float)
-		abstract fun translate(orientation: ViewOrientation, index: Int, bounds: RectF, stroke: Float): RectF
+		abstract fun translate(orientation: ViewOrientation, index: Int, bounds: RectF, stroke: Float, clamp: Boolean = false): RectF
 	}
 	
 	open class WhiteKey : Key()
@@ -36,7 +37,7 @@ class KeyboardKeyBehavior
 			this._height = height - stroke
 		}
 		
-		override fun translate(orientation: ViewOrientation, index: Int, bounds: RectF, stroke: Float): RectF
+		override fun translate(orientation: ViewOrientation, index: Int, bounds: RectF, stroke: Float, clamp: Boolean): RectF
 		{
 			// TODO: refactor components to use private class
 			// TODO: refactor codes to look like this
@@ -70,6 +71,15 @@ class KeyboardKeyBehavior
 				bottom
 			)
 			
+			if(orientation == ViewOrientation.Horizontal && clamp)
+			{
+				rect.translate(-stroke, 0f)
+			}
+			else if(orientation == ViewOrientation.Vertical && clamp)
+			{
+				rect.translate(0f, -stroke)
+			}
+			
 			return rect
 		}
 	}
@@ -94,10 +104,10 @@ class KeyboardKeyBehavior
 			}
 		}
 		
-		override fun translate(orientation: ViewOrientation, index: Int, bounds: RectF, stroke: Float): RectF
+		override fun translate(orientation: ViewOrientation, index: Int, bounds: RectF, stroke: Float, clamp: Boolean): RectF
 		{
-			val parent =  this.whiteKey.translate(orientation, index, bounds, stroke)
-			val rect = super.translate(orientation, index, bounds, stroke)
+			val parent =  this.whiteKey.translate(orientation, index, bounds, stroke, clamp)
+			val rect = super.translate(orientation, index, bounds, stroke, clamp)
 			
 			if(orientation == ViewOrientation.Horizontal)
 			{
@@ -134,8 +144,8 @@ class KeyboardKeyBehavior
 	fun measure(
 		orientation: ViewOrientation,
 		layoutParameter: ViewGroup.LayoutParams,
-		widthMeasureSpec: Float,
-		heightMeasureSpec: Float,
+		widthMeasureSpec: Number,
+		heightMeasureSpec: Number,
 		stroke: Float
 	)
 	{
@@ -144,7 +154,7 @@ class KeyboardKeyBehavior
 		
 		if(orientation == ViewOrientation.Horizontal)
 		{
-			width = widthMeasureSpec
+			width = widthMeasureSpec.toFloat()
 			
 			if(layoutParameter.height == ViewGroup.LayoutParams.MATCH_PARENT)
 			{
@@ -152,16 +162,16 @@ class KeyboardKeyBehavior
 			}
 			else if(layoutParameter.height == ViewGroup.LayoutParams.WRAP_CONTENT)
 			{
-				height = widthMeasureSpec / 0.28f
+				height = widthMeasureSpec.toFloat() / 0.28f
 			}
 			else
 			{
-				height = heightMeasureSpec
+				height = this.getKeyHeight(orientation, layoutParameter)
 			}
 		}
 		else
 		{
-			height = heightMeasureSpec
+			height = heightMeasureSpec.toFloat()
 			
 			if(layoutParameter.width == ViewGroup.LayoutParams.MATCH_PARENT)
 			{
@@ -170,7 +180,7 @@ class KeyboardKeyBehavior
 			else if(layoutParameter.width == ViewGroup.LayoutParams.WRAP_CONTENT)
 			{
 				
-				width = heightMeasureSpec / 0.28f
+				width = heightMeasureSpec.toFloat() / 0.28f
 			}
 			else
 			{

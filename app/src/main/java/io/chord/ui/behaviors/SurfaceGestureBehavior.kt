@@ -92,7 +92,8 @@ class SurfaceGestureBehavior(
 				this._frame!!.setColor(color.toTransparent(0.25f))
 			}
 			
-			this._frame!!.bounds = surface.rectangle.toRect().clamp(this.gesture.bounds)
+			this._frame!!.bounds = surface.rectangle.toRect()
+			this._frame!!.bounds.clamp(this.gesture.bounds)
 			this.onInvalidate?.invoke()
 		}
 		

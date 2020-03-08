@@ -104,6 +104,20 @@ class Keyboard : View, Zoomable
 			this.invalidate()
 		}
 	
+	var clampOutsideLeftStroke: Boolean = false
+		set(value) {
+			field = value
+			this.requestLayout()
+			this.invalidate()
+		}
+	
+	var clampOutsideRightStroke: Boolean = false
+		set(value) {
+			field = value
+			this.requestLayout()
+			this.invalidate()
+		}
+	
 	private var _orientation: ViewOrientation = ViewOrientation.Horizontal
 	private var _zoomDuration: Long = -1
 	private var _whiteKeyColor: Int = -1
@@ -294,7 +308,15 @@ class Keyboard : View, Zoomable
 	override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int)
 	{
 		val stroke = this.strokeThickness
-		val clampedStroke = if(this.clampOutsideStroke)
+		val clampedStroke = if(this.clampOutsideLeftStroke)
+		{
+			-stroke
+		}
+		else if(this.clampOutsideRightStroke)
+		{
+			0f
+		}
+		else if(this.clampOutsideStroke)
 		{
 			0f
 		}
@@ -308,8 +330,8 @@ class Keyboard : View, Zoomable
 			this.keyBehavior.measure(
 				this.orientation,
 				this.layoutParams,
-				heightMeasureSpec.toFloat(),
 				this.zoomBehavior.factorizedWidth,
+				heightMeasureSpec,
 				stroke
 			)
 			this.setMeasuredDimension(
@@ -322,7 +344,7 @@ class Keyboard : View, Zoomable
 			this.keyBehavior.measure(
 				this.orientation,
 				this.layoutParams,
-				widthMeasureSpec.toFloat(),
+				widthMeasureSpec,
 				this.zoomBehavior.factorizedHeight,
 				stroke
 			)
@@ -359,7 +381,8 @@ class Keyboard : View, Zoomable
 				this.orientation,
 				index,
 				bounds,
-				this.strokeThickness
+				this.strokeThickness,
+				this.clampOutsideLeftStroke
 			)
 			
 			if(surface != null && surface.isSelected)
@@ -409,7 +432,8 @@ class Keyboard : View, Zoomable
 				this.orientation,
 				index,
 				bounds,
-				this.strokeThickness
+				this.strokeThickness,
+				this.clampOutsideLeftStroke
 			)
 			
 			if(this.orientation == ViewOrientation.Horizontal)
@@ -435,6 +459,7 @@ class Keyboard : View, Zoomable
 			{
 				this.painter.color = this.resources.getColor(android.R.color.holo_red_light)
 				this.painter.style = Paint.Style.FILL
+				canvas.drawRect(rect, this.painter)
 			}
 			else
 			{
@@ -445,13 +470,12 @@ class Keyboard : View, Zoomable
 				
 				this.painter.color = this.blackKeyColor
 				this.painter.style = Paint.Style.FILL
+				canvas.drawRect(rect, this.painter)
+				
+				this.painter.color = this.strokeColor
+				this.painter.style = Paint.Style.STROKE
+				canvas.drawRect(rect, this.painter)
 			}
-			
-			canvas.drawRect(rect, this.painter)
-			
-			this.painter.color = this.strokeColor
-			this.painter.style = Paint.Style.STROKE
-			canvas.drawRect(rect, this.painter)
 		}
 	}
 }

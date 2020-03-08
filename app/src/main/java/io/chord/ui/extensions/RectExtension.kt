@@ -1,15 +1,22 @@
 package io.chord.ui.extensions
 
 import android.graphics.Rect
+import android.graphics.RectF
 
-fun Rect.clamp(other: Rect): Rect
+fun Rect.clamp(other: Rect)
 {
-	val rect = Rect(this)
-	
-	if(rect.left < other.left) rect.left = other.left
-	if(rect.top < other.top) rect.top = other.top
-	if(rect.right > other.right) rect.right = other.right
-	if(rect.bottom > other.bottom) rect.bottom = other.bottom
-	
-	return rect
+	if(this.left < other.left) this.left = other.left
+	if(this.top < other.top) this.top = other.top
+	if(this.right > other.right) this.right = other.right
+	if(this.bottom > other.bottom) this.bottom = other.bottom
+}
+
+fun RectF.translate(x: Float, y: Float)
+{
+	this.set(
+		this.left + x,
+		this.top + y,
+		this.right + x,
+		this.bottom + y
+	)
 }
