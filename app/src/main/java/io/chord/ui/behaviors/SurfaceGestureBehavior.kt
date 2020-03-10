@@ -104,7 +104,7 @@ class SurfaceGestureBehavior(
 		}
 	}
 	
-	val bounds: Rect = Rect()
+	var bounds: Rect = Rect()
 	val surfaces: MutableList<TouchSurface> = mutableListOf()
 	val drawer = SurfaceDrawer(this)
 	private var detector: GestureDetector? = null

@@ -2,6 +2,7 @@ package io.chord.ui.components
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.MotionEvent
 import android.widget.LinearLayout
 import io.chord.R
 import io.chord.ui.behaviors.BindBehavior
@@ -172,6 +173,9 @@ class KeyboardList : LinearLayout, Zoomable
 		this.zoomBehavior.onMeasureWidth = this::update
 		this.zoomBehavior.onEvaluateHeight = this::getKeyWidth
 		this.zoomBehavior.onMeasureHeight = this::update
+		
+		this.isClickable = true
+		this.isFocusable = true
 	}
 	
 	override fun onAttachedToWindow()
@@ -215,6 +219,79 @@ class KeyboardList : LinearLayout, Zoomable
 			return 0f
 		}
 		return this.keyBehavior.getKeyWidth(this.orientation, this.layoutParams)
+	}
+	
+	override fun dispatchTouchEvent(event: MotionEvent): Boolean
+	{
+		val keyboards = this.getChildOfType<Keyboard>()
+		keyboards.indices.forEach {index ->
+			val keyboard = keyboards[index]
+			if(this.orientation == ViewOrientation.Horizontal)
+			{
+				val left = keyboard.left
+				val right = keyboard.right
+				if(left <= event.x && event.x <= right)
+				{
+					val x = if(index == 0)
+					{
+						event.x
+					}
+					else
+					{
+						event.x - left
+					}
+					val childEvent = MotionEvent.obtain(
+						event.downTime,
+						event.eventTime,
+						event.action,
+						x,
+						event.y,
+						event.metaState
+					)
+					keyboard.dispatchTouchEvent(childEvent)
+				}
+				else
+				{
+					keyboard.clearFocus()
+				}
+			}
+			else
+			{
+				val top = keyboard.top
+				val bottom = keyboard.bottom
+				if(top <= event.y && event.y <= bottom)
+				{
+					val y = if(index == 0)
+					{
+						event.y
+					}
+					else
+					{
+						event.y - top
+					}
+					val childEvent = MotionEvent.obtain(
+						event.downTime,
+						event.eventTime,
+						event.action,
+						event.x,
+						y,
+						event.metaState
+					)
+					keyboard.dispatchTouchEvent(childEvent)
+				}
+				else
+				{
+					keyboard.clearFocus()
+				}
+			}
+		}
+		
+		return super.dispatchTouchEvent(event)
+	}
+	
+	override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean
+	{
+		return true
 	}
 	
 	private fun generate()

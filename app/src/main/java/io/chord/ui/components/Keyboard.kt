@@ -3,6 +3,7 @@ package io.chord.ui.components
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.Rect
 import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.MotionEvent
@@ -15,6 +16,7 @@ import io.chord.ui.behaviors.BindableBehavior
 import io.chord.ui.behaviors.KeyboardKeyBehavior
 import io.chord.ui.behaviors.SurfaceGestureBehavior
 import io.chord.ui.behaviors.ZoomBehavior
+import io.chord.ui.extensions.getAbsoluteClipBounds
 import io.chord.ui.gestures.SimpleOnGestureListener
 import kotlinx.coroutines.Runnable
 
@@ -29,15 +31,14 @@ class Keyboard : View, Zoomable
 		
 		override fun onDown(event: MotionEvent): Boolean
 		{
-			this.select(event)
-			return true
+			return this.select(event)
 		}
 		
 		override fun onUp(event: MotionEvent): Boolean
 		{
 			this.keyboard.removeCallbacks(this.runnable)
 			this.runnable = kotlinx.coroutines.Runnable {
-				this.unselect()
+				this.keyboard.clearFocus()
 			}
 			this.keyboard.postDelayed(this.runnable, 1000)
 			return true
@@ -45,11 +46,10 @@ class Keyboard : View, Zoomable
 		
 		override fun onMove(event: MotionEvent): Boolean
 		{
-			this.select(event)
-			return true
+			return this.select(event)
 		}
 		
-		private fun select(event: MotionEvent)
+		private fun select(event: MotionEvent): Boolean
 		{
 			this.gesture.contains(event.x, event.y)
 			if(this.gesture.surfaces.any { it.isSelected })
@@ -66,15 +66,9 @@ class Keyboard : View, Zoomable
 				}
 				
 				this.keyboard.postInvalidate()
+				return true
 			}
-		}
-		
-		private fun unselect()
-		{
-			this.gesture.surfaces.forEach {
-				it.isSelected = false
-			}
-			this.keyboard.invalidate()
+			return false
 		}
 	}
 	
@@ -117,6 +111,9 @@ class Keyboard : View, Zoomable
 			this.requestLayout()
 			this.invalidate()
 		}
+	
+	val bounds: Rect
+		get() = this.gestureBehavior.bounds
 	
 	private var _orientation: ViewOrientation = ViewOrientation.Horizontal
 	private var _zoomDuration: Long = -1
@@ -262,6 +259,9 @@ class Keyboard : View, Zoomable
 		}
 		
 		this.gestureBehavior.setListener(GestureListener(this, this.gestureBehavior))
+		
+		this.isClickable = true
+		this.isFocusable = true
 	}
 	
 	override fun attach(controller: BindBehavior<Bindable>)
@@ -300,9 +300,31 @@ class Keyboard : View, Zoomable
 		return this.keyBehavior.getKeyWidth(this.orientation, this.layoutParams)
 	}
 	
+	fun contains(x: Int, y: Int): Boolean
+	{
+		return this.gestureBehavior.bounds.contains(x, y)
+	}
+	
+	override fun clearFocus()
+	{
+		super.clearFocus()
+		this.gestureBehavior.surfaces.forEach {
+			it.isSelected = false
+		}
+		this.invalidate()
+	}
+	
 	override fun onTouchEvent(event: MotionEvent): Boolean
 	{
-		return this.gestureBehavior.onTouchEvent(event)
+		if(this.gestureBehavior.onTouchEvent(event))
+		{
+			return true
+		}
+		else
+		{
+			this.clearFocus()
+			return super.onTouchEvent(event)
+		}
 	}
 	
 	override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int)
@@ -324,6 +346,8 @@ class Keyboard : View, Zoomable
 		{
 			stroke
 		}
+		val measuredWidth: Int
+		val measuredHeight: Int
 		
 		if(this.orientation == ViewOrientation.Horizontal)
 		{
@@ -334,9 +358,11 @@ class Keyboard : View, Zoomable
 				heightMeasureSpec,
 				stroke
 			)
+			measuredWidth = (this.keyBehavior.white.width * 7f + clampedStroke).toInt()
+			measuredHeight = (this.keyBehavior.white.height + stroke).toInt()
 			this.setMeasuredDimension(
-				(this.keyBehavior.white.width * 7f + clampedStroke).toInt(),
-				(this.keyBehavior.white.height + stroke).toInt()
+				measuredWidth,
+				measuredHeight
 			)
 		}
 		else
@@ -348,12 +374,14 @@ class Keyboard : View, Zoomable
 				this.zoomBehavior.factorizedHeight,
 				stroke
 			)
+			measuredWidth = (this.keyBehavior.white.width + stroke).toInt()
+			measuredHeight = (this.keyBehavior.white.height * 7f + clampedStroke).toInt()
 			this.setMeasuredDimension(
-				(this.keyBehavior.white.width + stroke).toInt(),
-				(this.keyBehavior.white.height * 7f + clampedStroke).toInt()
+				measuredWidth,
+				measuredHeight
 			)
 		}
-		
+		this.gestureBehavior.bounds = this.getAbsoluteClipBounds(measuredWidth, measuredHeight)
 		this.gestureBehavior.surfaces.clear()
 	}
 	

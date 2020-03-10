@@ -20,3 +20,13 @@ fun RectF.translate(x: Float, y: Float)
 		this.bottom + y
 	)
 }
+
+fun Rect.translate(x: Int, y: Int)
+{
+	this.set(
+		this.left + x,
+		this.top + y,
+		this.right + x,
+		this.bottom + y
+	)
+}

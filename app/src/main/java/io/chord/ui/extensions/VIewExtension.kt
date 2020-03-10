@@ -1,5 +1,6 @@
 package io.chord.ui.extensions
 
+import android.graphics.Rect
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewParent
@@ -128,4 +129,16 @@ inline fun <reified TType: View> View.getDirectParentOfType(): TType?
 	}
 	
 	return null
+}
+
+fun View.getAbsoluteClipBounds(width: Int, height: Int): Rect
+{
+	val position = intArrayOf(0, 0)
+	this.getLocationOnScreen(position)
+	return Rect(
+		position[0],
+		position[1],
+		position[0] + width,
+		position[1] + height
+	)
 }

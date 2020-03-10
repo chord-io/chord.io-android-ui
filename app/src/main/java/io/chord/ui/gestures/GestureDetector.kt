@@ -46,15 +46,19 @@ class GestureDetector : GestureDetector
 	
 	override fun onTouchEvent(event: MotionEvent): Boolean
 	{
-		if(event.action == MotionEvent.ACTION_UP && this.listener != null)
+		if(super.onTouchEvent(event))
 		{
-			this.listener!!.onUp(event)
+			return true
+		}
+		else if(event.action == MotionEvent.ACTION_UP && this.listener != null)
+		{
+			return this.listener!!.onUp(event)
 		}
 		else if(event.action == MotionEvent.ACTION_MOVE && this.listener != null)
 		{
-			this.listener!!.onMove(event)
+			return this.listener!!.onMove(event)
 		}
 		
-		return super.onTouchEvent(event)
+		return false
 	}
 }
