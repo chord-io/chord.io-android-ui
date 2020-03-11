@@ -18,7 +18,7 @@ import io.chord.ui.behaviors.BindBehavior
 import io.chord.ui.behaviors.Bindable
 import io.chord.ui.behaviors.BindableBehavior
 import io.chord.ui.behaviors.Binder
-import io.chord.ui.extensions.getTextCentered
+import io.chord.ui.extensions.alignCenter
 import io.chord.ui.extensions.round
 import io.chord.ui.extensions.setBackgroundColor
 import io.chord.ui.extensions.setRoundness
@@ -585,7 +585,7 @@ class TrackControl : View, Binder, Bindable, Controllable<TrackControlState>
 		this.painter.color = this.stateContext.textMuteColor
 		this.painter.textSize = this.textSize
 		
-		val textPosition = this.textMute.getTextCentered(
+		val textPosition = this.textMute.alignCenter(
 			bounds.centerX().toInt(),
 			bounds.centerY().toInt(),
 			this.painter
@@ -624,7 +624,7 @@ class TrackControl : View, Binder, Bindable, Controllable<TrackControlState>
 		this.painter.color = this.stateContext.textSoloColor
 		this.painter.textSize = this.textSize
 		
-		val textPosition = this.textSolo.getTextCentered(
+		val textPosition = this.textSolo.alignCenter(
 			bounds.centerX().toInt(),
 			bounds.centerY().toInt(),
 			this.painter

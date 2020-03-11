@@ -52,6 +52,7 @@ class EditorActivity : AppCompatActivity()
 		this.binding.horizontalZoomBar.attach(R.id.ruler)
 //		this.binding.horizontalZoomBar.attach(R.id.keyboard)
 //		this.binding.horizontalZoomBar.attach(R.id.sequencer)
+		this.binding.horizontalZoomBar.attach(R.id.keyboardListTest)
 //
 //		this.binding.verticalZoomBar.attach(R.id.trackList)
 //		this.binding.verticalZoomBar.attach(R.id.sequencer)

@@ -1,6 +1,10 @@
 package io.chord.ui.extensions
 
-import android.graphics.*
+import android.graphics.Paint
+import android.graphics.Path
+import android.graphics.PointF
+import android.graphics.Rect
+import android.graphics.RectF
 import android.util.TypedValue
 import io.chord.ui.ChordIOApplication
 import io.chord.ui.maths.LocalMaximumResolver
@@ -56,7 +60,7 @@ fun String.getTextBounds(painter: Paint): Rect
 	return bounds
 }
 
-fun String.getTextCentered(
+fun String.alignCenter(
 	x: Int,
 	y: Int,
 	painter: Paint
@@ -67,12 +71,30 @@ fun String.getTextCentered(
 	return PointF(newX, newY)
 }
 
-fun String.getOptimalTextSize(
+fun String.alignRight(
+	x: Int,
+	y: Int,
+	painter: Paint
+): PointF
+{
+	val bounds = this.getTextBounds(painter)
+	val newX = x - bounds.right.toFloat()
+	val newY = y - bounds.bottom.toFloat()
+	return PointF(newX, newY)
+}
+
+fun String.findOptimalTextSize(
 	textSize: Float,
-	height: Float,
+	constraint: Float,
+	boundsEvaluator: ((Rect) -> Int),
 	painter: Paint
 ): Float
 {
+	if(constraint <= 0f || this.isBlank() || this.isEmpty())
+	{
+		return 0f
+	}
+	
 	val resolver = LocalOptimumResolver(textSize, 0.001f)
 	val bounds = Rect()
 	val clonedPainter = Paint(painter)
@@ -80,14 +102,14 @@ fun String.getOptimalTextSize(
 	return resolver.resolve { value ->
 		clonedPainter.textSize = value
 		clonedPainter.getTextBounds(this, 0, this.length, bounds)
-		
+		val edge = boundsEvaluator(bounds)
 		var spSize = value.pixelToSp()
 		
-		if(bounds.height() > height)
+		if(edge > constraint)
 		{
 			spSize -= 1
 		}
-		else if(bounds.height() <= height)
+		else if(edge <= constraint)
 		{
 			spSize += 1
 		}
@@ -96,9 +118,11 @@ fun String.getOptimalTextSize(
 	}
 }
 
-fun String.getMaximumTextSize(
+// TODO remove this
+fun String.findMaximumTextSize(
 	textSize: Float,
-	height: Float,
+	constraint: Float,
+	boundsEvaluator: ((Rect) -> Int),
 	painter: Paint
 ): Float
 {
@@ -109,10 +133,10 @@ fun String.getMaximumTextSize(
 	return resolver.resolve { value ->
 		clonedPainter.textSize = value
 		clonedPainter.getTextBounds(this, 0, this.length, bounds)
-		
+		val edge = boundsEvaluator(bounds)
 		var spSize = value.pixelToSp()
 		
-		if(bounds.height() > height)
+		if(edge > constraint)
 		{
 			spSize -= 1
 		}

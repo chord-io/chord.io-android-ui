@@ -22,7 +22,7 @@ import io.chord.ui.behaviors.PropertyBehavior
 import io.chord.ui.behaviors.StepPositionBehavior
 import io.chord.ui.extensions.dpToPixel
 import io.chord.ui.extensions.getTextBounds
-import io.chord.ui.extensions.getTextCentered
+import io.chord.ui.extensions.alignCenter
 import io.chord.ui.extensions.toTransparent
 import io.chord.ui.gestures.GestureDetector
 import io.chord.ui.gestures.SimpleOnGestureListener
@@ -845,7 +845,7 @@ class ZoomBar : View, Binder
 			
 			this.painter.color = this.bubbleTextColor
 
-			val textPosition = label.getTextCentered(
+			val textPosition = label.alignCenter(
 				rectBackgroundBubble.centerX().toInt(),
 				0,
 				this.painter
@@ -909,7 +909,7 @@ class ZoomBar : View, Binder
 			
 			this.painter.color = this.bubbleTextColor
 			
-			val textPosition = label.getTextCentered(
+			val textPosition = label.alignCenter(
 				rectBackgroundBubble.centerX().toInt(),
 				rectBackgroundBubble.centerY().toInt(),
 				this.painter

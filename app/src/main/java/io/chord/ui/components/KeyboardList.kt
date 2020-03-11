@@ -313,6 +313,7 @@ class KeyboardList : LinearLayout, Zoomable
 			view.strokeColor = this.strokeColor
 			view.touchColor = this.touchColor
 			view.strokeThickness = this.strokeThickness
+			view.octave = index
 			
 			if(index == 0)
 			{

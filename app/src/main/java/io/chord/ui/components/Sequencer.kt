@@ -21,7 +21,7 @@ import io.chord.ui.behaviors.StateBehavior
 import io.chord.ui.behaviors.SurfaceGestureBehavior
 import io.chord.ui.behaviors.ZoomBehavior
 import io.chord.ui.extensions.getTextBounds
-import io.chord.ui.extensions.getTextCentered
+import io.chord.ui.extensions.alignCenter
 import io.chord.ui.extensions.toTransparent
 import io.chord.ui.gestures.SimpleOnGestureListener
 import io.chord.ui.utils.QuantizeUtils
@@ -478,7 +478,7 @@ class Sequencer : View, Zoomable, Listable<Track>, Quantifiable, Modulable<Edito
 		val label = "..."
 		val height = label.getTextBounds(this.painter).height().toFloat()
 		val bounds = Rect(canvas.clipBounds)
-		val position = label.getTextCentered(bounds.centerX(), 0, this.painter)
+		val position = label.alignCenter(bounds.centerX(), 0, this.painter)
 		
 		this.painter.color = this.textColor
 		this.painter.textSize = this.textSize

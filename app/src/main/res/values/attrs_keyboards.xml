@@ -6,11 +6,15 @@
             <enum name="vertical" value="1" />
         </attr>
         <attr name="cio_kb_zoomDuration" format="integer"/>
+        <attr name="cio_kb_textWeight" format="float"/>
         <attr name="cio_kb_whiteKeyColor" format="color"/>
         <attr name="cio_kb_blackKeyColor" format="color"/>
         <attr name="cio_kb_strokeColor" format="color"/>
         <attr name="cio_kb_touchColor" format="color"/>
+        <attr name="cio_kb_textColor" format="color"/>
         <attr name="cio_kb_strokeThickness" format="dimension"/>
+        <attr name="cio_kb_textMargin" format="dimension"/>
+        <attr name="cio_kb_octave" format="integer"/>
     </declare-styleable>
 
     <!-- TODO set zoom duraction default value at a global place-->
@@ -18,4 +22,6 @@
     <dimen name="keyboard_key_width">24dp</dimen>
     <dimen name="keyboard_key_height">85dp</dimen>
     <dimen name="keyboard_stroke_thickness">2dp</dimen>
+    <integer name="keyboard_text_weight">37</integer>
+    <dimen name="keyboard_text_margin">5dp</dimen>
 </resources>

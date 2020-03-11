@@ -15,9 +15,9 @@ import io.chord.ui.behaviors.Bindable
 import io.chord.ui.behaviors.BindableBehavior
 import io.chord.ui.behaviors.QuantizeBehavior
 import io.chord.ui.behaviors.ZoomBehavior
-import io.chord.ui.extensions.getOptimalTextSize
+import io.chord.ui.extensions.alignCenter
+import io.chord.ui.extensions.findOptimalTextSize
 import io.chord.ui.extensions.getTextBounds
-import io.chord.ui.extensions.getTextCentered
 import io.chord.ui.utils.QuantizeUtils
 
 class Ruler : View, Zoomable, Quantifiable, Bindable, Countable
@@ -304,9 +304,10 @@ class Ruler : View, Zoomable, Quantifiable, Bindable, Countable
 		super.onLayout(changed, left, top, right, bottom)
 		
 		this.textPosition = (this.bottom - this.height * (1f - this.ticksWeight)) - this.textPadding
-		this.textSizeOptimum = "0123456789".getOptimalTextSize(
+		this.textSizeOptimum = "0123456789".findOptimalTextSize(
 			this.textSize,
 			this.textPosition,
+			{bounds -> bounds.height()},
 			this.painter
 		)
 		this.textHalfPadding = this.textPadding / 2f
@@ -338,7 +339,7 @@ class Ruler : View, Zoomable, Quantifiable, Bindable, Countable
 		val label = "..."
 		val height = label.getTextBounds(this.painter).height().toFloat()
 		val bounds = Rect(canvas.clipBounds)
-		val position = label.getTextCentered(bounds.centerX(), 0, this.painter)
+		val position = label.alignCenter(bounds.centerX(), 0, this.painter)
 		
 		this.painter.color = this.textColor
 		this.painter.textSize = this.textSize

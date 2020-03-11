@@ -17,6 +17,9 @@ import io.chord.ui.behaviors.KeyboardKeyBehavior
 import io.chord.ui.behaviors.SurfaceGestureBehavior
 import io.chord.ui.behaviors.ZoomBehavior
 import io.chord.ui.extensions.addIfNotPresent
+import io.chord.ui.extensions.alignCenter
+import io.chord.ui.extensions.alignRight
+import io.chord.ui.extensions.findOptimalTextSize
 import io.chord.ui.extensions.getAbsoluteClipBounds
 import io.chord.ui.gestures.SimpleOnGestureListener
 import kotlinx.coroutines.Runnable
@@ -125,9 +128,9 @@ class Keyboard : View, Zoomable
 	private val gestureBehavior = SurfaceGestureBehavior(this.context)
 	private val keyBehavior = KeyboardKeyBehavior()
 	private val painter: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
-	
-	private val halfStrokeThickness: Float
-		get() = this._strokeThickness / 2f
+	private val halfStrokeThickness: Float get() = this._strokeThickness / 2f
+	private var text: String = ""
+	private var textSize: Float = 0f
 	
 	var clampOutsideStroke: Boolean = false
 		set(value) {
@@ -159,7 +162,11 @@ class Keyboard : View, Zoomable
 	private var _blackKeyColor: Int = -1
 	private var _strokeColor: Int = -1
 	private var _touchColor: Int = -1
+	private var _textColor: Int = -1
 	private var _strokeThickness: Float = 0f
+	private var _textWeight: Float = -1f
+	private var _textMargin: Float = -1f
+	private var _octave: Int? = null
 	
 	var orientation: ViewOrientation
 		get() = this._orientation
@@ -214,10 +221,46 @@ class Keyboard : View, Zoomable
 			this.invalidate()
 		}
 	
+	var textColor: Int
+		get() = this._textColor
+		set(value) {
+			this._textColor = value
+			this.invalidate()
+		}
+	
 	var strokeThickness: Float
 		get() = this._strokeThickness
 		set(value) {
 			this._strokeThickness = value
+			this.requestLayout()
+			this.invalidate()
+		}
+	
+	var textWeight: Float
+		get() = this._textWeight
+		set(value) {
+			this._textWeight = when
+			{
+				value > 1f -> 1f
+				value < 0f -> 0f
+				else -> value
+			}
+			this.requestLayout()
+			this.invalidate()
+		}
+	
+	var textMargin: Float
+		get() = this._textMargin
+		set(value) {
+			this._textMargin = value
+			this.requestLayout()
+			this.invalidate()
+		}
+	
+	var octave: Int?
+		get() = this._octave
+		set(value) {
+			this._octave = value
 			this.requestLayout()
 			this.invalidate()
 		}
@@ -289,10 +332,35 @@ class Keyboard : View, Zoomable
 			this.resources.getColor(R.color.colorAccent, theme)
 		)
 		
+		this._textColor = typedArray.getColor(
+			R.styleable.Keyboard_cio_kb_textColor,
+			this.resources.getColor(R.color.borderColorTernary, theme)
+		)
+		
 		this._strokeThickness = typedArray.getDimension(
 			R.styleable.Keyboard_cio_kb_strokeThickness,
 			this.resources.getDimension(R.dimen.keyboard_stroke_thickness)
 		)
+		
+		this._textWeight = typedArray.getFloat(
+			R.styleable.Keyboard_cio_kb_textWeight,
+			this.resources.getInteger(R.integer.keyboard_text_weight) / 100f
+		)
+		
+		this._textMargin = typedArray.getDimension(
+			R.styleable.Keyboard_cio_kb_textMargin,
+			this.resources.getDimension(R.dimen.keyboard_text_margin)
+		)
+		
+		this._octave = typedArray.getInteger(
+			R.styleable.Keyboard_cio_kb_octave,
+			-1
+		)
+		
+		if(this._octave == -1)
+		{
+			this._octave = null
+		}
 		
 		typedArray.recycle()
 		
@@ -378,28 +446,42 @@ class Keyboard : View, Zoomable
 		}
 	}
 	
+	private fun findOptimalTextSize(constraint: Float, boundsEvaluator: ((Rect) -> Int)): Float
+	{
+		val sizes = mutableListOf<Float>()
+		for(index in 0..9)
+		{
+			sizes.add("C$index".findOptimalTextSize(
+				0f,
+				constraint,
+				boundsEvaluator,
+				this.painter
+			))
+		}
+		
+		return sizes.min()!!
+	}
+	
 	override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int)
 	{
-		val stroke = this.strokeThickness
-		val clampedStroke = if(this.clampOutsideLeftStroke)
+		this.text = if(this._octave != null)
 		{
-			-stroke
-		}
-		else if(this.clampOutsideRightStroke)
-		{
-			0f
-		}
-		else if(this.clampOutsideStroke)
-		{
-			0f
+			"C${this._octave}"
 		}
 		else
 		{
-			stroke
+			""
+		}
+		val stroke = this.strokeThickness
+		val clampedStroke = when
+		{
+			this.clampOutsideLeftStroke -> -stroke
+			this.clampOutsideRightStroke -> 0f
+			this.clampOutsideStroke -> 0f
+			else -> stroke
 		}
 		val measuredWidth: Int
 		val measuredHeight: Int
-		
 		if(this.orientation == ViewOrientation.Horizontal)
 		{
 			this.keyBehavior.measure(
@@ -414,6 +496,10 @@ class Keyboard : View, Zoomable
 			this.setMeasuredDimension(
 				measuredWidth,
 				measuredHeight
+			)
+			this.textSize = this.findOptimalTextSize(
+				this.keyBehavior.white.width * this.textWeight,
+				{bounds -> bounds.width()}
 			)
 		}
 		else
@@ -430,6 +516,10 @@ class Keyboard : View, Zoomable
 			this.setMeasuredDimension(
 				measuredWidth,
 				measuredHeight
+			)
+			this.textSize = this.findOptimalTextSize(
+				this.keyBehavior.white.height * this.textWeight,
+				{bounds -> bounds.height()}
 			)
 		}
 		this.gestureBehavior.bounds = this.getAbsoluteClipBounds(measuredWidth, measuredHeight)
@@ -449,10 +539,10 @@ class Keyboard : View, Zoomable
 		)
 		val bounds = canvas.clipBounds.toRectF()
 		
-		this.painter.strokeWidth = this.strokeThickness
-		
 		for(index in 0 until 7)
 		{
+			this.painter.strokeWidth = this.strokeThickness
+			
 			val surface = surfaces.firstOrNull {
 				it.index == index
 			}
@@ -485,6 +575,47 @@ class Keyboard : View, Zoomable
 			this.painter.color = this.strokeColor
 			this.painter.style = Paint.Style.STROKE
 			canvas.drawRect(rect, this.painter)
+			
+			if(this.orientation == ViewOrientation.Horizontal && index == 0 && this.octave != null)
+			{
+				this.painter.textSize = this.textSize
+				this.painter.color = this.textColor
+				this.painter.strokeWidth = 0f
+				val horizontalPosition = this.text.alignCenter(
+					rect.centerX().toInt(), 0, this.painter
+				)
+				val verticalPosition = this.text.alignRight(
+					0, (rect.bottom).toInt(), this.painter
+				)
+				canvas.drawText(
+					this.text,
+					0,
+					this.text.length,
+					horizontalPosition.x,
+					verticalPosition.y - this.textMargin,
+					this.painter
+				)
+			}
+			else if(this.orientation == ViewOrientation.Vertical && index == 6 && this.octave != null)
+			{
+				this.painter.textSize = this.textSize
+				this.painter.color = this.textColor
+				this.painter.strokeWidth = 0f
+				val horizontalPosition = this.text.alignRight(
+					(rect.right).toInt(), 0, this.painter
+				)
+				val verticalPosition = this.text.alignCenter(
+					0, rect.centerY().toInt(), this.painter
+				)
+				canvas.drawText(
+					this.text,
+					0,
+					this.text.length,
+					horizontalPosition.x - this.textMargin,
+					verticalPosition.y,
+					this.painter
+				)
+			}
 		}
 	}
 	
