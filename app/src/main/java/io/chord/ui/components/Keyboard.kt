@@ -16,6 +16,7 @@ import io.chord.ui.behaviors.BindableBehavior
 import io.chord.ui.behaviors.KeyboardKeyBehavior
 import io.chord.ui.behaviors.SurfaceGestureBehavior
 import io.chord.ui.behaviors.ZoomBehavior
+import io.chord.ui.extensions.addIfNotPresent
 import io.chord.ui.extensions.getAbsoluteClipBounds
 import io.chord.ui.gestures.SimpleOnGestureListener
 import kotlinx.coroutines.Runnable
@@ -76,11 +77,48 @@ class Keyboard : View, Zoomable
 		rectangle: RectF,
 		val index: Int
 	) : SurfaceGestureBehavior.TouchSurface(rectangle)
+	{
+		override fun equals(other: Any?): Boolean
+		{
+			if(other is WhiteKeyTouchSurface)
+			{
+				val isRectangleEqual = this.rectangle == other.rectangle
+				val isIndexEqual = this.index == other.index
+				return isRectangleEqual && isIndexEqual
+			}
+			
+			return false
+		}
+		
+		override fun hashCode(): Int
+		{
+			return super.hashCode()
+		}
+	}
 	
 	private class BlackKeyTouchSurface(
 		rectangle: RectF,
 		val index: Int
 	) : SurfaceGestureBehavior.TouchSurface(rectangle)
+	{
+		override fun equals(other: Any?): Boolean
+		{
+			if(other is BlackKeyTouchSurface)
+			{
+				val isRectangleEqual = this.rectangle == other.rectangle
+				val isIndexEqual = this.index == other.index
+				return isRectangleEqual && isIndexEqual
+			}
+			
+			return false
+		}
+		
+		override fun hashCode(): Int
+		{
+			return super.hashCode()
+		}
+		
+	}
 	
 	private val zoomBehavior = ZoomBehavior()
 	private val bindableBehavior = BindableBehavior(this)
@@ -316,14 +354,14 @@ class Keyboard : View, Zoomable
 	
 	override fun onTouchEvent(event: MotionEvent): Boolean
 	{
-		if(this.gestureBehavior.onTouchEvent(event))
+		return if(this.gestureBehavior.onTouchEvent(event))
 		{
-			return true
+			true
 		}
 		else
 		{
 			this.clearFocus()
-			return super.onTouchEvent(event)
+			super.onTouchEvent(event)
 		}
 	}
 	
@@ -420,7 +458,7 @@ class Keyboard : View, Zoomable
 			}
 			else
 			{
-				this.gestureBehavior.surfaces.add(WhiteKeyTouchSurface(
+				this.gestureBehavior.surfaces.addIfNotPresent(WhiteKeyTouchSurface(
 					rect,
 					index
 				))
@@ -491,7 +529,7 @@ class Keyboard : View, Zoomable
 			}
 			else
 			{
-				this.gestureBehavior.surfaces.add(BlackKeyTouchSurface(
+				this.gestureBehavior.surfaces.addIfNotPresent(BlackKeyTouchSurface(
 					rect,
 					index
 				))

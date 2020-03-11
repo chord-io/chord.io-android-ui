@@ -226,6 +226,7 @@ class KeyboardList : LinearLayout, Zoomable
 		val keyboards = this.getChildOfType<Keyboard>()
 		keyboards.indices.forEach {index ->
 			val keyboard = keyboards[index]
+			keyboard.clearFocus()
 			if(this.orientation == ViewOrientation.Horizontal)
 			{
 				val left = keyboard.left
@@ -249,10 +250,6 @@ class KeyboardList : LinearLayout, Zoomable
 						event.metaState
 					)
 					keyboard.dispatchTouchEvent(childEvent)
-				}
-				else
-				{
-					keyboard.clearFocus()
 				}
 			}
 			else
@@ -278,10 +275,6 @@ class KeyboardList : LinearLayout, Zoomable
 						event.metaState
 					)
 					keyboard.dispatchTouchEvent(childEvent)
-				}
-				else
-				{
-					keyboard.clearFocus()
 				}
 			}
 		}
