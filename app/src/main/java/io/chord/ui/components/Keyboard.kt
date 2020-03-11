@@ -166,7 +166,8 @@ class Keyboard : View, Zoomable
 	private var _strokeThickness: Float = 0f
 	private var _textWeight: Float = -1f
 	private var _textMargin: Float = -1f
-	private var _octave: Int? = null
+	private var _octave: Int = 0
+	private var _showOctave: Boolean = false
 	
 	var orientation: ViewOrientation
 		get() = this._orientation
@@ -257,11 +258,18 @@ class Keyboard : View, Zoomable
 			this.invalidate()
 		}
 	
-	var octave: Int?
+	var octave: Int
 		get() = this._octave
 		set(value) {
 			this._octave = value
 			this.requestLayout()
+			this.invalidate()
+		}
+	
+	var showOctave: Boolean
+		get() = this._showOctave
+		set(value) {
+			this._showOctave = value
 			this.invalidate()
 		}
 	
@@ -354,13 +362,13 @@ class Keyboard : View, Zoomable
 		
 		this._octave = typedArray.getInteger(
 			R.styleable.Keyboard_cio_kb_octave,
-			-1
+			this.resources.getInteger(R.integer.keyboard_octave)
 		)
 		
-		if(this._octave == -1)
-		{
-			this._octave = null
-		}
+		this._showOctave = typedArray.getBoolean(
+			R.styleable.Keyboard_cio_kb_show_octave,
+			this.resources.getBoolean(R.bool.keyboard_show_octave)
+		)
 		
 		typedArray.recycle()
 		
@@ -464,14 +472,7 @@ class Keyboard : View, Zoomable
 	
 	override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int)
 	{
-		this.text = if(this._octave != null)
-		{
-			"C${this._octave}"
-		}
-		else
-		{
-			""
-		}
+		this.text = "C${this.octave}"
 		val stroke = this.strokeThickness
 		val clampedStroke = when
 		{
@@ -576,7 +577,7 @@ class Keyboard : View, Zoomable
 			this.painter.style = Paint.Style.STROKE
 			canvas.drawRect(rect, this.painter)
 			
-			if(this.orientation == ViewOrientation.Horizontal && index == 0 && this.octave != null)
+			if(this.orientation == ViewOrientation.Horizontal && index == 0 && this.showOctave)
 			{
 				this.painter.textSize = this.textSize
 				this.painter.color = this.textColor
@@ -596,7 +597,7 @@ class Keyboard : View, Zoomable
 					this.painter
 				)
 			}
-			else if(this.orientation == ViewOrientation.Vertical && index == 6 && this.octave != null)
+			else if(this.orientation == ViewOrientation.Vertical && index == 6 && this.showOctave)
 			{
 				this.painter.textSize = this.textSize
 				this.painter.color = this.textColor
@@ -669,6 +670,10 @@ class Keyboard : View, Zoomable
 			{
 				this.painter.color = this.touchColor
 				this.painter.style = Paint.Style.FILL
+				canvas.drawRect(rect, this.painter)
+				
+				this.painter.color = this.strokeColor
+				this.painter.style = Paint.Style.STROKE
 				canvas.drawRect(rect, this.painter)
 			}
 			else

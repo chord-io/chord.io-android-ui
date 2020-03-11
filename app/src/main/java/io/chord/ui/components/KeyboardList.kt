@@ -26,7 +26,10 @@ class KeyboardList : LinearLayout, Zoomable
 	private var _strokeColor: Int = -1
 	private var _touchColor: Int = -1
 	private var _strokeThickness: Float = 0f
+	private var _textWeight: Float = -1f
+	private var _textMargin: Float = -1f
 	private var _octaves: Int = -1
+	private var _showOctaves: Boolean = true
 	
 	var orientation: ViewOrientation
 		get() = this._orientation
@@ -58,36 +61,63 @@ class KeyboardList : LinearLayout, Zoomable
 		get() = this._whiteKeyColor
 		set(value) {
 			this._whiteKeyColor = value
-			this.invalidate()
+			this.getChildOfType<Keyboard>().forEach {
+				it.whiteKeyColor = value
+			}
 		}
 	
 	var blackKeyColor: Int
 		get() = this._blackKeyColor
 		set(value) {
 			this._blackKeyColor = value
-			this.invalidate()
+			this.getChildOfType<Keyboard>().forEach {
+				it.blackKeyColor = value
+			}
 		}
 	
 	var strokeColor: Int
 		get() = this._strokeColor
 		set(value) {
 			this._strokeColor = value
-			this.invalidate()
+			this.getChildOfType<Keyboard>().forEach {
+				it.strokeColor = value
+			}
 		}
 	
 	var touchColor: Int
 		get() = this._touchColor
 		set(value) {
 			this._touchColor = value
-			this.invalidate()
+			this.getChildOfType<Keyboard>().forEach {
+				it.touchColor = value
+			}
 		}
 	
 	var strokeThickness: Float
 		get() = this._strokeThickness
 		set(value) {
 			this._strokeThickness = value
-			this.requestLayout()
-			this.invalidate()
+			this.getChildOfType<Keyboard>().forEach {
+				it.strokeThickness = value
+			}
+		}
+	
+	var textWeight: Float
+		get() = this._textWeight
+		set(value) {
+			this._textWeight = value
+			this.getChildOfType<Keyboard>().forEach {
+				it.textWeight = value
+			}
+		}
+	
+	var textMargin: Float
+		get() = this._textMargin
+		set(value) {
+			this._textMargin = value
+			this.getChildOfType<Keyboard>().forEach {
+				it.textMargin = value
+			}
 		}
 	
 	var octaves: Int
@@ -97,6 +127,15 @@ class KeyboardList : LinearLayout, Zoomable
 			this.generate()
 			this.requestLayout()
 			this.invalidate()
+		}
+	
+	var showOctaves: Boolean
+		get() = this._showOctaves
+		set(value) {
+			this._showOctaves = value
+			this.getChildOfType<Keyboard>().forEach {
+				it.showOctave = value
+			}
 		}
 	
 	constructor(
@@ -171,9 +210,24 @@ class KeyboardList : LinearLayout, Zoomable
 			this.resources.getDimension(R.dimen.keyboard_list_stroke_thickness)
 		)
 		
+		this._textWeight = typedArray.getFloat(
+			R.styleable.KeyboardList_cio_kl_textWeight,
+			this.resources.getInteger(R.integer.keyboard_list_text_weight) / 100f
+		)
+		
+		this._textMargin = typedArray.getDimension(
+			R.styleable.KeyboardList_cio_kl_textMargin,
+			this.resources.getDimension(R.dimen.keyboard_list_text_margin)
+		)
+		
 		this._octaves = typedArray.getInteger(
 			R.styleable.KeyboardList_cio_kl_octaves,
 			this.resources.getInteger(R.integer.keyboard_list_octaves)
+		)
+		
+		this._showOctaves = typedArray.getBoolean(
+			R.styleable.KeyboardList_cio_kl_showOctaves,
+			this.resources.getBoolean(R.bool.keyboard_list_show_octaves)
 		)
 		
 		typedArray.recycle()
@@ -303,6 +357,7 @@ class KeyboardList : LinearLayout, Zoomable
 	private fun generate()
 	{
 		this.removeAllViews()
+		// TODO inverse index to show correct octave when list is vertical
 		for(index in 0 until this.octaves)
 		{
 			val view = Keyboard(this.context, null)
@@ -313,19 +368,16 @@ class KeyboardList : LinearLayout, Zoomable
 			view.strokeColor = this.strokeColor
 			view.touchColor = this.touchColor
 			view.strokeThickness = this.strokeThickness
+			view.textWeight = this.textWeight
+			view.textMargin = this.textMargin
+			view.showOctave = this.showOctaves
 			view.octave = index
 			
-			if(index == 0)
+			when(index)
 			{
-				view.clampOutsideLeftStroke = true
-			}
-			else if(index == this.octaves - 1)
-			{
-				view.clampOutsideRightStroke = true
-			}
-			else
-			{
-				view.clampOutsideStroke = true
+				0 -> view.clampOutsideLeftStroke = true
+				this.octaves - 1 -> view.clampOutsideRightStroke = true
+				else -> view.clampOutsideStroke = true
 			}
 			
 			if(this.orientation == ViewOrientation.Horizontal)

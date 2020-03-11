@@ -78,7 +78,9 @@
                         android:layout_width="24dp"
                         android:layout_height="85dp"
                         app:cio_kl_orientation="horizontal"
-                        app:cio_kl_octaves="2" />
+                        app:cio_kl_octaves="2"
+                        app:cio_kl_textWeight="0.6"
+                        app:cio_kl_showOctaves="false"/>
                 </io.chord.ui.components.StateScrollView>
 
                 <LinearLayout

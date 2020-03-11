@@ -10,15 +10,17 @@
         <attr name="cio_kl_blackKeyColor" format="color"/>
         <attr name="cio_kl_strokeColor" format="color"/>
         <attr name="cio_kl_touchColor" format="color"/>
-        <attr name="cio_kl_keyWidth" format="dimension"/>
-        <attr name="cio_kl_keyHeight" format="dimension"/>
         <attr name="cio_kl_strokeThickness" format="dimension"/>
+        <attr name="cio_kl_textWeight" format="float"/>
+        <attr name="cio_kl_textMargin" format="dimension"/>
         <attr name="cio_kl_octaves" format="integer"/>
+        <attr name="cio_kl_showOctaves" format="boolean"/>
     </declare-styleable>
 
     <integer name="keyboard_list_zoom_duration">500</integer>
-    <dimen name="keyboard_list_key_width">24dp</dimen>
-    <dimen name="keyboard_list_key_height">85dp</dimen>
     <dimen name="keyboard_list_stroke_thickness">2dp</dimen>
+    <integer name="keyboard_list_text_weight">37</integer>
+    <dimen name="keyboard_list_text_margin">5dp</dimen>
     <integer name="keyboard_list_octaves">12</integer>
+    <bool name="keyboard_list_show_octaves">true</bool>
 </resources>
