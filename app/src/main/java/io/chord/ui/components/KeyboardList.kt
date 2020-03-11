@@ -24,6 +24,7 @@ class KeyboardList : LinearLayout, Zoomable
 	private var _whiteKeyColor: Int = -1
 	private var _blackKeyColor: Int = -1
 	private var _strokeColor: Int = -1
+	private var _touchColor: Int = -1
 	private var _strokeThickness: Float = 0f
 	private var _octaves: Int = -1
 	
@@ -71,6 +72,13 @@ class KeyboardList : LinearLayout, Zoomable
 		get() = this._strokeColor
 		set(value) {
 			this._strokeColor = value
+			this.invalidate()
+		}
+	
+	var touchColor: Int
+		get() = this._touchColor
+		set(value) {
+			this._touchColor = value
 			this.invalidate()
 		}
 	
@@ -151,6 +159,11 @@ class KeyboardList : LinearLayout, Zoomable
 		this._strokeColor = typedArray.getColor(
 			R.styleable.KeyboardList_cio_kl_strokeColor,
 			this.resources.getColor(R.color.borderColorTernary, theme)
+		)
+		
+		this._touchColor = typedArray.getColor(
+			R.styleable.KeyboardList_cio_kl_touchColor,
+			this.resources.getColor(R.color.colorAccent, theme)
 		)
 		
 		this._strokeThickness = typedArray.getDimension(
@@ -298,6 +311,7 @@ class KeyboardList : LinearLayout, Zoomable
 			view.whiteKeyColor = this.whiteKeyColor
 			view.blackKeyColor = this.blackKeyColor
 			view.strokeColor = this.strokeColor
+			view.touchColor = this.touchColor
 			view.strokeThickness = this.strokeThickness
 			
 			if(index == 0)

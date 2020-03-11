@@ -9,6 +9,7 @@
         <attr name="cio_kl_whiteKeyColor" format="color"/>
         <attr name="cio_kl_blackKeyColor" format="color"/>
         <attr name="cio_kl_strokeColor" format="color"/>
+        <attr name="cio_kl_touchColor" format="color"/>
         <attr name="cio_kl_keyWidth" format="dimension"/>
         <attr name="cio_kl_keyHeight" format="dimension"/>
         <attr name="cio_kl_strokeThickness" format="dimension"/>

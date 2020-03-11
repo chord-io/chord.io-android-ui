@@ -158,6 +158,7 @@ class Keyboard : View, Zoomable
 	private var _whiteKeyColor: Int = -1
 	private var _blackKeyColor: Int = -1
 	private var _strokeColor: Int = -1
+	private var _touchColor: Int = -1
 	private var _strokeThickness: Float = 0f
 	
 	var orientation: ViewOrientation
@@ -203,6 +204,13 @@ class Keyboard : View, Zoomable
 		get() = this._strokeColor
 		set(value) {
 			this._strokeColor = value
+			this.invalidate()
+		}
+	
+	var touchColor: Int
+		get() = this._touchColor
+		set(value) {
+			this._touchColor = value
 			this.invalidate()
 		}
 	
@@ -274,6 +282,11 @@ class Keyboard : View, Zoomable
 		this._strokeColor = typedArray.getColor(
 			R.styleable.Keyboard_cio_kb_strokeColor,
 			this.resources.getColor(R.color.borderColorTernary, theme)
+		)
+		
+		this._touchColor = typedArray.getColor(
+			R.styleable.Keyboard_cio_kb_touchColor,
+			this.resources.getColor(R.color.colorAccent, theme)
 		)
 		
 		this._strokeThickness = typedArray.getDimension(
@@ -453,7 +466,7 @@ class Keyboard : View, Zoomable
 			
 			if(surface != null && surface.isSelected)
 			{
-				this.painter.color = this.resources.getColor(android.R.color.holo_red_light)
+				this.painter.color = this.touchColor
 				this.painter.style = Paint.Style.FILL
 			}
 			else
@@ -523,7 +536,7 @@ class Keyboard : View, Zoomable
 			
 			if(surface != null && surface.isSelected)
 			{
-				this.painter.color = this.resources.getColor(android.R.color.holo_red_light)
+				this.painter.color = this.touchColor
 				this.painter.style = Paint.Style.FILL
 				canvas.drawRect(rect, this.painter)
 			}
