@@ -14,6 +14,7 @@
         <attr name="cio_kl_textWeight" format="float"/>
         <attr name="cio_kl_textMargin" format="dimension"/>
         <attr name="cio_kl_octaves" format="integer"/>
+        <attr name="cio_kl_octaveOffset" format="integer"/>
         <attr name="cio_kl_showOctaves" format="boolean"/>
     </declare-styleable>
 
@@ -21,6 +22,7 @@
     <dimen name="keyboard_list_stroke_thickness">2dp</dimen>
     <integer name="keyboard_list_text_weight">37</integer>
     <dimen name="keyboard_list_text_margin">5dp</dimen>
-    <integer name="keyboard_list_octaves">12</integer>
+    <integer name="keyboard_list_octaves">2</integer>
+    <integer name="keyboard_list_octave_offset">0</integer>
     <bool name="keyboard_list_show_octaves">true</bool>
 </resources>

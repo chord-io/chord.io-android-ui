@@ -29,6 +29,7 @@ class KeyboardList : LinearLayout, Zoomable
 	private var _textWeight: Float = -1f
 	private var _textMargin: Float = -1f
 	private var _octaves: Int = -1
+	private var _octaveOffset: Int = -1
 	private var _showOctaves: Boolean = true
 	
 	var orientation: ViewOrientation
@@ -129,6 +130,15 @@ class KeyboardList : LinearLayout, Zoomable
 			this.invalidate()
 		}
 	
+	var octaveOffset: Int
+		get() = this._octaveOffset
+		set(value) {
+			this._octaveOffset = value
+			this.generate()
+			this.requestLayout()
+			this.invalidate()
+		}
+	
 	var showOctaves: Boolean
 		get() = this._showOctaves
 		set(value) {
@@ -223,6 +233,11 @@ class KeyboardList : LinearLayout, Zoomable
 		this._octaves = typedArray.getInteger(
 			R.styleable.KeyboardList_cio_kl_octaves,
 			this.resources.getInteger(R.integer.keyboard_list_octaves)
+		)
+		
+		this._octaveOffset = typedArray.getInteger(
+			R.styleable.KeyboardList_cio_kl_octaveOffset,
+			this.resources.getInteger(R.integer.keyboard_list_octave_offset)
 		)
 		
 		this._showOctaves = typedArray.getBoolean(
@@ -357,8 +372,18 @@ class KeyboardList : LinearLayout, Zoomable
 	private fun generate()
 	{
 		this.removeAllViews()
-		// TODO inverse index to show correct octave when list is vertical
-		for(index in 0 until this.octaves)
+		val left = 0 + this.octaveOffset
+		val right = this.octaves + this.octaveOffset
+		val lll = if(this.orientation == ViewOrientation.Horizontal)
+		{
+			left until right
+		}
+		else
+		{
+			right downTo left
+		}
+		
+		for(index in lll)
 		{
 			val view = Keyboard(this.context, null)
 			view.orientation = this.orientation
@@ -375,8 +400,8 @@ class KeyboardList : LinearLayout, Zoomable
 			
 			when(index)
 			{
-				0 -> view.clampOutsideLeftStroke = true
-				this.octaves - 1 -> view.clampOutsideRightStroke = true
+				left -> view.clampOutsideLeftStroke = true
+				right - 1 -> view.clampOutsideRightStroke = true
 				else -> view.clampOutsideStroke = true
 			}
 			

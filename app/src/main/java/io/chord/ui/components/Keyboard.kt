@@ -629,6 +629,7 @@ class Keyboard : View, Zoomable
 		
 		this.painter.strokeWidth = this.strokeThickness
 		
+		// TODO change order
 		for(index in 0 until 6)
 		{
 			if((this.orientation == ViewOrientation.Horizontal && index == 2) || (this.orientation == ViewOrientation.Vertical && index == 3))
