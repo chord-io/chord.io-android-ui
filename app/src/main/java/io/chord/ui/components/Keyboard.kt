@@ -4,11 +4,9 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
-import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import androidx.core.graphics.toRectF
 import io.chord.R
 import io.chord.ui.behaviors.BindBehavior
 import io.chord.ui.behaviors.Bindable
@@ -16,7 +14,6 @@ import io.chord.ui.behaviors.BindableBehavior
 import io.chord.ui.behaviors.KeyboardKeyBehavior
 import io.chord.ui.behaviors.SurfaceGestureBehavior
 import io.chord.ui.behaviors.ZoomBehavior
-import io.chord.ui.extensions.addIfNotPresent
 import io.chord.ui.extensions.alignCenter
 import io.chord.ui.extensions.alignRight
 import io.chord.ui.extensions.findOptimalTextSize
@@ -59,12 +56,14 @@ class Keyboard : View, Zoomable
 			if(this.gesture.surfaces.any { it.isSelected })
 			{
 				val isBlackKey = this.gesture.surfaces.any {
-					it.isSelected && it is BlackKeyTouchSurface
+					it.isSelected && it is KeyboardKeyBehavior.BlackKeyTouchSurface
 				}
 				
 				if(isBlackKey)
 				{
-					this.gesture.surfaces.filterIsInstance(WhiteKeyTouchSurface::class.java).forEach {
+					this.gesture.surfaces.filterIsInstance(
+						KeyboardKeyBehavior.WhiteKeyTouchSurface::class.java
+					).forEach {
 						it.isSelected = false
 					}
 				}
@@ -74,53 +73,6 @@ class Keyboard : View, Zoomable
 			}
 			return false
 		}
-	}
-	
-	private class WhiteKeyTouchSurface(
-		rectangle: RectF,
-		val index: Int
-	) : SurfaceGestureBehavior.TouchSurface(rectangle)
-	{
-		override fun equals(other: Any?): Boolean
-		{
-			if(other is WhiteKeyTouchSurface)
-			{
-				val isRectangleEqual = this.rectangle == other.rectangle
-				val isIndexEqual = this.index == other.index
-				return isRectangleEqual && isIndexEqual
-			}
-			
-			return false
-		}
-		
-		override fun hashCode(): Int
-		{
-			return super.hashCode()
-		}
-	}
-	
-	private class BlackKeyTouchSurface(
-		rectangle: RectF,
-		val index: Int
-	) : SurfaceGestureBehavior.TouchSurface(rectangle)
-	{
-		override fun equals(other: Any?): Boolean
-		{
-			if(other is BlackKeyTouchSurface)
-			{
-				val isRectangleEqual = this.rectangle == other.rectangle
-				val isIndexEqual = this.index == other.index
-				return isRectangleEqual && isIndexEqual
-			}
-			
-			return false
-		}
-		
-		override fun hashCode(): Int
-		{
-			return super.hashCode()
-		}
-		
 	}
 	
 	private val zoomBehavior = ZoomBehavior()
@@ -535,58 +487,28 @@ class Keyboard : View, Zoomable
 	
 	private fun drawWhiteKeys(canvas: Canvas)
 	{
-		val surfaces = this.gestureBehavior.surfaces.filterIsInstance(
-			WhiteKeyTouchSurface::class.java
-		)
-		val bounds = canvas.clipBounds.toRectF()
-		
-		for(index in 0 until 7)
-		{
-			this.painter.strokeWidth = this.strokeThickness
-			
-			val surface = surfaces.firstOrNull {
-				it.index == index
-			}
-			val rect = this.keyBehavior.white.translate(
-				this.orientation,
-				index,
-				bounds,
-				this.strokeThickness,
-				this.clampOutsideLeftStroke
-			)
-			
-			if(surface != null && surface.isSelected)
-			{
-				this.painter.color = this.touchColor
-				this.painter.style = Paint.Style.FILL
-			}
-			else
-			{
-				this.gestureBehavior.surfaces.addIfNotPresent(WhiteKeyTouchSurface(
-					rect,
-					index
-				))
-				
-				this.painter.color = this.whiteKeyColor
-				this.painter.style = Paint.Style.FILL
-			}
-			
-			canvas.drawRect(rect, this.painter)
-			
-			this.painter.color = this.strokeColor
-			this.painter.style = Paint.Style.STROKE
-			canvas.drawRect(rect, this.painter)
-			
+		this.keyBehavior.white.draw(
+			canvas,
+			this.painter,
+			this.gestureBehavior.surfaces,
+			this.orientation,
+			this.strokeThickness,
+			1f,
+			this.clampOutsideLeftStroke,
+			this.whiteKeyColor,
+			this.strokeColor,
+			this.touchColor
+		) {rectangle, index ->
 			if(this.orientation == ViewOrientation.Horizontal && index == 0 && this.showOctave)
 			{
 				this.painter.textSize = this.textSize
 				this.painter.color = this.textColor
 				this.painter.strokeWidth = 0f
 				val horizontalPosition = this.text.alignCenter(
-					rect.centerX().toInt(), 0, this.painter
+					rectangle.centerX().toInt(), 0, this.painter
 				)
 				val verticalPosition = this.text.alignRight(
-					0, (rect.bottom).toInt(), this.painter
+					0, (rectangle.bottom).toInt(), this.painter
 				)
 				canvas.drawText(
 					this.text,
@@ -603,10 +525,10 @@ class Keyboard : View, Zoomable
 				this.painter.color = this.textColor
 				this.painter.strokeWidth = 0f
 				val horizontalPosition = this.text.alignRight(
-					(rect.right).toInt(), 0, this.painter
+					(rectangle.right).toInt(), 0, this.painter
 				)
 				val verticalPosition = this.text.alignCenter(
-					0, rect.centerY().toInt(), this.painter
+					0, rectangle.centerY().toInt(), this.painter
 				)
 				canvas.drawText(
 					this.text,
@@ -622,76 +544,18 @@ class Keyboard : View, Zoomable
 	
 	private fun drawBlackKeys(canvas: Canvas)
 	{
-		val surfaces = this.gestureBehavior.surfaces.filterIsInstance(
-			BlackKeyTouchSurface::class.java
+		this.keyBehavior.black.draw(
+			canvas,
+			this.painter,
+			this.gestureBehavior.surfaces,
+			this.orientation,
+			this.strokeThickness,
+			0.6f,
+			this.clampOutsideLeftStroke,
+			this.blackKeyColor,
+			this.strokeColor,
+			this.touchColor,
+			null
 		)
-		val bounds = canvas.clipBounds.toRectF()
-		
-		this.painter.strokeWidth = this.strokeThickness
-		
-		// TODO change order
-		for(index in 0 until 6)
-		{
-			if((this.orientation == ViewOrientation.Horizontal && index == 2) || (this.orientation == ViewOrientation.Vertical && index == 3))
-			{
-				continue
-			}
-			
-			val surface = surfaces.firstOrNull {
-				it.index == index
-			}
-			val rect = this.keyBehavior.black.translate(
-				this.orientation,
-				index,
-				bounds,
-				this.strokeThickness,
-				this.clampOutsideLeftStroke
-			)
-			
-			if(this.orientation == ViewOrientation.Horizontal)
-			{
-				rect.set(
-					rect.left,
-					rect.top,
-					rect.right,
-					rect.bottom * 0.6f
-				)
-			}
-			else
-			{
-				rect.set(
-					rect.left,
-					rect.top,
-					rect.right * 0.6f,
-					rect.bottom
-				)
-			}
-			
-			if(surface != null && surface.isSelected)
-			{
-				this.painter.color = this.touchColor
-				this.painter.style = Paint.Style.FILL
-				canvas.drawRect(rect, this.painter)
-				
-				this.painter.color = this.strokeColor
-				this.painter.style = Paint.Style.STROKE
-				canvas.drawRect(rect, this.painter)
-			}
-			else
-			{
-				this.gestureBehavior.surfaces.addIfNotPresent(BlackKeyTouchSurface(
-					rect,
-					index
-				))
-				
-				this.painter.color = this.blackKeyColor
-				this.painter.style = Paint.Style.FILL
-				canvas.drawRect(rect, this.painter)
-				
-				this.painter.color = this.strokeColor
-				this.painter.style = Paint.Style.STROKE
-				canvas.drawRect(rect, this.painter)
-			}
-		}
 	}
 }

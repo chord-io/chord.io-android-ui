@@ -1,13 +1,78 @@
 package io.chord.ui.behaviors
 
+import android.graphics.Canvas
+import android.graphics.Paint
 import android.graphics.RectF
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.graphics.toRectF
 import io.chord.ui.components.ViewOrientation
+import io.chord.ui.extensions.addIfNotPresent
 import io.chord.ui.extensions.translate
 
 class KeyboardKeyBehavior
 {
+	class WhiteKeyTouchSurface(
+		rectangle: RectF,
+		val index: Int
+	) : SurfaceGestureBehavior.TouchSurface(rectangle)
+	{
+		override fun equals(other: Any?): Boolean
+		{
+			if(other is WhiteKeyTouchSurface)
+			{
+				val isRectangleEqual = this.rectangle == other.rectangle
+				val isIndexEqual = this.index == other.index
+				return isRectangleEqual && isIndexEqual
+			}
+			
+			return false
+		}
+		
+		override fun hashCode(): Int
+		{
+			return super.hashCode()
+		}
+		
+		fun toIntegral(): Int
+		{
+			var note = this.index * 2
+			if(note <= 6)
+			{
+				note -= 1
+			}
+			return note
+		}
+	}
+	
+	class BlackKeyTouchSurface(
+		rectangle: RectF,
+		val index: Int
+	) : SurfaceGestureBehavior.TouchSurface(rectangle)
+	{
+		override fun equals(other: Any?): Boolean
+		{
+			if(other is BlackKeyTouchSurface)
+			{
+				val isRectangleEqual = this.rectangle == other.rectangle
+				val isIndexEqual = this.index == other.index
+				return isRectangleEqual && isIndexEqual
+			}
+			
+			return false
+		}
+		
+		override fun hashCode(): Int
+		{
+			return super.hashCode()
+		}
+		
+		fun toIntegral(): Int
+		{
+			return this.index + 1
+		}
+	}
+	
 	abstract class Key
 	{
 		// h.r = w
@@ -25,13 +90,38 @@ class KeyboardKeyBehavior
 		val height: Float
 			get() = this._height
 		
-		abstract fun setBounds(orientation: ViewOrientation, width: Float, height: Float, stroke: Float)
+		abstract fun getProgression(orientation: ViewOrientation): IntProgression
+		abstract fun convertIndex(orientation: ViewOrientation, index: Int): Int
+		abstract fun measure(orientation: ViewOrientation, width: Float, height: Float, stroke: Float)
 		abstract fun translate(orientation: ViewOrientation, index: Int, bounds: RectF, stroke: Float, clamp: Boolean = false): RectF
+		abstract fun draw(
+			canvas: Canvas,
+			painter: Paint,
+			surfaces: MutableList<SurfaceGestureBehavior.TouchSurface>,
+			orientation: ViewOrientation,
+			stroke: Float,
+			weight: Float = 1f,
+			clamp: Boolean,
+			fillColor: Int,
+			strokeColor: Int,
+			touchColor: Int,
+			onDraw: ((RectF, Int) -> Unit)? = null
+		)
 	}
 	
 	open class WhiteKey : Key()
 	{
-		override fun setBounds(orientation: ViewOrientation, width: Float, height: Float, stroke: Float)
+		override fun getProgression(orientation: ViewOrientation): IntProgression
+		{
+			return 0 until 7
+		}
+		
+		override fun convertIndex(orientation: ViewOrientation, index: Int): Int
+		{
+			return index
+		}
+		
+		override fun measure(orientation: ViewOrientation, width: Float, height: Float, stroke: Float)
 		{
 			this._width = width - stroke
 			this._height = height - stroke
@@ -82,15 +172,99 @@ class KeyboardKeyBehavior
 			
 			return rect
 		}
+		
+		override fun draw(
+			canvas: Canvas,
+			painter: Paint,
+			surfaces: MutableList<SurfaceGestureBehavior.TouchSurface>,
+			orientation: ViewOrientation,
+			stroke: Float,
+			weight: Float,
+			clamp: Boolean,
+			fillColor: Int,
+			strokeColor: Int,
+			touchColor: Int,
+			onDraw: ((RectF, Int) -> Unit)?
+		)
+		{
+			val keys = surfaces.filterIsInstance(
+				WhiteKeyTouchSurface::class.java
+			)
+			val bounds = canvas.clipBounds.toRectF()
+			
+			for(index in this.getProgression(orientation))
+			{
+				painter.strokeWidth = stroke
+				
+				val surface = keys.firstOrNull {
+					it.index == index
+				}
+				val rectangle = this.translate(
+					orientation,
+					index,
+					bounds,
+					stroke,
+					clamp
+				)
+				
+				if(surface != null && surface.isSelected)
+				{
+					painter.color = touchColor
+					painter.style = Paint.Style.FILL
+				}
+				else
+				{
+					surfaces.addIfNotPresent(WhiteKeyTouchSurface(
+						rectangle,
+						index
+					))
+					
+					painter.color = fillColor
+					painter.style = Paint.Style.FILL
+				}
+				
+				canvas.drawRect(rectangle, painter)
+				
+				painter.color = strokeColor
+				painter.style = Paint.Style.STROKE
+				canvas.drawRect(rectangle, painter)
+				
+				onDraw?.invoke(rectangle, index)
+			}
+		}
 	}
 	
 	class BlackKey : WhiteKey()
 	{
 		private var whiteKey = WhiteKey()
 		
-		override fun setBounds(orientation: ViewOrientation, width: Float, height: Float, stroke: Float)
+		override fun getProgression(orientation: ViewOrientation): IntProgression
 		{
-			this.whiteKey.setBounds(orientation, width, height, stroke)
+			return if(orientation == ViewOrientation.Horizontal)
+			{
+				0 until 6
+			}
+			else
+			{
+				5 downTo 0
+			}
+		}
+		
+		override fun convertIndex(orientation: ViewOrientation, index: Int): Int
+		{
+			return if(orientation == ViewOrientation.Horizontal)
+			{
+				return index
+			}
+			else
+			{
+				5 - index
+			}
+		}
+		
+		override fun measure(orientation: ViewOrientation, width: Float, height: Float, stroke: Float)
+		{
+			this.whiteKey.measure(orientation, width, height, stroke)
 			
 			if(orientation == ViewOrientation.Horizontal)
 			{
@@ -135,6 +309,100 @@ class KeyboardKeyBehavior
 			}
 			
 			return rect
+		}
+		
+		override fun draw(
+			canvas: Canvas,
+			painter: Paint,
+			surfaces: MutableList<SurfaceGestureBehavior.TouchSurface>,
+			orientation: ViewOrientation,
+			stroke: Float,
+			weight: Float,
+			clamp: Boolean,
+			fillColor: Int,
+			strokeColor: Int,
+			touchColor: Int,
+			onDraw: ((RectF, Int) -> Unit)?
+		)
+		{
+			val keys = surfaces.filterIsInstance(
+				BlackKeyTouchSurface::class.java
+			)
+			val bounds = canvas.clipBounds.toRectF()
+			var contiguousIndex = 0
+			
+			painter.strokeWidth = stroke
+			
+			for(index in this.getProgression(orientation))
+			{
+				if(index == 2)
+				{
+					continue
+				}
+				
+				val rectangle = this.translate(
+					orientation,
+					this.convertIndex(orientation, index),
+					bounds,
+					stroke,
+					clamp
+				)
+				
+				if(orientation == ViewOrientation.Horizontal)
+				{
+					rectangle.set(
+						rectangle.left,
+						rectangle.top,
+						rectangle.right,
+						rectangle.bottom * weight
+					)
+				}
+				else
+				{
+					rectangle.set(
+						rectangle.left,
+						rectangle.top,
+						rectangle.right * weight,
+						rectangle.bottom
+					)
+				}
+				
+				val surface = keys.firstOrNull {
+					it.index == contiguousIndex
+				}
+				
+				if(surface != null && surface.isSelected)
+				{
+					painter.color = touchColor
+					painter.style = Paint.Style.FILL
+					canvas.drawRect(rectangle, painter)
+					
+					painter.color = strokeColor
+					painter.style = Paint.Style.STROKE
+					canvas.drawRect(rectangle, painter)
+				}
+				else
+				{
+					surfaces.addIfNotPresent(
+						BlackKeyTouchSurface(
+							rectangle,
+							contiguousIndex
+						)
+					)
+					
+					painter.color = fillColor
+					painter.style = Paint.Style.FILL
+					canvas.drawRect(rectangle, painter)
+					
+					painter.color = strokeColor
+					painter.style = Paint.Style.STROKE
+					canvas.drawRect(rectangle, painter)
+				}
+				
+				contiguousIndex++
+				
+				onDraw?.invoke(rectangle, index)
+			}
 		}
 	}
 	
@@ -188,8 +456,8 @@ class KeyboardKeyBehavior
 			}
 		}
 		
-		this.white.setBounds(orientation, width, height, stroke)
-		this.black.setBounds(orientation, width, height, stroke)
+		this.white.measure(orientation, width, height, stroke)
+		this.black.measure(orientation, width, height, stroke)
 	}
 	
 	fun getKeyWidth(

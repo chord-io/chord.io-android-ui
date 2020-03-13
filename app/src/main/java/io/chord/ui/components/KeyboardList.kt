@@ -374,7 +374,7 @@ class KeyboardList : LinearLayout, Zoomable
 		this.removeAllViews()
 		val left = 0 + this.octaveOffset
 		val right = this.octaves + this.octaveOffset
-		val lll = if(this.orientation == ViewOrientation.Horizontal)
+		val range = if(this.orientation == ViewOrientation.Horizontal)
 		{
 			left until right
 		}
@@ -383,7 +383,7 @@ class KeyboardList : LinearLayout, Zoomable
 			right downTo left
 		}
 		
-		for(index in lll)
+		for(index in range)
 		{
 			val view = Keyboard(this.context, null)
 			view.orientation = this.orientation
