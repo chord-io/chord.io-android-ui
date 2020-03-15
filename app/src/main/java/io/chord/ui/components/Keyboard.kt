@@ -84,30 +84,6 @@ class Keyboard : View, Zoomable
 	private var text: String = ""
 	private var textSize: Float = 0f
 	
-	var clampOutsideStroke: Boolean = false
-		set(value) {
-			field = value
-			this.requestLayout()
-			this.invalidate()
-		}
-	
-	var clampOutsideLeftStroke: Boolean = false
-		set(value) {
-			field = value
-			this.requestLayout()
-			this.invalidate()
-		}
-	
-	var clampOutsideRightStroke: Boolean = false
-		set(value) {
-			field = value
-			this.requestLayout()
-			this.invalidate()
-		}
-	
-	val bounds: Rect
-		get() = this.gestureBehavior.bounds
-	
 	private var _orientation: ViewOrientation = ViewOrientation.Horizontal
 	private var _zoomDuration: Long = -1
 	private var _whiteKeyColor: Int = -1
@@ -117,9 +93,12 @@ class Keyboard : View, Zoomable
 	private var _textColor: Int = -1
 	private var _strokeThickness: Float = 0f
 	private var _textWeight: Float = -1f
+	private var _keyWieght: Float = -1f
 	private var _textMargin: Float = -1f
 	private var _octave: Int = 0
 	private var _showOctave: Boolean = false
+	private var _disableTouchEvent: Boolean = false
+	private var _clampOutsideStroke: Boolean = false
 	
 	var orientation: ViewOrientation
 		get() = this._orientation
@@ -202,6 +181,19 @@ class Keyboard : View, Zoomable
 			this.invalidate()
 		}
 	
+	var keyWeight: Float
+		get() = this._keyWieght
+		set(value) {
+			this._keyWieght = when
+			{
+				value > 1f -> 1f
+				value < 0f -> 0f
+				else -> value
+			}
+			this.requestLayout()
+			this.invalidate()
+		}
+	
 	var textMargin: Float
 		get() = this._textMargin
 		set(value) {
@@ -222,6 +214,20 @@ class Keyboard : View, Zoomable
 		get() = this._showOctave
 		set(value) {
 			this._showOctave = value
+			this.invalidate()
+		}
+	
+	var disableTouchEvent: Boolean
+		get() = this._disableTouchEvent
+		set(value) {
+			this._disableTouchEvent = value
+		}
+	
+	var clampOutsideStroke: Boolean
+		get() = this._clampOutsideStroke
+		set(value) {
+			this._clampOutsideStroke = value
+			this.requestLayout()
 			this.invalidate()
 		}
 	
@@ -307,6 +313,11 @@ class Keyboard : View, Zoomable
 			this.resources.getInteger(R.integer.keyboard_text_weight) / 100f
 		)
 		
+		this._keyWieght = typedArray.getFloat(
+			R.styleable.Keyboard_cio_kb_keyWeight,
+			this.resources.getInteger(R.integer.keyboard_key_weight) / 100f
+		)
+		
 		this._textMargin = typedArray.getDimension(
 			R.styleable.Keyboard_cio_kb_textMargin,
 			this.resources.getDimension(R.dimen.keyboard_text_margin)
@@ -318,8 +329,18 @@ class Keyboard : View, Zoomable
 		)
 		
 		this._showOctave = typedArray.getBoolean(
-			R.styleable.Keyboard_cio_kb_show_octave,
+			R.styleable.Keyboard_cio_kb_showOctave,
 			this.resources.getBoolean(R.bool.keyboard_show_octave)
+		)
+		
+		this._disableTouchEvent = typedArray.getBoolean(
+			R.styleable.Keyboard_cio_kb_disableTouchEvent,
+			this.resources.getBoolean(R.bool.keyboard_disable_touch_event)
+		)
+		
+		this._clampOutsideStroke = typedArray.getBoolean(
+			R.styleable.Keyboard_cio_kb_clampOutsideStroke,
+			this.resources.getBoolean(R.bool.keyboard_clamp_outside_stroke)
 		)
 		
 		typedArray.recycle()
@@ -336,6 +357,8 @@ class Keyboard : View, Zoomable
 			this.requestLayout()
 			this.invalidate()
 		}
+		
+		this.setZoomFactor(this.orientation, 1f, false)
 		
 		this.gestureBehavior.setListener(GestureListener(this, this.gestureBehavior))
 		
@@ -395,7 +418,7 @@ class Keyboard : View, Zoomable
 	
 	override fun onTouchEvent(event: MotionEvent): Boolean
 	{
-		return if(this.gestureBehavior.onTouchEvent(event))
+		return if(!this.disableTouchEvent && this.gestureBehavior.onTouchEvent(event))
 		{
 			true
 		}
@@ -424,14 +447,14 @@ class Keyboard : View, Zoomable
 	
 	override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int)
 	{
+		this.zoomBehavior.requestMeasure()
+		
 		this.text = "C${this.octave}"
 		val stroke = this.strokeThickness
 		val clampedStroke = when
 		{
-			this.clampOutsideLeftStroke -> -stroke
-			this.clampOutsideRightStroke -> 0f
 			this.clampOutsideStroke -> 0f
-			else -> stroke
+			else -> stroke * 2f
 		}
 		val measuredWidth: Int
 		val measuredHeight: Int
@@ -442,10 +465,11 @@ class Keyboard : View, Zoomable
 				this.layoutParams,
 				this.zoomBehavior.factorizedWidth,
 				heightMeasureSpec,
-				stroke
+				stroke,
+				this.clampOutsideStroke
 			)
-			measuredWidth = (this.keyBehavior.white.width * 7f + clampedStroke).toInt()
-			measuredHeight = (this.keyBehavior.white.height + stroke).toInt()
+			measuredWidth = ((this.keyBehavior.white.width * 7f) + (stroke * 6f) + clampedStroke).toInt()
+			measuredHeight = (this.keyBehavior.white.height + clampedStroke).toInt()
 			this.setMeasuredDimension(
 				measuredWidth,
 				measuredHeight
@@ -462,10 +486,11 @@ class Keyboard : View, Zoomable
 				this.layoutParams,
 				widthMeasureSpec,
 				this.zoomBehavior.factorizedHeight,
-				stroke
+				stroke,
+				this.clampOutsideStroke
 			)
-			measuredWidth = (this.keyBehavior.white.width + stroke).toInt()
-			measuredHeight = (this.keyBehavior.white.height * 7f + clampedStroke).toInt()
+			measuredWidth = (this.keyBehavior.white.width + clampedStroke).toInt()
+			measuredHeight = ((this.keyBehavior.white.height * 7f) + (stroke * 6f) + clampedStroke).toInt()
 			this.setMeasuredDimension(
 				measuredWidth,
 				measuredHeight
@@ -481,6 +506,10 @@ class Keyboard : View, Zoomable
 	
 	override fun onDraw(canvas: Canvas)
 	{
+		this.painter.color = this.strokeColor
+		this.painter.style = Paint.Style.FILL
+		canvas.drawRect(canvas.clipBounds, this.painter)
+		
 		this.drawWhiteKeys(canvas)
 		this.drawBlackKeys(canvas)
 	}
@@ -494,7 +523,7 @@ class Keyboard : View, Zoomable
 			this.orientation,
 			this.strokeThickness,
 			1f,
-			this.clampOutsideLeftStroke,
+			this.clampOutsideStroke,
 			this.whiteKeyColor,
 			this.strokeColor,
 			this.touchColor
@@ -519,7 +548,7 @@ class Keyboard : View, Zoomable
 					this.painter
 				)
 			}
-			else if(this.orientation == ViewOrientation.Vertical && index == 6 && this.showOctave)
+			else if(this.orientation == ViewOrientation.Vertical && index == 0 && this.showOctave)
 			{
 				this.painter.textSize = this.textSize
 				this.painter.color = this.textColor
@@ -550,8 +579,8 @@ class Keyboard : View, Zoomable
 			this.gestureBehavior.surfaces,
 			this.orientation,
 			this.strokeThickness,
-			0.6f,
-			this.clampOutsideLeftStroke,
+			this.keyWeight,
+			this.clampOutsideStroke,
 			this.blackKeyColor,
 			this.strokeColor,
 			this.touchColor,

@@ -13,18 +13,22 @@
         <attr name="cio_kb_textColor" format="color"/>
         <attr name="cio_kb_strokeThickness" format="dimension"/>
         <attr name="cio_kb_textWeight" format="float"/>
+        <attr name="cio_kb_keyWeight" format="float"/>
         <attr name="cio_kb_textMargin" format="dimension"/>
         <attr name="cio_kb_octave" format="integer"/>
-        <attr name="cio_kb_show_octave" format="boolean"/>
+        <attr name="cio_kb_showOctave" format="boolean"/>
+        <attr name="cio_kb_disableTouchEvent" format="boolean"/>
+        <attr name="cio_kb_clampOutsideStroke" format="boolean"/>
     </declare-styleable>
 
     <!-- TODO set zoom duraction default value at a global place-->
     <integer name="keyboard_zoom_duration">500</integer>
-    <dimen name="keyboard_key_width">24dp</dimen>
-    <dimen name="keyboard_key_height">85dp</dimen>
     <dimen name="keyboard_stroke_thickness">2dp</dimen>
     <integer name="keyboard_text_weight">37</integer>
+    <integer name="keyboard_key_weight">60</integer>
     <dimen name="keyboard_text_margin">5dp</dimen>
     <integer name="keyboard_octave">0</integer>
     <bool name="keyboard_show_octave">false</bool>
+    <bool name="keyboard_disable_touch_event">false</bool>
+    <bool name="keyboard_clamp_outside_stroke">false</bool>
 </resources>

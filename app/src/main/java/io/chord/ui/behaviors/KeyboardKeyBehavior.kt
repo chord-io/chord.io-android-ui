@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.core.graphics.toRectF
 import io.chord.ui.components.ViewOrientation
 import io.chord.ui.extensions.addIfNotPresent
-import io.chord.ui.extensions.translate
 
 class KeyboardKeyBehavior
 {
@@ -37,7 +36,7 @@ class KeyboardKeyBehavior
 		fun toIntegral(): Int
 		{
 			var note = this.index * 2
-			if(note <= 6)
+			if(note >= 6)
 			{
 				note -= 1
 			}
@@ -69,7 +68,12 @@ class KeyboardKeyBehavior
 		
 		fun toIntegral(): Int
 		{
-			return this.index + 1
+			var note = this.index * 2
+			if(this.index < 3)
+			{
+				note += 1
+			}
+			return note
 		}
 	}
 	
@@ -92,8 +96,8 @@ class KeyboardKeyBehavior
 		
 		abstract fun getProgression(orientation: ViewOrientation): IntProgression
 		abstract fun convertIndex(orientation: ViewOrientation, index: Int): Int
-		abstract fun measure(orientation: ViewOrientation, width: Float, height: Float, stroke: Float)
-		abstract fun translate(orientation: ViewOrientation, index: Int, bounds: RectF, stroke: Float, clamp: Boolean = false): RectF
+		abstract fun measure(orientation: ViewOrientation, width: Float, height: Float, stroke: Float, clamp: Boolean)
+		abstract fun translate(orientation: ViewOrientation, index: Int, bounds: RectF, stroke: Float, clamp: Boolean): RectF
 		abstract fun draw(
 			canvas: Canvas,
 			painter: Paint,
@@ -113,44 +117,64 @@ class KeyboardKeyBehavior
 	{
 		override fun getProgression(orientation: ViewOrientation): IntProgression
 		{
-			return 0 until 7
+			return if(orientation == ViewOrientation.Horizontal)
+			{
+				0 until 7
+			}
+			else
+			{
+				6 downTo 0
+			}
 		}
 		
 		override fun convertIndex(orientation: ViewOrientation, index: Int): Int
 		{
-			return index
+			return if(orientation == ViewOrientation.Horizontal)
+			{
+				return index
+			}
+			else
+			{
+				6 - index
+			}
 		}
 		
-		override fun measure(orientation: ViewOrientation, width: Float, height: Float, stroke: Float)
+		override fun measure(orientation: ViewOrientation, width: Float, height: Float, stroke: Float, clamp: Boolean)
 		{
-			this._width = width - stroke
-			this._height = height - stroke
+			this._width = width
+			this._height = height
 		}
 		
 		override fun translate(orientation: ViewOrientation, index: Int, bounds: RectF, stroke: Float, clamp: Boolean): RectF
 		{
 			// TODO: refactor components to use private class
 			// TODO: refactor codes to look like this
-			
-			val halfStroke = stroke / 2f
 			val rect = RectF()
 			val left: Float
 			val right: Float
 			val top: Float
 			val bottom: Float
-			
-			if(orientation == ViewOrientation.Horizontal)
+			val margin = if(clamp)
 			{
-				left = this.width * index + bounds.left + halfStroke
-				right = left + this.width
-				top = bounds.top + halfStroke
-				bottom = top + this.height - halfStroke
+				0f
 			}
 			else
 			{
-				left = bounds.left + halfStroke
-				right = left + this.width - halfStroke
-				top = this.height * index + bounds.top + halfStroke
+				stroke
+			}
+			
+			if(orientation == ViewOrientation.Horizontal)
+			{
+				left = ((this.width + stroke) * index) + bounds.left + margin
+				right = left + this.width
+				top = bounds.top + margin
+				bottom = bounds.bottom - margin
+			}
+			else
+			{
+				left = bounds.left + margin
+				right = bounds.right - margin
+				top = ((this.height + stroke) * index) + bounds.top + margin
 				bottom = top + this.height
 			}
 			
@@ -160,15 +184,6 @@ class KeyboardKeyBehavior
 				right,
 				bottom
 			)
-			
-			if(orientation == ViewOrientation.Horizontal && clamp)
-			{
-				rect.translate(-stroke, 0f)
-			}
-			else if(orientation == ViewOrientation.Vertical && clamp)
-			{
-				rect.translate(0f, -stroke)
-			}
 			
 			return rect
 		}
@@ -201,7 +216,7 @@ class KeyboardKeyBehavior
 				}
 				val rectangle = this.translate(
 					orientation,
-					index,
+					this.convertIndex(orientation, index),
 					bounds,
 					stroke,
 					clamp
@@ -223,10 +238,6 @@ class KeyboardKeyBehavior
 					painter.style = Paint.Style.FILL
 				}
 				
-				canvas.drawRect(rectangle, painter)
-				
-				painter.color = strokeColor
-				painter.style = Paint.Style.STROKE
 				canvas.drawRect(rectangle, painter)
 				
 				onDraw?.invoke(rectangle, index)
@@ -262,9 +273,9 @@ class KeyboardKeyBehavior
 			}
 		}
 		
-		override fun measure(orientation: ViewOrientation, width: Float, height: Float, stroke: Float)
+		override fun measure(orientation: ViewOrientation, width: Float, height: Float, stroke: Float, clamp: Boolean)
 		{
-			this.whiteKey.measure(orientation, width, height, stroke)
+			this.whiteKey.measure(orientation, width, height, stroke, clamp)
 			
 			if(orientation == ViewOrientation.Horizontal)
 			{
@@ -280,12 +291,13 @@ class KeyboardKeyBehavior
 		
 		override fun translate(orientation: ViewOrientation, index: Int, bounds: RectF, stroke: Float, clamp: Boolean): RectF
 		{
+			val halfStroke = stroke / 2f
 			val parent =  this.whiteKey.translate(orientation, index, bounds, stroke, clamp)
 			val rect = super.translate(orientation, index, bounds, stroke, clamp)
 			
 			if(orientation == ViewOrientation.Horizontal)
 			{
-				val left = parent.left + (this.width * 1.5f)
+				val left = (parent.right + halfStroke) - rect.width() / 2f
 				val right = left + this.width
 				
 				rect.set(
@@ -297,7 +309,7 @@ class KeyboardKeyBehavior
 			}
 			else
 			{
-				val top = parent.top + (this.height * 1.5f)
+				val top = (parent.bottom + halfStroke) - rect.height() / 2f
 				val bottom = top + this.height
 				
 				rect.set(
@@ -329,7 +341,6 @@ class KeyboardKeyBehavior
 				BlackKeyTouchSurface::class.java
 			)
 			val bounds = canvas.clipBounds.toRectF()
-			var contiguousIndex = 0
 			
 			painter.strokeWidth = stroke
 			
@@ -368,7 +379,7 @@ class KeyboardKeyBehavior
 				}
 				
 				val surface = keys.firstOrNull {
-					it.index == contiguousIndex
+					it.index == index
 				}
 				
 				if(surface != null && surface.isSelected)
@@ -386,20 +397,14 @@ class KeyboardKeyBehavior
 					surfaces.addIfNotPresent(
 						BlackKeyTouchSurface(
 							rectangle,
-							contiguousIndex
+							index
 						)
 					)
 					
 					painter.color = fillColor
 					painter.style = Paint.Style.FILL
 					canvas.drawRect(rectangle, painter)
-					
-					painter.color = strokeColor
-					painter.style = Paint.Style.STROKE
-					canvas.drawRect(rectangle, painter)
 				}
-				
-				contiguousIndex++
 				
 				onDraw?.invoke(rectangle, index)
 			}
@@ -414,7 +419,8 @@ class KeyboardKeyBehavior
 		layoutParameter: ViewGroup.LayoutParams,
 		widthMeasureSpec: Number,
 		heightMeasureSpec: Number,
-		stroke: Float
+		stroke: Float,
+		clamp: Boolean
 	)
 	{
 		val width: Float
@@ -456,8 +462,8 @@ class KeyboardKeyBehavior
 			}
 		}
 		
-		this.white.measure(orientation, width, height, stroke)
-		this.black.measure(orientation, width, height, stroke)
+		this.white.measure(orientation, width, height, stroke, clamp)
+		this.black.measure(orientation, width, height, stroke, clamp)
 	}
 	
 	fun getKeyWidth(

@@ -17,7 +17,6 @@ class KeyboardList : LinearLayout, Zoomable
 	private val zoomBehavior = ZoomBehavior()
 	private val bindableBehavior = BindableBehavior(this)
 	private val keyBehavior = KeyboardKeyBehavior()
-	private var initialized = false
 	
 	private var _orientation: ViewOrientation = ViewOrientation.Vertical
 	private var _zoomDuration: Long = -1
@@ -27,10 +26,13 @@ class KeyboardList : LinearLayout, Zoomable
 	private var _touchColor: Int = -1
 	private var _strokeThickness: Float = 0f
 	private var _textWeight: Float = -1f
+	private var _keyWeight: Float = -1f
 	private var _textMargin: Float = -1f
 	private var _octaves: Int = -1
 	private var _octaveOffset: Int = -1
 	private var _showOctaves: Boolean = true
+	private var _disableTouchEvent: Boolean = false
+	private var _clampOutsideStroke: Boolean = false
 	
 	var orientation: ViewOrientation
 		get() = this._orientation
@@ -83,6 +85,7 @@ class KeyboardList : LinearLayout, Zoomable
 			this.getChildOfType<Keyboard>().forEach {
 				it.strokeColor = value
 			}
+			this.setBackgroundColor(value)
 		}
 	
 	var touchColor: Int
@@ -109,6 +112,15 @@ class KeyboardList : LinearLayout, Zoomable
 			this._textWeight = value
 			this.getChildOfType<Keyboard>().forEach {
 				it.textWeight = value
+			}
+		}
+	
+	var keyWeight: Float
+		get() = this._keyWeight
+		set(value) {
+			this._keyWeight = value
+			this.getChildOfType<Keyboard>().forEach {
+				it.keyWeight = value
 			}
 		}
 	
@@ -146,6 +158,27 @@ class KeyboardList : LinearLayout, Zoomable
 			this.getChildOfType<Keyboard>().forEach {
 				it.showOctave = value
 			}
+		}
+	
+	var disableTouchEvent: Boolean
+		get() = this._disableTouchEvent
+		set(value) {
+			this._disableTouchEvent = value
+			this.getChildOfType<Keyboard>().forEach {
+				it.disableTouchEvent = value
+			}
+		}
+	
+	var clampOutsideStroke: Boolean
+		get() = this._clampOutsideStroke
+		set(value) {
+			this._clampOutsideStroke = value
+			this.getChildOfType<Keyboard>().forEach {
+				it.clampOutsideStroke = value
+			}
+			this.generate()
+			this.requestLayout()
+			this.invalidate()
 		}
 	
 	constructor(
@@ -225,6 +258,11 @@ class KeyboardList : LinearLayout, Zoomable
 			this.resources.getInteger(R.integer.keyboard_list_text_weight) / 100f
 		)
 		
+		this._keyWeight = typedArray.getFloat(
+			R.styleable.KeyboardList_cio_kl_keyWeight,
+			this.resources.getInteger(R.integer.keyboard_list_key_weight) / 100f
+		)
+		
 		this._textMargin = typedArray.getDimension(
 			R.styleable.KeyboardList_cio_kl_textMargin,
 			this.resources.getDimension(R.dimen.keyboard_list_text_margin)
@@ -245,6 +283,16 @@ class KeyboardList : LinearLayout, Zoomable
 			this.resources.getBoolean(R.bool.keyboard_list_show_octaves)
 		)
 		
+		this._disableTouchEvent = typedArray.getBoolean(
+			R.styleable.KeyboardList_cio_kl_disableTouchEvent,
+			this.resources.getBoolean(R.bool.keyboard_list_disable_touch_event)
+		)
+		
+		this._clampOutsideStroke = typedArray.getBoolean(
+			R.styleable.KeyboardList_cio_kl_clampOutsideStroke,
+			this.resources.getBoolean(R.bool.keyboard_list_clamp_outside_stroke)
+		)
+		
 		typedArray.recycle()
 		
 		this.setOrientation(this.orientation.orientation)
@@ -256,8 +304,12 @@ class KeyboardList : LinearLayout, Zoomable
 		this.zoomBehavior.onEvaluateHeight = this::getKeyWidth
 		this.zoomBehavior.onMeasureHeight = this::update
 		
+		this.setZoomFactor(this.orientation, 1f, false)
+		
 		this.isClickable = true
 		this.isFocusable = true
+		
+		this.setBackgroundColor(this.strokeColor)
 	}
 	
 	override fun onAttachedToWindow()
@@ -305,6 +357,11 @@ class KeyboardList : LinearLayout, Zoomable
 	
 	override fun dispatchTouchEvent(event: MotionEvent): Boolean
 	{
+		if(this.disableTouchEvent)
+		{
+			return false
+		}
+		
 		val keyboards = this.getChildOfType<Keyboard>()
 		keyboards.indices.forEach {index ->
 			val keyboard = keyboards[index]
@@ -394,24 +451,42 @@ class KeyboardList : LinearLayout, Zoomable
 			view.touchColor = this.touchColor
 			view.strokeThickness = this.strokeThickness
 			view.textWeight = this.textWeight
+			view.keyWeight = this.keyWeight
 			view.textMargin = this.textMargin
 			view.showOctave = this.showOctaves
+			view.disableTouchEvent = this.disableTouchEvent
+			view.clampOutsideStroke = this.clampOutsideStroke
 			view.octave = index
-			
-			when(index)
-			{
-				left -> view.clampOutsideLeftStroke = true
-				right - 1 -> view.clampOutsideRightStroke = true
-				else -> view.clampOutsideStroke = true
-			}
 			
 			if(this.orientation == ViewOrientation.Horizontal)
 			{
-				view.layoutParams = LayoutParams(this.layoutParams.width, LayoutParams.MATCH_PARENT)
+				val layoutParameter = LayoutParams(this.layoutParams.width, LayoutParams.MATCH_PARENT)
+				
+				if(index > left && !this.clampOutsideStroke)
+				{
+					layoutParameter.marginStart = -this.strokeThickness.toInt()
+				}
+				else if(index > left)
+				{
+					layoutParameter.marginStart = this.strokeThickness.toInt()
+				}
+				
+				view.layoutParams = layoutParameter
 			}
 			else
 			{
-				view.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, this.layoutParams.height)
+				val layoutParameter = LayoutParams(LayoutParams.MATCH_PARENT, this.layoutParams.height)
+				
+				if(index < right && !this.clampOutsideStroke)
+				{
+					layoutParameter.topMargin = -this.strokeThickness.toInt()
+				}
+				else if(index < right)
+				{
+					layoutParameter.topMargin = this.strokeThickness.toInt()
+				}
+				
+				view.layoutParams = layoutParameter
 			}
 			
 			this.addView(view)
@@ -438,8 +513,21 @@ class KeyboardList : LinearLayout, Zoomable
 	
 	override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int)
 	{
+		this.zoomBehavior.requestMeasure()
+
 		val stroke = this.strokeThickness
-		val clampedStroke = -stroke
+		val clampedStroke =  if(this.clampOutsideStroke && this.octaves > 1)
+		{
+			stroke
+		}
+		else if(this.clampOutsideStroke && this.octaves == 1)
+		{
+			0f
+		}
+		else
+		{
+			stroke * (this.octaves + 1)
+		}
 
 		if(this.orientation == ViewOrientation.Horizontal)
 		{
@@ -448,19 +536,27 @@ class KeyboardList : LinearLayout, Zoomable
 				this.layoutParams,
 				this.zoomBehavior.factorizedWidth,
 				heightMeasureSpec,
-				stroke
+				stroke,
+				true
 			)
-			val measuredWidth = this.keyBehavior.white.width * 7f
-			val measuredHeight = this.keyBehavior.white.height + stroke
+			val measuredWidth = (this.keyBehavior.white.width * 7f) + (stroke * 6f)
+			val measuredHeight = this.keyBehavior.white.height
 			this.setMeasuredDimension(
 				(measuredWidth * this.octaves + clampedStroke).toInt(),
 				measuredHeight.toInt()
 			)
-			
+
 			this.update()
-			
+
 			val childWidth = measuredWidth
-			val childHeight = measuredHeight
+			val childHeight = if(this.clampOutsideStroke)
+			{
+				measuredHeight
+			}
+			else
+			{
+				measuredHeight - stroke * 2f
+			}
 			val childWidthSpec = MeasureSpec.makeMeasureSpec(childWidth.toInt(), MeasureSpec.EXACTLY)
 			val childHeightSpec = MeasureSpec.makeMeasureSpec(childHeight.toInt(), MeasureSpec.EXACTLY)
 			this.measureChildren(childWidthSpec, childHeightSpec)
@@ -472,19 +568,27 @@ class KeyboardList : LinearLayout, Zoomable
 				this.layoutParams,
 				widthMeasureSpec,
 				this.zoomBehavior.factorizedHeight,
-				stroke
+				stroke,
+				true
 			)
-			val measuredWidth = this.keyBehavior.white.width + stroke
-			val measuredHeight = this.keyBehavior.white.height * 7f
+			val measuredWidth = this.keyBehavior.white.width
+			val measuredHeight = (this.keyBehavior.white.height * 7f) + (stroke * 6f)
 			this.setMeasuredDimension(
 				measuredWidth.toInt(),
 				(measuredHeight * this.octaves + clampedStroke).toInt()
 			)
-			
+
 			this.update()
 
-			val childWidth = measuredWidth
-			val childHeight = measuredHeight + clampedStroke
+			val childWidth = if(this.clampOutsideStroke)
+			{
+				measuredWidth
+			}
+			else
+			{
+				measuredWidth - stroke * 2f
+			}
+			val childHeight = measuredHeight
 			val childWidthSpec = MeasureSpec.makeMeasureSpec(childWidth.toInt(), MeasureSpec.EXACTLY)
 			val childHeightSpec = MeasureSpec.makeMeasureSpec(childHeight.toInt(), MeasureSpec.EXACTLY)
 			this.measureChildren(childWidthSpec, childHeightSpec)

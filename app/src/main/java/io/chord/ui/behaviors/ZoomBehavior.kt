@@ -43,6 +43,12 @@ class ZoomBehavior
 		this.onMeasureHeight()
 	}
 	
+	fun requestMeasure()
+	{
+		this.measureWidth()
+		this.measureHeight()
+	}
+	
 	fun getFactorWidth(): Float
 	{
 		return this._factorWidth
