@@ -86,6 +86,7 @@ class Keyboard : View, Zoomable
 	
 	private var _orientation: ViewOrientation = ViewOrientation.Horizontal
 	private var _zoomDuration: Long = -1
+	private var _maskColor: Int= -1
 	private var _whiteKeyColor: Int = -1
 	private var _blackKeyColor: Int = -1
 	private var _strokeColor: Int = -1
@@ -123,6 +124,13 @@ class Keyboard : View, Zoomable
 			this._zoomDuration = value
 			this.zoomBehavior.widthAnimator.duration = value
 			this.zoomBehavior.heightAnimator.duration = value
+		}
+	
+	var maskColor: Int
+		get() = this._maskColor
+		set(value) {
+			this._maskColor = value
+			this.invalidate()
 		}
 	
 	var whiteKeyColor: Int
@@ -277,6 +285,11 @@ class Keyboard : View, Zoomable
 			R.styleable.Keyboard_cio_kb_zoomDuration,
 			this.resources.getInteger(R.integer.keyboard_zoom_duration)
 		).toLong()
+		
+		this._maskColor = typedArray.getColor(
+			R.styleable.Keyboard_cio_kb_maskColor,
+			this.resources.getColor(R.color.backgroundPrimary, theme)
+		)
 		
 		this._whiteKeyColor = typedArray.getColor(
 			R.styleable.Keyboard_cio_kb_whiteKeyColor,
@@ -524,6 +537,7 @@ class Keyboard : View, Zoomable
 			this.strokeThickness,
 			1f,
 			this.clampOutsideStroke,
+			this.maskColor,
 			this.whiteKeyColor,
 			this.strokeColor,
 			this.touchColor
@@ -581,6 +595,7 @@ class Keyboard : View, Zoomable
 			this.strokeThickness,
 			this.keyWeight,
 			this.clampOutsideStroke,
+			this.maskColor,
 			this.blackKeyColor,
 			this.strokeColor,
 			this.touchColor,

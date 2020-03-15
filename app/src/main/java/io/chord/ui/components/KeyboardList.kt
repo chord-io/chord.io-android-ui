@@ -12,7 +12,7 @@ import io.chord.ui.behaviors.KeyboardKeyBehavior
 import io.chord.ui.behaviors.ZoomBehavior
 import io.chord.ui.extensions.getChildOfType
 
-class KeyboardList : LinearLayout, Zoomable
+open class KeyboardList : LinearLayout, Zoomable
 {
 	private val zoomBehavior = ZoomBehavior()
 	private val bindableBehavior = BindableBehavior(this)
@@ -20,6 +20,7 @@ class KeyboardList : LinearLayout, Zoomable
 	
 	private var _orientation: ViewOrientation = ViewOrientation.Vertical
 	private var _zoomDuration: Long = -1
+	private var _maskColor: Int = -1
 	private var _whiteKeyColor: Int = -1
 	private var _blackKeyColor: Int = -1
 	private var _strokeColor: Int = -1
@@ -58,6 +59,15 @@ class KeyboardList : LinearLayout, Zoomable
 			this._zoomDuration = value
 			this.zoomBehavior.widthAnimator.duration = value
 			this.zoomBehavior.heightAnimator.duration = value
+		}
+	
+	var maskColor: Int
+		get() = this._maskColor
+		set(value) {
+			this._maskColor = value
+			this.getChildOfType<Keyboard>().forEach {
+				it.maskColor = value
+			}
 		}
 	
 	var whiteKeyColor: Int
@@ -227,6 +237,11 @@ class KeyboardList : LinearLayout, Zoomable
 			R.styleable.KeyboardList_cio_kl_zoomDuration,
 			this.resources.getInteger(R.integer.keyboard_list_zoom_duration)
 		).toLong()
+		
+		this._maskColor = typedArray.getColor(
+			R.styleable.KeyboardList_cio_kl_maskColor,
+			this.resources.getColor(R.color.backgroundPrimary, theme)
+		)
 		
 		this._whiteKeyColor = typedArray.getColor(
 			R.styleable.KeyboardList_cio_kl_whiteKeyColor,

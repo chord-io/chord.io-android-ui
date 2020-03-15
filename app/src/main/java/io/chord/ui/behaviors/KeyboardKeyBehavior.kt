@@ -106,6 +106,7 @@ class KeyboardKeyBehavior
 			stroke: Float,
 			weight: Float = 1f,
 			clamp: Boolean,
+			maskColor: Int,
 			fillColor: Int,
 			strokeColor: Int,
 			touchColor: Int,
@@ -196,6 +197,7 @@ class KeyboardKeyBehavior
 			stroke: Float,
 			weight: Float,
 			clamp: Boolean,
+			maskColor: Int,
 			fillColor: Int,
 			strokeColor: Int,
 			touchColor: Int,
@@ -221,6 +223,10 @@ class KeyboardKeyBehavior
 					stroke,
 					clamp
 				)
+				
+				painter.color = maskColor
+				painter.style = Paint.Style.FILL
+				canvas.drawRect(rectangle, painter)
 				
 				if(surface != null && surface.isSelected)
 				{
@@ -297,7 +303,18 @@ class KeyboardKeyBehavior
 			
 			if(orientation == ViewOrientation.Horizontal)
 			{
-				val left = (parent.right + halfStroke) - rect.width() / 2f
+				val left = if(index == 0 || index == 4)
+				{
+					(parent.right + halfStroke) - rect.width() * 0.75f
+				}
+				else if(index == 2)
+				{
+					(parent.right + halfStroke) - rect.width() * 0.25f
+				}
+				else
+				{
+					(parent.right + halfStroke) - rect.width() / 2f
+				}
 				val right = left + this.width
 				
 				rect.set(
@@ -309,7 +326,18 @@ class KeyboardKeyBehavior
 			}
 			else
 			{
-				val top = (parent.bottom + halfStroke) - rect.height() / 2f
+				val top = if(index == 0 || index == 4)
+				{
+					(parent.bottom + halfStroke) - rect.height() * 0.75f
+				}
+				else if(index == 2)
+				{
+					(parent.bottom + halfStroke) - rect.height() * 0.25f
+				}
+				else
+				{
+					(parent.bottom + halfStroke) - rect.height() / 2f
+				}
 				val bottom = top + this.height
 				
 				rect.set(
@@ -331,6 +359,7 @@ class KeyboardKeyBehavior
 			stroke: Float,
 			weight: Float,
 			clamp: Boolean,
+			maskColor: Int,
 			fillColor: Int,
 			strokeColor: Int,
 			touchColor: Int,
@@ -381,6 +410,10 @@ class KeyboardKeyBehavior
 				val surface = keys.firstOrNull {
 					it.index == index
 				}
+				
+				painter.color = maskColor
+				painter.style = Paint.Style.FILL
+				canvas.drawRect(rectangle, painter)
 				
 				if(surface != null && surface.isSelected)
 				{

@@ -6,6 +6,7 @@
             <enum name="vertical" value="1" />
         </attr>
         <attr name="cio_kl_zoomDuration" format="integer"/>
+        <attr name="cio_kl_maskColor" format="color"/>
         <attr name="cio_kl_whiteKeyColor" format="color"/>
         <attr name="cio_kl_blackKeyColor" format="color"/>
         <attr name="cio_kl_strokeColor" format="color"/>
