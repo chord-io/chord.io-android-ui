@@ -11,6 +11,7 @@ import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
 import android.widget.ScrollView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import io.chord.R
 import io.chord.ui.animations.FastOutSlowInValueAnimator
 import io.chord.ui.behaviors.BindBehavior
@@ -633,8 +634,12 @@ class ScrollBar : View, Binder
 	
 	override fun attach(fragment: Fragment)
 	{
-		// TODO Make control for fragment
 		this.bindBehavior.attach(fragment)
+	}
+	
+	override fun attach(activity: FragmentActivity)
+	{
+		this.bindBehavior.attach(activity)
 	}
 	
 	override fun attachAll(views: List<View>)
@@ -648,6 +653,11 @@ class ScrollBar : View, Binder
 	override fun detach(id: Int)
 	{
 		this.bindBehavior.detach(id)
+	}
+	
+	override fun detach(view: View)
+	{
+		this.bindBehavior.detach(view)
 	}
 	
 	override fun detachAll()

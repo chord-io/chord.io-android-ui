@@ -11,6 +11,7 @@ import android.view.DragEvent
 import android.view.View
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import io.chord.R
 import io.chord.ui.behaviors.BindBehavior
 import io.chord.ui.behaviors.Bindable
@@ -263,6 +264,11 @@ abstract class ListView<TModel, TViewModel: ListViewModel, TViewHolder: ListView
 		this.bindBehavior.attach(fragment)
 	}
 	
+	override fun attach(activity: FragmentActivity)
+	{
+		this.bindBehavior.attach(activity)
+	}
+	
 	override fun attachAll(views: List<View>)
 	{
 		this.bindBehavior.attachAll(views)
@@ -271,6 +277,11 @@ abstract class ListView<TModel, TViewModel: ListViewModel, TViewHolder: ListView
 	override fun detach(id: Int)
 	{
 		this.bindBehavior.detach(id)
+	}
+	
+	override fun detach(view: View)
+	{
+		this.bindBehavior.detach(view)
 	}
 	
 	override fun detachAll()

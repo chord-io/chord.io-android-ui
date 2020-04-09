@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import io.chord.R
 import io.chord.clients.models.MidiTrack
 import io.chord.clients.models.Track
@@ -25,6 +26,46 @@ class TrackListFragment : Fragment(), ListClickListener<Track>, Binder
 	private lateinit var flow: TrackFlow
 	private lateinit var list: TrackList
 	private lateinit var controlMaster: TrackControl
+	
+	override fun attach(id: Int)
+	{
+		this.list.attach(id)
+	}
+	
+	override fun attach(view: View)
+	{
+		this.list.attach(view)
+	}
+	
+	override fun attach(fragment: Fragment)
+	{
+		this.list.attach(fragment)
+	}
+	
+	override fun attach(activity: FragmentActivity)
+	{
+		this.list.attach(activity)
+	}
+	
+	override fun attachAll(views: List<View>)
+	{
+		this.list.attachAll(views)
+	}
+	
+	override fun detach(id: Int)
+	{
+		this.list.detach(id)
+	}
+	
+	override fun detach(view: View)
+	{
+		this.list.detach(view)
+	}
+	
+	override fun detachAll()
+	{
+		this.detachAll()
+	}
 	
 	override fun onCreateView(
 		inflater: LayoutInflater,
@@ -112,35 +153,5 @@ class TrackListFragment : Fragment(), ListClickListener<Track>, Binder
 	{
 		val tracks = ProjectManager.getCurrent()!!.tracks
 		this.list.addAll(tracks)
-	}
-	
-	override fun attach(id: Int)
-	{
-		this.list.attach(id)
-	}
-	
-	override fun attach(view: View)
-	{
-		this.list.attach(view)
-	}
-	
-	override fun attach(fragment: Fragment)
-	{
-		this.list.attach(fragment)
-	}
-	
-	override fun attachAll(views: List<View>)
-	{
-		this.list.attachAll(views)
-	}
-	
-	override fun detach(id: Int)
-	{
-		this.detach(id)
-	}
-	
-	override fun detachAll()
-	{
-		this.detachAll()
 	}
 }

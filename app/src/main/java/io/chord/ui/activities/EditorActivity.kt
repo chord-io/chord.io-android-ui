@@ -9,19 +9,60 @@ import com.mikepenz.iconics.typeface.library.fontawesome.FontAwesome
 import com.mikepenz.iconics.utils.colorRes
 import com.mikepenz.iconics.utils.sizeRes
 import io.chord.R
+import io.chord.clients.models.MidiTrack
 import io.chord.clients.models.Theme
 import io.chord.clients.models.Track
 import io.chord.databinding.ActivityEditorBinding
 import io.chord.services.managers.ProjectManager
+import io.chord.ui.behaviors.BindBehavior
+import io.chord.ui.behaviors.Bindable
+import io.chord.ui.behaviors.BindableBehavior
+import io.chord.ui.behaviors.FragmentTransactionManager
 import io.chord.ui.behaviors.ToolbarEditorBehavior
+import io.chord.ui.components.Selectable
+import io.chord.ui.fragments.editor.PianoFragmentTransaction
+import kotlinx.android.synthetic.main.activity_editor.*
 
-class EditorActivity : AppCompatActivity()
+class EditorActivity : AppCompatActivity(), Selectable<Track>
 {
 	private val tracks = ProjectManager.getCurrent()!!.tracks
 	private lateinit var track: Track
-	private lateinit var theme: Theme
+	private lateinit var _theme: Theme
 	private lateinit var toolBarBehavior: ToolbarEditorBehavior
-	private lateinit var binding: ActivityEditorBinding
+	private lateinit var _binding: ActivityEditorBinding
+	private val bindableBehavior = BindableBehavior(this)
+	private val transactions = FragmentTransactionManager()
+	
+	val binding: ActivityEditorBinding
+		get() = this._binding
+	
+	val theme: Theme
+		get() = this._theme
+	
+	init
+	{
+		this.transactions.add(MidiTrack::class, PianoFragmentTransaction(this))
+	}
+	
+	override fun attach(controller: BindBehavior<Bindable>)
+	{
+		this.bindableBehavior.attach(controller)
+	}
+	
+	override fun selfAttach()
+	{
+		this.bindableBehavior.selfAttach()
+	}
+	
+	override fun selfDetach()
+	{
+		this.bindableBehavior.selfDetach()
+	}
+	
+	override fun setItem(item: Track)
+	{
+		this.onTrackChanged(item)
+	}
 	
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
@@ -35,33 +76,20 @@ class EditorActivity : AppCompatActivity()
 				false
 			)
 		
-		this.binding = DataBindingUtil.bind(view)!!
+		this._binding = DataBindingUtil.bind(view)!!
 		
 		this.setSupportActionBar(this.binding.toolbarEditor.editor.toolbar)
 		this.setContentView(view)
 		
 		this.processIntent()
 		
-//		this.binding.horizontalScrollBar.attach(R.id.rulerScrollview)
-//		this.binding.horizontalScrollBar.attach(R.id.sequencerScrollview)
-//
-//		this.binding.verticalScrollBar.attach(R.id.trackListScrollView)
-//		this.binding.verticalScrollBar.attach(R.id.sequencerScrollview)
-		this.binding.verticalScrollBar.attach(R.id.keyboardListScrollview)
-
+		this.binding.horizontalScrollBar.attach(R.id.rulerScrollview)
+		
 		this.binding.horizontalZoomBar.attach(R.id.ruler)
-//		this.binding.horizontalZoomBar.attach(R.id.keyboard)
-//		this.binding.horizontalZoomBar.attach(R.id.sequencer)
-//		this.binding.horizontalZoomBar.attach(R.id.keyboardListTest)
-//
-//		this.binding.verticalZoomBar.attach(R.id.trackList)
-//		this.binding.verticalZoomBar.attach(R.id.sequencer)
-//		this.binding.verticalZoomBar.attach(R.id.keyboard)
-		this.binding.verticalZoomBar.attach(R.id.keyboardList)
-		this.binding.verticalZoomBar.attach(R.id.keyboardListTest)
 		
 		this.binding.toolbarEditor.quantize.attach(R.id.ruler)
-//		this.binding.toolbarEditor.quantize.attach(R.id.sequencer)
+		
+		this.binding.toolbarEditor.track.attach(this)
 		
 		this.binding.ruler.setCounter(this::counter)
 		
@@ -77,16 +105,16 @@ class EditorActivity : AppCompatActivity()
 		this.toolBarBehavior.onUndo = {}
 		this.toolBarBehavior.onRedo = {}
 		
-//		this.binding.toolbarRoller.library.setOnClickListener {
-//			if(this.binding.libraryContainer.visibility == View.VISIBLE)
-//			{
-//				this.binding.libraryContainer.visibility = View.GONE
-//			}
-//			else
-//			{
-//				this.binding.libraryContainer.visibility = View.VISIBLE
-//			}
-//		}
+		//		this.binding.toolbarRoller.library.setOnClickListener {
+		//			if(this.binding.libraryContainer.visibility == View.VISIBLE)
+		//			{
+		//				this.binding.libraryContainer.visibility = View.GONE
+		//			}
+		//			else
+		//			{
+		//				this.binding.libraryContainer.visibility = View.VISIBLE
+		//			}
+		//		}
 		
 		this.binding.toolbarEditor.editor.toolbar.navigationIcon = IconicsDrawable(this)
 			.icon(FontAwesome.Icon.faw_arrow_left)
@@ -100,17 +128,43 @@ class EditorActivity : AppCompatActivity()
 		this.binding.toolbarEditor.editor.toolbar.setTitle(R.string.editor_activity_title)
 	}
 	
+	fun counter(): List<Int>
+	{
+		return this.theme.sequences.map {
+			it.length.end.toInt()
+		}
+	}
+	
 	private fun processIntent()
 	{
 		this.track = this.getTrack(this.intent.getStringExtra("track"))
-		this.theme = this.getTheme(this.track, this.intent.getStringExtra("theme"))
+		this._theme = this.getTheme(this.track, this.intent.getStringExtra("theme"))
 		this.binding.toolbarEditor.track.setCurrent(this.track)
 	}
 	
 	private fun onTrackChanged(track: Track)
 	{
+		this.transactions.from(this.track).unload(this.supportFragmentManager)
 		this.track = track
-		this.theme = this.getTheme(this.track, this.theme.name)
+		this._theme = this.getTheme(this.track, this.theme.name)
+		this.transactions.from(this.track).load(this.supportFragmentManager)
+		
+		if(this.binding.rollScrollview.hasContent())
+		{
+			this.verticalScrollBar.attach(R.id.rollScrollview)
+			
+			// TODO: avoid this, maybe zoomable not need to be init with animation
+			try
+			{
+				this.horizontalScrollBar.attach(R.id.rollScrollview)
+			}
+			catch(exception: IllegalStateException){}
+		}
+		
+		if(this.binding.laneScrollview.hasContent())
+		{
+			this.verticalScrollBar.attach(R.id.laneScrollview)
+		}
 	}
 	
 	private fun getTrack(name: String): Track
@@ -124,13 +178,6 @@ class EditorActivity : AppCompatActivity()
 	{
 		return track.themes.first {
 			it.name == name
-		}
-	}
-	
-	private fun counter(): List<Int>
-	{
-		return this.theme.sequences.map {
-			it.length.end.toInt()
 		}
 	}
 }

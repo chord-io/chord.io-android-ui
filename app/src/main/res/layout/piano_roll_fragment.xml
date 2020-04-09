@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <io.chord.ui.components.PianoRoll
+        android:id="@+id/roll"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        app:cio_kl_orientation="vertical"
+        app:cio_kl_octaves="11"
+        app:cio_kl_octaveOffset="-3"
+        app:cio_kl_showOctaves="false"
+        app:cio_kl_clampOutsideStroke="true"
+        app:cio_kl_disableTouchEvent="true"
+        app:cio_kl_keyWeight="1"
+        app:cio_kl_whiteKeyColor="@color/backgroundPrimary"
+        app:cio_kl_blackKeyColor="@color/colorAccent"
+        app:cio_kl_strokeColor="@color/colorAccent"/>
+</layout>

@@ -11,6 +11,7 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.core.graphics.toRectF
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import io.chord.R
 import io.chord.ui.animations.FastOutSlowInValueAnimator
 import io.chord.ui.animations.HsvColorEvaluator
@@ -512,6 +513,11 @@ class TrackControl : View, Binder, Bindable, Controllable<TrackControlState>
 		this.bindBehavior.attach(fragment)
 	}
 	
+	override fun attach(activity: FragmentActivity)
+	{
+		this.bindBehavior.attach(activity)
+	}
+	
 	override fun attachAll(views: List<View>)
 	{
 		this.bindBehavior.attachAll(views)
@@ -520,6 +526,11 @@ class TrackControl : View, Binder, Bindable, Controllable<TrackControlState>
 	override fun detach(id: Int)
 	{
 		this.bindBehavior.detach(id)
+	}
+	
+	override fun detach(view: View)
+	{
+		this.bindBehavior.detach(view)
 	}
 	
 	override fun detachAll()

@@ -2,6 +2,7 @@ package io.chord.ui.components
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,8 @@ open class TwoDimensionalScrollView : LinearLayout
 {
 	lateinit var verticalScrollView: VerticalScrollView
 	lateinit var horizontalScrollView: HorizontalScrollView
+	
+	private var isInitialized: Boolean = false
 	
 	constructor(context: Context) : super(context)
 	{
@@ -56,13 +59,14 @@ open class TwoDimensionalScrollView : LinearLayout
 	override fun onFinishInflate()
 	{
 		super.onFinishInflate()
-		
 		val children = this.getDirectChildren() ?: return
-		(children.parent as ViewGroup).removeView(children)
-		val view = View.inflate(context, R.layout.component_two_dimensional_scroll_view, this)
-		this.verticalScrollView = view.findViewById(R.id.vertical_scroll_view)
-		this.horizontalScrollView = view.findViewById(R.id.horizontal_scroll_view)
-		this.horizontalScrollView.addView(children)
+		this.setContentView(children)
+	}
+	
+	override fun addView(child: View)
+	{
+		super.addView(child)
+		this.setContentView(child)
 	}
 	
 	override fun onTouchEvent(event: MotionEvent): Boolean
@@ -70,5 +74,40 @@ open class TwoDimensionalScrollView : LinearLayout
 		val x = this.horizontalScrollView.onSuperToucEvent(event)
 		val y = this.verticalScrollView.onSuperToucEvent(event)
 		return x || y
+	}
+	
+	private fun setContentView(children: View)
+	{
+		(children.parent as ViewGroup).removeView(children)
+		
+		if(!this.isInitialized)
+		{
+			val view = LayoutInflater.from(this.context).inflate(
+				R.layout.component_two_dimensional_scroll_view,
+				this,
+				true
+			)
+			this.verticalScrollView = view.findViewById(R.id.vertical_scroll_view)
+			this.horizontalScrollView = view.findViewById(R.id.horizontal_scroll_view)
+			this.horizontalScrollView.addView(children)
+			this.isInitialized = true
+		}
+		else
+		{
+			this.horizontalScrollView.removeAllViews()
+			this.horizontalScrollView.addView(children)
+		}
+	}
+	
+	fun hasContent(): Boolean
+	{
+		return try
+		{
+			this.horizontalScrollView.childCount == 1
+		}
+		catch(exception: UninitializedPropertyAccessException)
+		{
+			false
+		}
 	}
 }

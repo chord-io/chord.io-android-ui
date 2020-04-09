@@ -14,7 +14,7 @@ import io.chord.ui.extensions.getChildOfType
 
 open class KeyboardList : LinearLayout, Zoomable
 {
-	private val zoomBehavior = ZoomBehavior()
+	protected val zoomBehavior = ZoomBehavior()
 	private val bindableBehavior = BindableBehavior(this)
 	private val keyBehavior = KeyboardKeyBehavior()
 	
@@ -353,7 +353,6 @@ open class KeyboardList : LinearLayout, Zoomable
 		if(orientation == ViewOrientation.Horizontal)
 		{
 			this.zoomBehavior.setFactorWidth(factor, animate)
-			
 		}
 		else
 		{

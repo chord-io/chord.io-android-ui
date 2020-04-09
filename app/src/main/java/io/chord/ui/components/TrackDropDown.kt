@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.AdapterView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import io.chord.R
 import io.chord.clients.models.Track
 import io.chord.services.managers.ProjectManager
@@ -97,6 +98,11 @@ class TrackDropDown : DropDown, AdapterView.OnItemSelectedListener, Binder
 	{
 		this.bindBehavior.attach(fragment)
 	}
+	
+	override fun attach(activity: FragmentActivity)
+	{
+		this.bindBehavior.attach(activity)
+	}
 
 	override fun attachAll(views: List<View>)
 	{
@@ -106,6 +112,11 @@ class TrackDropDown : DropDown, AdapterView.OnItemSelectedListener, Binder
 	override fun detach(id: Int)
 	{
 		this.bindBehavior.detach(id)
+	}
+	
+	override fun detach(view: View)
+	{
+		this.bindBehavior.detach(view)
 	}
 
 	override fun detachAll()

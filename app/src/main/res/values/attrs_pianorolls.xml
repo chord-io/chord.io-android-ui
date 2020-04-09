@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="PianoRoll">
+        <attr name="cio_pr_ticksColor" format="color"/>
+        <attr name="cio_pr_ticksThickness" format="dimension"/>
+        <attr name="cio_pr_barWidth" format="dimension"/>
+    </declare-styleable>
+
+    <dimen name="piano_roll_ticks_thickness">1dp</dimen>
+    <dimen name="piano_roll_bar_width">200dp</dimen>
+</resources>

@@ -13,6 +13,7 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.core.graphics.toRectF
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import io.chord.R
 import io.chord.ui.animations.FastOutSlowInValueAnimator
 import io.chord.ui.behaviors.BindBehavior
@@ -20,9 +21,9 @@ import io.chord.ui.behaviors.Binder
 import io.chord.ui.behaviors.OrientedBoundBehavior
 import io.chord.ui.behaviors.PropertyBehavior
 import io.chord.ui.behaviors.StepPositionBehavior
+import io.chord.ui.extensions.alignCenter
 import io.chord.ui.extensions.dpToPixel
 import io.chord.ui.extensions.getTextBounds
-import io.chord.ui.extensions.alignCenter
 import io.chord.ui.extensions.toTransparent
 import io.chord.ui.gestures.GestureDetector
 import io.chord.ui.gestures.SimpleOnGestureListener
@@ -294,7 +295,7 @@ class ZoomBar : View, Binder
 				value,
 				this.factors
 			)
-			
+//			this._factor = factor
 			this.factorBehavior.setValue(this._factor)
 		}
 	
@@ -618,6 +619,11 @@ class ZoomBar : View, Binder
 		this.bindBehavior.attach(fragment)
 	}
 	
+	override fun attach(activity: FragmentActivity)
+	{
+		this.bindBehavior.attach(activity)
+	}
+	
 	override fun attachAll(views: List<View>)
 	{
 		this.bindBehavior.attachAll(views)
@@ -626,6 +632,11 @@ class ZoomBar : View, Binder
 	override fun detach(id: Int)
 	{
 		this.bindBehavior.detach(id)
+	}
+	
+	override fun detach(view: View)
+	{
+		this.bindBehavior.detach(view)
 	}
 	
 	override fun detachAll()

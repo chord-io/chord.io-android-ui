@@ -9,7 +9,6 @@ import android.graphics.drawable.GradientDrawable
 import android.view.MotionEvent
 import androidx.core.graphics.toRect
 import io.chord.R
-import io.chord.clients.models.Track
 import io.chord.ui.extensions.clamp
 import io.chord.ui.extensions.dpToPixel
 import io.chord.ui.extensions.toTransparent
@@ -59,13 +58,6 @@ class SurfaceGestureBehavior(
 		val rectangle: RectF,
 		var isSelected: Boolean = false
 	)
-	
-	// TODO move this
-	class SequenceTouchSurface(
-		rectangle: RectF,
-		val track: Track,
-		val index: Int
-	) : TouchSurface(rectangle)
 	
 	class SurfaceDrawer(
 		private val gesture: SurfaceGestureBehavior

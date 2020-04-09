@@ -2,6 +2,7 @@ package io.chord.ui.behaviors
 
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import io.chord.ui.extensions.getParentRootView
 
 class BindBehavior<T: Bindable> (
@@ -47,6 +48,13 @@ class BindBehavior<T: Bindable> (
 		this.attach(fragment.id, control)
 	}
 	
+	override fun attach(activity: FragmentActivity)
+	{
+		this.checkIfAlreadyAttached(activity.hashCode())
+		val control: T = activity as? T ?: throw TypeCastException("cannot cast to class type")
+		this.attach(activity.hashCode(), control)
+	}
+	
 	fun attach(control: T)
 	{
 		val id = (control as View).id
@@ -72,6 +80,11 @@ class BindBehavior<T: Bindable> (
 	{
 		val control = this._controls.remove(id)!!
 		this.detach(control)
+	}
+	
+	override fun detach(view: View)
+	{
+		this.detach(view.id)
 	}
 	
 	fun detach(control: T)
