@@ -24,6 +24,7 @@
         <attr name="cio_zb_bubbleMargin" format="dimension"/>
         <attr name="cio_zb_bubbleTextSize" format="dimension"/>
         <attr name="cio_zb_bubbleInvert" format="boolean"/>
+        <attr name="cio_zb_disableAnimationOnDispatchEvent" format="boolean"/>
     </declare-styleable>
 
     <dimen name="zoombar_track_thickness">4dp</dimen>

@@ -18,13 +18,24 @@ class PianoFragmentTransaction(
 			R.id.rollScrollview to PianoRollFragment(this.activity.theme)
 		}
 		this.onLaneLoaded = { binding ->
+			this.activity.binding.verticalZoomBar.disableAnimationOnDispatchEvent = true
+
 			this.activity.binding.verticalZoomBar.attach(binding.lane)
+			
+			this.activity.binding.verticalZoomBar.disableAnimationOnDispatchEvent = false
 		}
 		this.onRollLoaded = { binding ->
 			binding.roll.setCounter(this.activity::counter)
+			
+			this.activity.binding.verticalZoomBar.disableAnimationOnDispatchEvent = true
+			this.activity.binding.horizontalZoomBar.disableAnimationOnDispatchEvent = true
+			
 			this.activity.binding.verticalZoomBar.attach(binding.roll)
 			this.activity.binding.horizontalZoomBar.attach(binding.roll)
 			this.activity.binding.toolbarEditor.quantize.attach(binding.roll)
+			
+			this.activity.binding.verticalZoomBar.disableAnimationOnDispatchEvent = false
+			this.activity.binding.horizontalZoomBar.disableAnimationOnDispatchEvent = false
 		}
 		this.onLaneUnloaded = { binding ->
 			this.activity.binding.verticalZoomBar.detach(binding.lane)

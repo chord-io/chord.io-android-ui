@@ -319,8 +319,6 @@ open class KeyboardList : LinearLayout, Zoomable
 		this.zoomBehavior.onEvaluateHeight = this::getKeyWidth
 		this.zoomBehavior.onMeasureHeight = this::update
 		
-		this.setZoomFactor(this.orientation, 1f, false)
-		
 		this.isClickable = true
 		this.isFocusable = true
 		
@@ -346,6 +344,11 @@ open class KeyboardList : LinearLayout, Zoomable
 	override fun selfDetach()
 	{
 		this.bindableBehavior.selfDetach()
+	}
+	
+	protected fun internalSetOrienation(orientation: ViewOrientation)
+	{
+		this._orientation = orientation
 	}
 	
 	override fun setZoomFactor(orientation: ViewOrientation, factor: Float, animate: Boolean)

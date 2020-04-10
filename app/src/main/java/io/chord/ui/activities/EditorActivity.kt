@@ -2,6 +2,8 @@ package io.chord.ui.activities
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.mikepenz.iconics.IconicsDrawable
@@ -21,10 +23,53 @@ import io.chord.ui.behaviors.FragmentTransactionManager
 import io.chord.ui.behaviors.ToolbarEditorBehavior
 import io.chord.ui.components.Selectable
 import io.chord.ui.fragments.editor.PianoFragmentTransaction
-import kotlinx.android.synthetic.main.activity_editor.*
 
 class EditorActivity : AppCompatActivity(), Selectable<Track>
 {
+	private class LaneScrollViewListener(
+		private val activity: EditorActivity
+	) : ViewGroup.OnHierarchyChangeListener
+	{
+		override fun onChildViewAdded(parent: View, child: View)
+		{
+			child.post {
+				this.activity.binding.verticalScrollBar.attach(R.id.laneScrollview)
+			}
+		}
+		
+		override fun onChildViewRemoved(parent: View, child: View)
+		{
+			try
+			{
+				this.activity.binding.verticalScrollBar.detach(R.id.laneScrollview)
+			}
+			catch(exception: KotlinNullPointerException){}
+		}
+	}
+	
+	private class RollScrollViewListener(
+		private val activity: EditorActivity
+	) : ViewGroup.OnHierarchyChangeListener
+	{
+		override fun onChildViewAdded(parent: View, child: View)
+		{
+			child.post {
+				this.activity.binding.verticalScrollBar.attach(R.id.rollScrollview)
+				this.activity.binding.horizontalScrollBar.attach(R.id.rollScrollview)
+			}
+		}
+		
+		override fun onChildViewRemoved(parent: View, child: View)
+		{
+			try
+			{
+				this.activity.binding.verticalScrollBar.detach(R.id.rollScrollview)
+				this.activity.binding.horizontalScrollBar.detach(R.id.rollScrollview)
+			}
+			catch(exception: KotlinNullPointerException){}
+		}
+	}
+	
 	private val tracks = ProjectManager.getCurrent()!!.tracks
 	private lateinit var track: Track
 	private lateinit var _theme: Theme
@@ -128,6 +173,13 @@ class EditorActivity : AppCompatActivity(), Selectable<Track>
 		this.binding.toolbarEditor.editor.toolbar.setTitle(R.string.editor_activity_title)
 	}
 	
+	override fun onAttachedToWindow()
+	{
+		super.onAttachedToWindow()
+		this.binding.laneScrollview.setOnHierarchyChangeListener(LaneScrollViewListener(this))
+		this.binding.rollScrollview.setOnHierarchyChangeListener(RollScrollViewListener(this))
+	}
+	
 	fun counter(): List<Int>
 	{
 		return this.theme.sequences.map {
@@ -148,23 +200,6 @@ class EditorActivity : AppCompatActivity(), Selectable<Track>
 		this.track = track
 		this._theme = this.getTheme(this.track, this.theme.name)
 		this.transactions.from(this.track).load(this.supportFragmentManager)
-		
-		if(this.binding.rollScrollview.hasContent())
-		{
-			this.verticalScrollBar.attach(R.id.rollScrollview)
-			
-			// TODO: avoid this, maybe zoomable not need to be init with animation
-			try
-			{
-				this.horizontalScrollBar.attach(R.id.rollScrollview)
-			}
-			catch(exception: IllegalStateException){}
-		}
-		
-		if(this.binding.laneScrollview.hasContent())
-		{
-			this.verticalScrollBar.attach(R.id.laneScrollview)
-		}
 	}
 	
 	private fun getTrack(name: String): Track

@@ -279,6 +279,7 @@ class ZoomBar : View, Binder
 	private var _bubbleMargin: Float = -1f
 	private var _bubbleTextSize: Float = -1f
 	private var _bubbleInvert: Boolean = false
+	private var _disableAnimationOnDispatchEvent: Boolean = false
 	
 	var orientation: ViewOrientation
 		get() = this._orientation
@@ -425,6 +426,12 @@ class ZoomBar : View, Binder
 		set(value) {
 			this._bubbleInvert = value
 			this.invalidate()
+		}
+	
+	var disableAnimationOnDispatchEvent: Boolean
+		get() = this._disableAnimationOnDispatchEvent
+		set(value) {
+			this._disableAnimationOnDispatchEvent = value
 		}
 	
 	constructor(context: Context?) : super(context)
@@ -575,6 +582,11 @@ class ZoomBar : View, Binder
 			false
 		)
 		
+		this._disableAnimationOnDispatchEvent = typedArray.getBoolean(
+			R.styleable.ZoomBar_cio_zb_disableAnimationOnDispatchEvent,
+			false
+		)
+		
 		typedArray.recycle()
 		
 		this.isFocusable = true
@@ -587,7 +599,14 @@ class ZoomBar : View, Binder
 		
 		this.bindBehavior.onAttach = {}
 		this.bindBehavior.onDispatchEvent = {
-			it.setZoomFactor(this.orientation, this.factor, !this.gestureListener.isScrolling)
+			if(this.disableAnimationOnDispatchEvent)
+			{
+				it.setZoomFactor(this.orientation, this.factor, false)
+			}
+			else
+			{
+				it.setZoomFactor(this.orientation, this.factor, !this.gestureListener.isScrolling)
+			}
 		}
 		
 		this.boundBehavior.orientation = this.orientation

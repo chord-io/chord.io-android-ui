@@ -65,7 +65,6 @@ open class TwoDimensionalScrollView : LinearLayout
 	
 	override fun addView(child: View)
 	{
-		super.addView(child)
 		this.setContentView(child)
 	}
 	
@@ -76,9 +75,17 @@ open class TwoDimensionalScrollView : LinearLayout
 		return x || y
 	}
 	
+	override fun setOnHierarchyChangeListener(listener: OnHierarchyChangeListener?)
+	{
+		this.horizontalScrollView.setOnHierarchyChangeListener(listener)
+	}
+	
 	private fun setContentView(children: View)
 	{
-		(children.parent as ViewGroup).removeView(children)
+		if(children.parent != null)
+		{
+			(children.parent as ViewGroup).removeView(children)
+		}
 		
 		if(!this.isInitialized)
 		{
@@ -96,18 +103,6 @@ open class TwoDimensionalScrollView : LinearLayout
 		{
 			this.horizontalScrollView.removeAllViews()
 			this.horizontalScrollView.addView(children)
-		}
-	}
-	
-	fun hasContent(): Boolean
-	{
-		return try
-		{
-			this.horizontalScrollView.childCount == 1
-		}
-		catch(exception: UninitializedPropertyAccessException)
-		{
-			false
 		}
 	}
 }

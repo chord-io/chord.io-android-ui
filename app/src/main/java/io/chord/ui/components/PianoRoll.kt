@@ -128,7 +128,7 @@ class PianoRoll : KeyboardList, Quantifiable, Countable
 	override fun onFinishInflate()
 	{
 		super.onFinishInflate()
-		this.orientation = ViewOrientation.Vertical
+		this.internalSetOrienation(ViewOrientation.Vertical)
 		this.whiteKeyColor = this.whiteKeyColor.toTransparent(0.1f)
 		this.blackKeyColor = this.blackKeyColor.toTransparent(0.1f)
 		this.strokeColor = this.strokeColor.toTransparent(0.1f)
@@ -182,6 +182,11 @@ class PianoRoll : KeyboardList, Quantifiable, Countable
 		val height = this.measuredHeight
 		
 		this.setMeasuredDimension(width, height)
+		
+		val childWidthSpec = MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY)
+		val childHeightSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
+		
+		this.measureChildren(childWidthSpec, childHeightSpec)
 	}
 	
 	override fun dispatchDraw(canvas: Canvas)
