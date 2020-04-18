@@ -36,6 +36,16 @@ class StateScrollView : TwoDimensionalScrollView, Modulable<EditorMode>
 		this.stateBehavior.setMode(mode)
 	}
 	
+	override fun onTouchEvent(event: MotionEvent): Boolean
+	{
+		if(this.stateBehavior.mode == EditorMode.Move)
+		{
+			return super.onTouchEvent(event)
+		}
+		
+		return false
+	}
+	
 	override fun onInterceptTouchEvent(event: MotionEvent): Boolean
 	{
 		return this.stateBehavior.mode == EditorMode.Move

@@ -144,6 +144,8 @@ class EditorActivity : AppCompatActivity(), Selectable<Track>
 		)
 		
 		this.toolBarBehavior.onModeChanged = {
+			this.binding.laneScrollview.setMode(it)
+			this.binding.rollScrollview.setMode(it)
 		}
 		this.toolBarBehavior.onPlay = {}
 		this.toolBarBehavior.onStop = {}

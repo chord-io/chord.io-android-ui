@@ -11,8 +11,7 @@ class StateBehavior(
 	interface State
 	
 	private var _state: State? = null
-	private var _mode: EditorMode =
-		EditorMode.None
+	private var _mode: EditorMode =	EditorMode.None
 	val modes: MutableMap<EditorMode, State> = mutableMapOf()
 	
 	val state: State?
