@@ -454,7 +454,7 @@ open class KeyboardList : LinearLayout, Zoomable
 		}
 		else
 		{
-			right downTo left
+			right - 1 downTo left
 		}
 		
 		for(index in range)
@@ -559,7 +559,7 @@ open class KeyboardList : LinearLayout, Zoomable
 			val measuredWidth = (this.keyBehavior.white.width * 7f) + (stroke * 6f)
 			val measuredHeight = this.keyBehavior.white.height
 			this.setMeasuredDimension(
-				(measuredWidth * this.octaves + clampedStroke).toInt(),
+				(measuredWidth * this.octaves + (clampedStroke * (this.octaves - 1))).toInt(),
 				measuredHeight.toInt()
 			)
 
@@ -592,7 +592,7 @@ open class KeyboardList : LinearLayout, Zoomable
 			val measuredHeight = (this.keyBehavior.white.height * 7f) + (stroke * 6f)
 			this.setMeasuredDimension(
 				measuredWidth.toInt(),
-				(measuredHeight * this.octaves + clampedStroke).toInt()
+				(measuredHeight * this.octaves + (clampedStroke * (this.octaves - 1))).toInt()
 			)
 
 			this.update()

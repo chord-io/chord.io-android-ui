@@ -7,6 +7,6 @@
         android:layout_height="32dp"
         app:cio_kl_orientation="vertical"
         app:cio_kl_octaves="11"
-        app:cio_kl_octaveOffset="-3"
+        app:cio_kl_octaveOffset="-2"
         app:cio_kl_clampOutsideStroke="true" />
 </layout>
